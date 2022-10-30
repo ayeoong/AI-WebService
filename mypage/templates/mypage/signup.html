@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Gallery</title>
+  </head>
+  <body>
+    <div>
+      <h2>회원가입 페이지 입니다.</h2>
+    </div>
+    <div>
+      <form method="POST">
+        {% csrf_token %}
+        아이디: <br>
+        <input name="username" type="text">
+        <br>
+        비밀번호: <br>
+        <input name="password1" type="password">
+        <br>
+        비밀번호 확인: <br>
+        <input name="password2" type="password">
+        <br>
+        이메일: <br>
+        <input name="email" type="email">
+        <br><br>
+        <input type="submit" class="btn btn-primary" value="Sign Up">
+      </form>
+    </div>
+  </body>
+</html>

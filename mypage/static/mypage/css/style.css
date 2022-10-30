@@ -1,0 +1,33 @@
+img{
+  height: 300px;
+  border: 10px;
+  border-radius: 10px;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container{
+  display: grid;
+  grid-template-rows: repeat(3, 100px);
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.scale {
+  transform: scale(1);
+  -webkit-transform: scale(1);        /* 사파리, 크롬*/
+  -moz-transform: scale(1);           /* 파이어폭스 */
+  -ms-transform: scale(1);            /* ms */
+  -o-transform: scale(1);             /* 오페라 */
+  transition: all 0.3s ease-in-out;   /*확대시 부드럽게 */
+}
+.scale:hover {
+  transform: scale(1.2);
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  -o-transform: scale(1.2);
+}
+.img {
+   overflow:hidden 
+}

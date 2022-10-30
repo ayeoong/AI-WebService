@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Gallery</title>
+  </head>
+  <body>
+    <div>
+      <h2>입력한 텍스트와 맞는 작품을 생성합니다.</h2>
+    </div>
+    <div>
+      <form action="{% url 'salon:result' %}" method='POST' enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="name">Enter 4 to 30 characters:</label>
+
+        <input type="text" id="title" name="title" required
+         minlength="4" maxlength="30" size="40"><br>
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+  </body>
+</html>
