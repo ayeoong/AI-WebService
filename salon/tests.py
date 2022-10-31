@@ -1,5 +1,6 @@
 from django.test import TestCase
-from salon.models import Member, ImageUploadModel, MusicUploadModel
+from mypage.models import Member
+from salon.models import ImageUploadModel, MusicUploadModel
 from salon.utils import uuid_name_upload_to
 
 # Create your tests here.

@@ -2,7 +2,8 @@ from django.shortcuts import render
 # from .dalle import dalle
 from .models import SampleKeyword
 from . import music
-from salon.models import Member, ImageUploadModel, MusicUploadModel
+from mypage.models import Member
+from salon.models import ImageUploadModel, MusicUploadModel
 # import MinDalle
 # model = MinDalle(is_mega=True, is_reusable=True)
 
@@ -12,7 +13,10 @@ def index(request):
 
 
 def home(request):
-    keywords = SampleKeyword.objects.all()
+    keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품',"Today's Favorite"]
+    if SampleKeyword.objects.all():
+        keywords = SampleKeyword.objects.all()
+    
     return render(request, 'salon/home.html', {'keywords':keywords})
 
 

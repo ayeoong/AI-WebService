@@ -19,12 +19,13 @@ from mypage import views
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.staticfiles.urls import static
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('salon.urls')),
     path('mypage/', include('mypage.urls')),
-    path('login/', views.login, name='login'),
+    path('login/', auth_views.LoginView.as_view(), name='login'),
     path('signup/', views.signup, name='signup'),
 ]
 
