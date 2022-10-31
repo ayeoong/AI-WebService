@@ -6,3 +6,5 @@ app_name = 'mypage'
 urlpatterns = [
     path('mypage', views.mypage, name='mypage'),
 ]
+
+# test
