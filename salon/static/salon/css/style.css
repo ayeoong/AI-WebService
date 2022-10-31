@@ -35,7 +35,7 @@ html {
     font-weight: 700;
   }
   .header {
-    background-color: #092a37;
+    background-color: #f4fbfd;
     grid-area: header;
     padding: 1em;
   }

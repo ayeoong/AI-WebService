@@ -35,7 +35,7 @@ def login(request):
         password = request.POST['password']
         user = authenticate(request, username = username, password = password)
         if user is not None:
-            login(user)
+            login(request, user)
             return redirect('index')
         else:
             return HttpResponse('로그인 실패. 다시 시도 해보세요.')
