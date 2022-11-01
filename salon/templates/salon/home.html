@@ -1,10 +1,22 @@
+<html>
 {% load static %}
 {% include 'shared/_hp.html' %}
 <div class="grid-container">
   <header class="grid-item header">
     <link rel="stylesheet" href="{% static 'salon/css/style.css' %}">
   </header>
-
+  <body>
+    <div class="grid-container">
+      <div>
+        <audio id="myAudio" controls>
+          <source src="/media/sample.mp3" type="audio.mpeg">
+        </audio>
+        <button onclick="music_button('/media/sample.mp3');">music1</button>
+        <button onclick="music_button('/media/sample2.mp3');">music2</button>
+        <button onclick="music_button('/media/sample3.mp3');">music3</button>
+      </div>
+    </div>
+      
     <main class="grid-item main">
       {% for keyword in keywords %}
       <p>{{ keyword.keyword }}</p>
@@ -23,4 +35,7 @@
       {% endfor %}
     </main> 
   <script src="{% static 'salon/js/scroll.js' %}"></script>
+  <script src="{% static 'salon/js/index.js' %}"></script>
+  </body>
 </div>
+</html>
