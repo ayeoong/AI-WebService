@@ -4,6 +4,11 @@ from .models import SampleKeyword
 from . import music
 from mypage.models import Member
 from salon.models import ImageUploadModel, MusicUploadModel
+
+import re
+import nltk
+from nltk.corpus import stopwords
+
 # import MinDalle
 # model = MinDalle(is_mega=True, is_reusable=True)
 
@@ -29,7 +34,7 @@ def result(request):
     text = ''
     if request.method == "POST":
         text = request.POST['title']
-        music_file = music.generateMusic()
+        # music_file = music.generateMusic()
     # 이미지 파일이 나온다.
     # img = model.generate_image(text, 7, 1) 이곳에 모델 연결
     img = 'img'
@@ -37,10 +42,22 @@ def result(request):
     # img = Image.open('./media/a.png')
     # img.save('./media/' + img_file, 'png')
 
+    # 텍스트 -> 태그화 리스트
+    only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
+    no_capitals = only_english.lower().split()      # 대문자 -> 소
+    stops = set(stopwords.words('english'))         # 불용어 제거
+    no_stops = [word for word in no_capitals if not word in stops]
+
+    stemmer = nltk.stem.SnowballStemmer('english')  # 어간 추출
+    tags = [stemmer.stem(word) for word in no_stops]
+
+
+
     context = {'text': text, 
                 'img':img, 
-                "music_file":music_file, 
-                "img_file":img_file}
+                # "music_file":music_file, 
+                "img_file":img_file,
+                "tags":tags}
 
     return render(request, 'salon/result.html', context)
 
