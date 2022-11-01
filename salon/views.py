@@ -19,6 +19,8 @@ def home(request):
     
     return render(request, 'salon/home.html', {'keywords':keywords})
 
+def search(request):
+    return render(request, 'salon/search.html', {})
 
 # 입력창
 def start(request):

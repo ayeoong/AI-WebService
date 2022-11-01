@@ -1,12 +1,10 @@
 {% load static %}
+{% include 'shared/_hp.html' %}
 <div class="grid-container">
   <header class="grid-item header">
-    {% include 'shared/_hp.html' %}
     <link rel="stylesheet" href="{% static 'salon/css/style.css' %}">
   </header>
-  <div class="grid-item title">
-    <h1>Everything All At Once!</h1>
-  </div>
+
     <main class="grid-item main">
       {% for keyword in keywords %}
       <p>{{ keyword.keyword }}</p>
