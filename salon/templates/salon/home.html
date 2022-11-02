@@ -1,0 +1,41 @@
+<html>
+{% load static %}
+{% include 'shared/_hp.html' %}
+<div class="grid-container">
+  <header class="grid-item header">
+    <link rel="stylesheet" href="{% static 'salon/css/style.css' %}">
+  </header>
+  <body>
+    <div class="grid-container">
+      <div>
+        <audio id="myAudio" controls>
+          <source src="/media/sample.mp3" type="audio.mpeg">
+        </audio>
+        <button onclick="music_button('/media/sample.mp3');">music1</button>
+        <button onclick="music_button('/media/sample2.mp3');">music2</button>
+        <button onclick="music_button('/media/sample3.mp3');">music3</button>
+      </div>
+    </div>
+      
+    <main class="grid-item main">
+      {% for keyword in keywords %}
+      <p>{{ keyword.keyword }}</p>
+      <div class="items" id="s{{forloop.counter}}">
+        <div class="item item1"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+        <div class="item item2"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+        <div class="item item3"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+        <div class="item item4"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+        <div class="item item5"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+        <div class="item item6"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+        <div class="item item7"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+        <div class="item item8"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+        <div class="item item9"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+        <div class="item item10"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+      </div>
+      {% endfor %}
+    </main> 
+  <script src="{% static 'salon/js/scroll.js' %}"></script>
+  <script src="{% static 'salon/js/index.js' %}"></script>
+  </body>
+</div>
+</html>

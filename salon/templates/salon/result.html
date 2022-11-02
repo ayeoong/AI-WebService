@@ -1,0 +1,44 @@
+{%load static%}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Gallery</title>
+  </head>
+  {% include 'shared/_hp.html' %}
+  <body>
+    <div>
+      <button value="mypage"><a type='button' href="{% url 'mypage:mypage' %}" class='mypage'>My Page</a></button>
+      <button value="home"><a type='button' href="{% url 'salon:index' %}" class='index'>HOME</a></button>
+    </div>
+    <div>
+      <h2>결과 페이지 입니다.</h2>
+    </div>
+    <div>
+      <stong>텍스트 내용: </strong>
+      <p>{{text}}</p>
+    </div>
+    <img src="/media/{{text}}.png", alt="ERROR">
+    <div>
+      <strong>텍스트 내용: </strong>
+      <p>{{text}}</p>
+      <p>{{music_file}}</p>
+
+      <midi-player src="/media/{{music_file}}" sound-font/>
+    </div>
+
+    <div>
+    <form method="post" action="{% url 'salon:save_result' %}">
+      <input type="checkbox" id="selected" name="selected" value="{{music_file}}" onclick="toggleVisibility(this)">음악저장DB에기록</checkbox>
+      <input type="checkbox" id="selected" name="selected" value="{{text}}.png" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
+      <p><button id="save_button" disabled=true>저장하기</button></p>
+    </form>
+      <br>
+    </div>
+
+  <script type="text/javascript" src="{% static 'salon/js/checkbox.js' %}"></script>
+  </body>
+  <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.22.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.4.0"></script>
+</html>
+    

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Gallery</title>
+  </head>
+  <body>
+    <div>
+      <h2>로그인 페이지 입니다.</h2>
+    </div>
+    <div>
+      <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p>{{ res_date }}</p>
+        <input type="submit" value="로그인" />
+      </form>
+    </div>
+  </body>
+</html>
