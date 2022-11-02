@@ -9,11 +9,13 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+
 import io
 from urllib.parse import urlparse
 
 import environ
 from google.cloud import secretmanager
+
 
 from pathlib import Path
 import os
@@ -24,6 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+
 
 env = environ.Env(DEBUG=(bool, False))
 env_file = os.path.join(BASE_DIR, ".env")
@@ -59,6 +62,7 @@ else:
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 # Change this to "False" when you are ready for production
 #DEBUG = env("DEBUG")
 DEBUG = True
@@ -79,6 +83,7 @@ if APPENGINE_URL:
 else:
     ALLOWED_HOSTS = ["*"]
 # [END gaestd_py_django_csrf]
+
 
 
 # Application definition
@@ -127,6 +132,7 @@ WSGI_APPLICATION = 'dalle.wsgi.application'
 
 # Database
 # [START db_setup]
+
 # [START gaestd_py_django_database_config]
 # Use django-environ to parse the connection string
 DATABASES = {"default": env.db()}
@@ -149,6 +155,12 @@ if os.getenv("TRAMPOLINE_CI", None): ## 추가 코드가 작동안하면 기존 
         }
     }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 
@@ -190,12 +202,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
+
     os.path.join(BASE_DIR,'mypage', 'static'),
     os.path.join(BASE_DIR,'salon', 'static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-MEDIA_URL = 'media/'
+
+
+MEDIA_URL = '/media/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT_URL = '.'
 

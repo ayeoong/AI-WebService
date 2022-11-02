@@ -11,8 +11,6 @@ from salon.models import ImageUploadModel, MusicUploadModel
 def index(request):
     return render(request, 'salon/index.html', {})
 
-def main(request):
-    return render(request, 'salon/main.html')
 
 def home(request):
     keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품',"Today's Favorite"]
@@ -21,6 +19,8 @@ def home(request):
     
     return render(request, 'salon/home.html', {'keywords':keywords})
 
+def search(request):
+    return render(request, 'salon/search.html', {})
 
 # 입력창
 def start(request):
