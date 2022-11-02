@@ -170,8 +170,6 @@ def mypage(request, user_name):
     context = {'userid':user, 'images':images}
     return render(request, 'mypage/opage.html', context)
 
-def mypage(request):
-    return render(request, 'mypage/mypage.html', {})
 
 def setting(request):
     return render(request, 'mypage/setting.html', {})
