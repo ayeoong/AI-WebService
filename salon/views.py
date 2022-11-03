@@ -2,7 +2,7 @@ from django.shortcuts import render
 import json
 from django.http import JsonResponse
 from django.contrib import auth
-from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel
+from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel, ImageKeywordModel, MusicKeywordModel
 import os
 import openai
 from PIL import Image
@@ -50,6 +50,15 @@ def image_generation(text):
     image_url = response['data'][0]['url']
     return image_url
 
+def image_generation_beta(text):
+    image_url = 'https://ifh.cc/g/5qCAX2.jpg'
+    return image_url
+
+def generateMusic_beta():
+    mus_filename = 'MuseNet-Composition.mid'
+    return mus_filename
+
+
 # 입력창
 def start(request):
     return render(request, 'salon/start.html', {})
@@ -62,37 +71,40 @@ def result_model(request):
     # mock model process
     time.sleep(5)
 
-    # img_filename = text + '.jpg'
-    # img_filename = 'test.jpg'
-    image_url = image_generation(text) # https://~~~.jpg 형식
+    image_url = image_generation_beta(text) # https://~~~.jpg 형식
     img_filename = uuid_name_upload_to(None, image_url)
-    img_tn_filename = "_tn.".join(img_filename.split('.')) # 이미지파일명_tn.jpg 
-    
-    img_filepath = 'media/images/' + img_filename
-    img_tn_filepath = 'media/images/' + img_tn_filename
+
+    res = requests.get(image_url)
+    save_img_and_thumbnail(res.content, img_filename)
 
 
-    # image_url = image_generation(text)
+    music_file = generateMusic_beta() # '~~~.mid' 형식
+    # mus_filename = uuid_name_upload_to(None, music_file)
+    mus_filename = music_file
 
-    # 이미지 & 섬네일 media에 저장
-    # res = requests.get(image_url)
-    # img_file = Image.open(BytesIO(res.content))
-    # img_file.save(img_filepath)
-    # img_file.thumbnail((300, 300))
-    # img_file.save('media/images/'+text+'_tn.jpg')
-    
-
-    # music_file = '/media/musics/' + music.generateMusic()
-    # image_url = 'https://ifh.cc/g/5qCAX2.jpg'
-    # mus_filename = 'MuseNet-Composition.mid'
-    mus_filename = uuid_name_upload_to(None, text + '.mid')
-
-    mus_filefath = '/media/musics/' + mus_filename
-
+    img_filename = '/media/images/' + img_filename
+    mus_filename = '/media/musics/' + mus_filename
 
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'mus_file':mus_filename}
     print('====================', data)
     return JsonResponse(data)
+
+
+def save_img_and_thumbnail(content, img_filename):
+    img_tn_filename = "_tn.".join(img_filename.split('.')) # 이미지파일명_tn.jpg 
+
+    img_file = Image.open(BytesIO(content))
+    save_img(img_file, img_filename)
+
+    img_file.thumbnail((300, 300))
+    img_file.save(img_tn_filename)
+
+
+def save_img(image, filename):
+    img_storage_path = 'media/images/' #setting.media_images
+    img_filepath = img_storage_path + filename
+    image.save(img_filepath, 'PNG')
+
 
 # 출력창
 def result(request):
@@ -157,6 +169,7 @@ def save_result(request):
             if 'mid' == filepath[-3:]:
                 musicfile = MusicUploadModel(user=user, name=text+"_music", filename=filepath, input_text=text)
                 # musicfile.save()
+                # MusicKeywordModel(music=musicfile, keyword=keyword).save()
             else:
                 filename = filepath.split(' ')[0]
                 thumbnail = filepath.split(' ')[1]
