@@ -10,6 +10,7 @@ from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel
 import re
 import nltk
 from nltk.corpus import stopwords
+import time
 
 
 def index(request):
@@ -136,3 +137,14 @@ def result_favorite(request):
     else:
         data = {'result':'kwang'}
         return JsonResponse(data)
+
+def result_model(request):
+    json_data = json.loads( request.body )
+    text = json_data['aa']
+    # model process
+    time.sleep(30)
+    music_file = 'aa.mid' 
+    img_file = 'aa.png'
+    data = {'result':'successful', 'result_code': '1', 'imgfile':img_file, 'musfile':music_file}
+    return JsonResponse(data)
+
