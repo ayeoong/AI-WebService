@@ -1,11 +1,13 @@
 from django.shortcuts import render
 # from .dalle import dalle
-from .models import SampleKeyword
 from . import music
 from mypage.models import Member
-from salon.models import ImageUploadModel, MusicUploadModel
+from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel
 # import MinDalle
 # model = MinDalle(is_mega=True, is_reusable=True)
+import re
+import nltk
+from nltk.corpus import stopwords
 
 
 def index(request):
@@ -13,14 +15,17 @@ def index(request):
 
 
 def home(request):
-    keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품',"Today's Favorite"]
-    if SampleKeyword.objects.all():
-        keywords = SampleKeyword.objects.all()
-    
+    keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품', "Today's Favorite"]   
     return render(request, 'salon/home.html', {'keywords':keywords})
 
 def search(request):
-    return render(request, 'salon/search.html', {})
+    if request.method == 'POST':
+        search_word = request.POST['search']
+        search_result_list = KeywordModel.objects.filter(word__contains=search_word)
+        return render(request, 'salon/search.html', {'search_result_list':search_result_list})
+    else:
+        search_result_list = []
+        return render(request, 'salon/search.html', {'search_result_list':search_result_list})
 
 # 입력창
 def start(request):
@@ -31,7 +36,8 @@ def result(request):
     text = ''
     if request.method == "POST":
         text = request.POST['title']
-        music_file = music.generateMusic()
+        # music_file = music.generateMusic()
+        music_file = 'MuseGAN'
     # 이미지 파일이 나온다.
     # img = model.generate_image(text, 7, 1) 이곳에 모델 연결
     img = 'img'
@@ -39,10 +45,32 @@ def result(request):
     # img = Image.open('./media/a.png')
     # img.save('./media/' + img_file, 'png')
 
+    # 텍스트 -> 태그화 리스트
+    only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
+    no_capitals = only_english.lower().split()      # 대문자 -> 소
+    stops = set(stopwords.words('english'))         # 불용어 제거
+    no_stops = [word for word in no_capitals if not word in stops]
+
+    stemmer = nltk.stem.SnowballStemmer('english')  # 어간 추출
+    tags = [stemmer.stem(word) for word in no_stops]
+
+
+    # 유저 정보와 같이 저장 필요
+    for tag in tags:
+        try:
+            exist_word = KeywordModel.objects.get(word=tag)
+            exist_word.input_num += 1
+            exist_word.save()
+        except:
+            word = KeywordModel(word=tag)
+            word.input_num += 1
+            word.save()
+
     context = {'text': text, 
                 'img':img, 
                 "music_file":music_file, 
-                "img_file":img_file}
+                "img_file":img_file,
+                "tags":tags}
 
     return render(request, 'salon/result.html', context)
 
