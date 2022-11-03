@@ -1,17 +1,15 @@
 from django.shortcuts import render
 # from .dalle import dalle
-from .models import SampleKeyword
 from . import music
 from mypage.models import Member
-from salon.models import ImageUploadModel, MusicUploadModel
-
+from salon.models import ImageUploadModel, KeywordModel, MusicUploadModel
 import re
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-nltk.download('popular') #강사님 help
-#import MinDalle
-#model = MinDalle(is_mega=True, is_reusable=True)
+
+# import MinDalle
+# model = MinDalle(is_mega=True, is_reusable=True)
 
 
 def index(request):
@@ -22,14 +20,18 @@ def main(request):
 
 
 def home(request):
-    keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품',"Today's Favorite"]
-    if SampleKeyword.objects.all():
-        keywords = SampleKeyword.objects.all()
-    
+    keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품', "Today's Favorite"]   
     return render(request, 'salon/home.html', {'keywords':keywords})
 
 def search(request):
-    return render(request, 'salon/search.html', {})
+    if request.method == 'POST':
+        search_word = request.POST['search']
+        search_result_list = KeywordModel.objects.filter(word__contains=search_word)
+        return render(request, 'salon/search.html', {'search_result_list':search_result_list})
+    else:
+        search_result_list = []
+        return render(request, 'salon/search.html', {'search_result_list':search_result_list})
+
 # 입력창
 def start(request):
     return render(request, 'salon/start.html', {})
@@ -39,16 +41,15 @@ def result(request):
     text = ''
     if request.method == "POST":
         text = request.POST['title']
-        music_file = music.generateMusic()
+        #music_file = music.generateMusic()
+        music_file = 'MuseGAN'
     # 이미지 파일이 나온다.
     # img = model.generate_image(text, 7, 1) 이곳에 모델 연결
     img = 'img'
     img_file =  text + '.png'
     # img = Image.open('./media/a.png')
     # img.save('./media/' + img_file, 'png')
-
-
-    # 텍스트 -> 태그화 리스트
+    #토크나이즈 part
     only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
     only_english_lower = only_english.lower()       # 대문자 -> 소
     word_tokens =  nltk.word_tokenize(only_english_lower)   # 토큰화
@@ -57,11 +58,7 @@ def result(request):
     # 명사만 뽑기
     NN_words = [word for word, pos in tokens_pos if 'NN' in pos]
 
-    # --------------------------------------
-    # nltk의 룩업에러 : nltk.download('popular')로 해결
-    # --------------------------------------
-
-    # 원형 추출
+    # 원형 추출S
     wlem = WordNetLemmatizer()
     lemmatized_words = []
     for word in NN_words:
@@ -72,11 +69,11 @@ def result(request):
     stopwords_list = set(stopwords.words('english'))
     no_stops = [word for word in lemmatized_words if not word in stopwords_list]
     context = {'text': text, 
-                "img":img, 
-                "music_file":music_file,
+                'img':img, 
+                "music_file":music_file, 
                 "img_file":img_file,
-                "tags":no_stops,}
-
+                "tags":no_stops,
+                }
 
     return render(request, 'salon/result.html', context)
 

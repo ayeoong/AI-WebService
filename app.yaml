@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+instance_class: F2
 
 # [START django_app]
 # [START gaestd_py_django_app_yaml]
