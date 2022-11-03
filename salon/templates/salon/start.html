@@ -12,60 +12,44 @@
       <h2>입력한 텍스트와 맞는 작품을 생성합니다.</h2>
     </div>
     <div>
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <!-- <script type="text/javascript" src="{% static 'salon/js/progressBar.js' %}"></script> -->
+      <script>
+        var onceTimer;
+        var step = 5;
+        function progress_step() {
+          document.getElementById('progressBar').value += step;
+          if (document.getElementById('progressBar').value >= 99) {
+            clearInterval(onceTimer);
+            console.log('=================end')
+          }
+        }
+        function progress_start() {
+          axios.post("/result_model/", {'text':document.getElementById('title'.value)}) //인풋데이터넣기
+          // .then(function () 파일세이브?)
+          .then(function () {alert("작품 생성이 완료되었습니다.")} )
+          .then(() => {location.href = "/result/"} )
+          .catch(function (error) {console.log(error)} ) 
+  
+          onceTimer = setInterval(progress_step, 1000);
+          
+        function cannotClickBtn() { //텍스트 입력없으면 버튼못누름 
+          if (document.write(getElementById('title', length))==0) {
+            document.getElementById('title').click = disable
+          }
+        }
+        }
+    
+      </script>
       <form action="{% url 'salon:result' %}" method='POST' enctype="multipart/form-data">
         {% csrf_token %}
         <label for="name">Enter 4 to 30 characters:</label>
         <input type="text" id="title" name="title" required
          minlength="4" maxlength="30" size="40"><br>
-        <input type="submit" id="submit" value="생성하기">
+        <button id="btn_create" onclick="progress_start()">생성하기</button>
+          <progress id="progressBar" value="0" min="0" max="100"></progress>
       </form>
     </div>
     <br/>
-    <div class="progress">
-      <label for="progress">작품 생성 중...</label>
-      <br/>
-      <progress id="progressBar" value="0" min="0" max="100"></progress>
-    </div>
-    <div class="status"></div>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- <script type="text/javascript" src="{% static 'salon/js/progressBar.js' %}"></script> -->
-    <script>
-      var onceTimer;
-      var step = 5;
-      function progress_step() {
-        document.getElementById('progressBar').value += step;
-        if (document.getElementById('progressBar').value >= 99) {
-          clearInterval(onceTimer);
-          console.log('=================end')
-        }
-      }
-      function progress_start() {
-        axios.post("/result_model/", {}) //인풋데이터넣기
-        .then(function () {alert("작품 생성이 완료되었습니다.")} )
-        .then(() => {location.href = "/result/"} )
-        .catch(function (error) {console.log(error)} ) 
-
-        onceTimer = setInterval(progress_step, 1000);
-      }
-
-    </script>
-    <div>
-      <button onclick="progress_start()">Click step!!</button>
-    </div>
-
-
-
-
-
-    <!-- 프로그레스 바 시작 -->
-    <!-- <div class="progress">
-      <div class="bar"></div>
-      <div class="percent">0%</div>
-      </div>
-    </div> -->
-    <!-- <script type="text/javascript" src="{% static 'salon/js/progressBar.js' %}"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
-    <!-- 프로그레스 바 끝 -->
   </body>
 </html>
