@@ -14,7 +14,12 @@ from pathlib import Path
 import os
 import nltk
 
-nltk.download('popular')
+# 먼저 실행되어야 할 것
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+nltk.download('stopwords')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

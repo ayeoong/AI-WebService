@@ -52,10 +52,6 @@ def result(request):
     # 명사만 뽑기
     NN_words = [word for word, pos in tokens_pos if 'NN' in pos]
 
-    # --------------------------------------
-    # nltk의 룩업에러 : nltk.download('popular')로 해결
-    # --------------------------------------
-
     # 원형 추출
     wlem = WordNetLemmatizer()
     lemmatized_words = []
