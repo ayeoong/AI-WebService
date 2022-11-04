@@ -19,7 +19,7 @@
       <stong>텍스트 내용: </strong>
       <p>{{text}}</p>
     </div>
-    <img src="/media/{{text}}.png", alt="ERROR">
+    <img src="/media/{{text}}.jpg", alt="ERROR">
     <div>
       <strong>텍스트 내용: </strong>
       <p>{{text}}</p>
@@ -64,6 +64,11 @@
 
     <div>
     <form method="post" action="{% url 'salon:save_result' %}">
+      {% csrf_token %}
+      <!-- {% for tag in tags %}
+      <input type="hidden" id="tags" name="tags" value="{{tag}}">
+      {% endfor %} -->
+      <input type="hidden" id="input_text" name="input_text" value="{{text}}">
       <input type="checkbox" id="selected" name="selected" value="{{music_file}}" onclick="toggleVisibility(this)">음악저장DB에기록</checkbox>
       <input type="checkbox" id="selected" name="selected" value="{{text}}.png" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
       <p><button id="save_button" disabled=true>저장하기</button></p>

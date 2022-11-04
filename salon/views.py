@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 # from .dalle import dalle
 from . import music
+from django.contrib import auth
 from mypage.models import Member
 from salon.models import ImageUploadModel, KeywordModel, MusicUploadModel
 import re
@@ -43,12 +44,12 @@ def result(request):
     text = ''
     if request.method == "POST":
         text = request.POST['title']
-        #music_file = music.generateMusic()
-        music_file = 'MuseGAN'
+        # music_file = music.generateMusic()
+        music_file = 'MuseNet-Composition.mid'
     # 이미지 파일이 나온다.
     # img = model.generate_image(text, 7, 1) 이곳에 모델 연결
     img = 'img'
-    img_file =  text + '.png'
+    img_file =  text + '.jpg'
     # img = Image.open('./media/a.png')
     # img.save('./media/' + img_file, 'png')
     #토크나이즈 part
@@ -74,27 +75,39 @@ def result(request):
                 'img':img, 
                 "music_file":music_file, 
                 "img_file":img_file,
-                "tags":no_stops,
-                }
+                "tags":no_stops}
 
     return render(request, 'salon/result.html', context)
 
 
 def save_result(request):
+    context = request.session['test_keyword']
+    keywords = context['tags']
+    for keyword in keywords:
+        try:
+            exist_word = KeywordModel.objects.get(word=keyword)
+            exist_word.input_num += 1
+            exist_word.save()
+        except:
+            word = KeywordModel(word=keyword)
+            word.input_num += 1
+            word.save()
     if request.method == 'POST':
-        # member_id = request.session.get('user') # request.POST.get("member_id")
-        # member_id = request.session['user'] # dict로 id 키값을 가져옴
-        user = request.user
+        user = auth.get_user(request)
         selected = request.POST.getlist("selected")
+        text = request.POST.get("input_text")
+ 
         for filepath in selected:
+            # 유저 정보와 같이 저장 필요
             if 'mid' == filepath[-3:]:
-                musicfile = MusicUploadModel(user=user, name="music", filename=filepath)
+                musicfile = MusicUploadModel(user=user, name="music", filename=filepath, input_text=text)
                 musicfile.save()
             else:
-                imgfile = ImageUploadModel(user=user, name="photo", filename=filepath)
+                imgfile = ImageUploadModel(user=user, name="photo", filename=filepath, input_text=text)
                 imgfile.save()
         return render(request, 'salon/save_result.html', {'files':selected})
     
+    print("=============================", keywords)
     return render(request, 'salon/save_result.html', {})
 
 def result_favorite(request):
