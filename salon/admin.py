@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import ImageKeywordModel, KeywordModel, ImageUploadModel, MusicKeywordModel, MusicUploadModel, Member
+from .models import ImageKeywordModel, KeywordModel, ImageUploadModel, MusicKeywordModel, MusicUploadModel
+from mypage.models import Member
 
 # Register your models here.
 admin.site.register(Member)
