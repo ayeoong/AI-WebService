@@ -13,6 +13,7 @@ urlpatterns = [
     path('result/', views.result, name='result'),
     path('save_result/', views.save_result, name='save_result'),
     path('search/', views.search, name='search'),
+    path('result_favorite/', views.result_favorite, name='result_favorite'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

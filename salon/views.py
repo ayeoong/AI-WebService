@@ -1,3 +1,5 @@
+import json
+from django.http import JsonResponse
 from django.shortcuts import render
 # from .dalle import dalle
 from . import music
@@ -78,18 +80,59 @@ def result(request):
 def save_result(request):
     if request.method == 'POST':
         # member_id = request.session.get('user') # request.POST.get("member_id")
-        member_id = request.session['user'] # dict로 id 키값을 가져옴
+        # member_id = request.session['user'] # dict로 id 키값을 가져옴
+        user = request.user
         selected = request.POST.getlist("selected")
-        print("=============================", member_id, selected)
-        user = Member.objects.get(id=member_id) # id=member_id
         for filepath in selected:
             if 'mid' == filepath[-3:]:
-                musicfile = MusicUploadModel(user=user, title="music", file=filepath)
+                musicfile = MusicUploadModel(user=user, name="music", filename=filepath)
                 musicfile.save()
             else:
-                imgfile = ImageUploadModel(user=user, description="photo", document=filepath)
+                imgfile = ImageUploadModel(user=user, name="photo", filename=filepath)
                 imgfile.save()
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
 
+def result_favorite(request):
+    if request.method == 'POST':
+        # user_id = request.session.get('user')
+        # user = Member.objects.get(id=user_id)
+        user = request.user
+        json_data = json.loads( request.body )
+        favorite = json_data['aa'] # favorite = str( json_data['aa'] ) or # models.py: CharField -> IntegerField 
+    
+
+        print("=============================", user.username, favorite)
+
+
+        # 데이터타입 체크 # if type(favorite) is int
+        if isinstance(favorite, int):
+            global fv
+            fv = str(favorite)
+            print("result_code's dtype: ", type(fv))
+            for favorite in fv:
+                musicfile = MusicUploadModel(user=user, result_favorite=favorite)
+                musicfile.save()
+                imgfile = ImageUploadModel(user=user, result_favorite=favorite)
+                imgfile.save()
+        else:
+            print("result_code's dtype: ", type(favorite))
+            for favorite in favorite:
+                musicfile = MusicUploadModel(user=user, result_favorite=favorite)
+                musicfile.save()
+                imgfile = ImageUploadModel(user=user, result_favorite=favorite)
+                imgfile.save()
+
+        # 데이터타입 체크 if문이 없을 때 사용
+        # for favorite in favorite:
+        #     musicfile = MusicUploadModel(user=user, result_favorite=favorite)
+        #     #musicfile.save()
+        #     imgfile = ImageUploadModel(user=user, result_favorite=favorite)
+        #     #imgfile.save()
+        
+        data = {'result':'successful', 'result_code': favorite}
+        return JsonResponse(data)
+    else:
+        data = {'result':'kwang'}
+        return JsonResponse(data)
