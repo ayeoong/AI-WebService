@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from mypage.models import Member
 
 # # keywords
@@ -46,12 +47,11 @@ class KeywordModel(models.Model):
 
 # img
 class ImageUploadModel(models.Model):
-    user = models.ForeignKey(Member, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, default='')
     filename = models.CharField(max_length=255, default='')
     thumbnail = models.CharField(max_length=255, default='')
     input_text = models.CharField(max_length=100, default='')
-    keyword = models.CharField(max_length=100, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
         # Java의 toString
@@ -62,12 +62,11 @@ class ImageUploadModel(models.Model):
 
 # music
 class MusicUploadModel(models.Model):
-    user = models.ForeignKey(Member, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, default='')
     filename = models.CharField(max_length=255, default='')
     thumbnail = models.CharField(max_length=255, default='')
     input_text = models.CharField(max_length=100, default='')
-    keyword = models.CharField(max_length=100, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
