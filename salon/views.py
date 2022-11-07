@@ -5,6 +5,14 @@ from . import music
 from mypage.models import Member
 from salon.models import ImageUploadModel, MusicUploadModel
 
+import os
+import openai
+from PIL import Image
+import matplotlib.pyplot as plt
+import requests
+from io import BytesIO
+from pilkit.processors import Thumbnail
+
 import re
 import nltk
 from nltk.corpus import stopwords
@@ -25,6 +33,16 @@ def home(request):
     
     return render(request, 'salon/home.html', {'keywords':keywords})
 
+def search(request):
+    if request.method == 'POST':
+        search_word = request.POST['search']
+        search_result_list = KeywordModel.objects.filter(word__contains=search_word)
+        return render(request, 'salon/search.html', {'search_result_list':search_result_list})
+    else:
+        search_result_list = []
+        return render(request, 'salon/search.html', {'search_result_list':search_result_list})
+
+
 
 # 입력창
 def start(request):
@@ -32,16 +50,26 @@ def start(request):
 
 # 출력창
 def result(request):
+
+    openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
+    openai.api_key = "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"
+
     text = ''
     if request.method == "POST":
         text = request.POST['title']
+        response = openai.Image.create( prompt=text,
+                                n=1,
+                                size="1024x1024")
+        image_url = response['data'][0]['url']
         # music_file = music.generateMusic()
-    # 이미지 파일이 나온다.
-    # img = model.generate_image(text, 7, 1) 이곳에 모델 연결
-    img = 'img'
-    img_file =  text + '.png'
-    # img = Image.open('./media/a.png')
-    # img.save('./media/' + img_file, 'png')
+
+
+
+    # 섬네일
+    res = requests.get(image_url)
+    img_file = Image.open(BytesIO(res.content))
+    processor = Thumbnail(width=100)
+    tn_img = processor.process(img_file)
 
     # 텍스트 -> 태그화 리스트
     only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
@@ -63,10 +91,12 @@ def result(request):
     stopwords_list = set(stopwords.words('english'))
     no_stops = [word for word in lemmatized_words if not word in stopwords_list]
 
+    img='img'
     context = {'text': text, 
                 'img':img, 
+                'img_url':image_url,
                 # "music_file":music_file, 
-                "img_file":img_file,
+                'tn_img':tn_img,
                 "tags":no_stops}
 
     return render(request, 'salon/result.html', context)
