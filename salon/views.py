@@ -57,12 +57,12 @@ def result(request):
     text = ''
     if request.method == "POST":
         text = request.POST['title']
-        response = openai.Image.create( prompt=text,
-                                n=1,
-                                size="1024x1024")
-        image_url = response['data'][0]['url']
+        # response = openai.Image.create( prompt=text,
+        #                         n=1,
+        #                         size="1024x1024")
+        # image_url = response['data'][0]['url']
         # music_file = music.generateMusic()
-
+    image_url = 'https://ifh.cc/g/5qCAX2.jpg'
 
 
     # 섬네일
