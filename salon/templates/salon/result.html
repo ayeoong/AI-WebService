@@ -1,4 +1,5 @@
 {%load static%}
+{% csrf_token %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -53,8 +54,9 @@
       function click(e){ 
         
         var select_value = e.target.value
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         // instanace.defaults.headers.common['X-CSRF-TOKEN'] = response.data._csrf;
-        // console.log("==========="+response.data._csrf)
+        console.log("==========="+csrftoken)
         axios.post("/result_favorite/", {aa: select_value})
         .then(function (res) {return res.data} )
         .then(function (data) { console.log(data) } )
