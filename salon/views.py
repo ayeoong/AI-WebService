@@ -1,14 +1,15 @@
 from django.shortcuts import render
-# from .dalle import dalle
-from . import music
+import json
+from django.http import JsonResponse
 from django.contrib import auth
-from mypage.models import Member
 from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel
 # import MinDalle
 # model = MinDalle(is_mega=True, is_reusable=True)
 import re
 import nltk
 from nltk.corpus import stopwords
+from django.conf import settings
+from django.middleware.csrf import get_token
 
 
 def index(request):
@@ -38,7 +39,8 @@ def result(request):
     if request.method == "POST":
         text = request.POST['title']
         # music_file = music.generateMusic()
-        music_file = 'MuseNet-Composition.mid'
+    
+    music_file = 'MuseNet-Composition.mid'
     # 이미지 파일이 나온다.
     # img = model.generate_image(text, 7, 1) 이곳에 모델 연결
     img = 'img'
@@ -64,6 +66,10 @@ def result(request):
 
     request.session['test_keyword'] = context
 
+    # res = render_to_response('salon/result.html', context)
+    # token = get_token(request)
+    # res.set_cookie('X-CSRF-TOKEN', token)
+
     return render(request, 'salon/result.html', context)
 
 
@@ -78,9 +84,9 @@ def save_result(request):
         except:
             word = KeywordModel(word=keyword)
             word.input_num += 1
-            word.save()
+            # word.save()
     if request.method == 'POST':
-        user = auth.get_user(request)
+        user = request.user
         selected = request.POST.getlist("selected")
         text = request.POST.get("input_text")
  
@@ -88,12 +94,52 @@ def save_result(request):
             # 유저 정보와 같이 저장 필요
             if 'mid' == filepath[-3:]:
                 musicfile = MusicUploadModel(user=user, name="music", filename=filepath, input_text=text)
-                musicfile.save()
+                # musicfile.save()
             else:
                 imgfile = ImageUploadModel(user=user, name="photo", filename=filepath, input_text=text)
-                imgfile.save()
+                # imgfile.save()
         return render(request, 'salon/save_result.html', {'files':selected})
     
-    print("=============================", keywords)
     return render(request, 'salon/save_result.html', {})
 
+
+def result_favorite(request):
+    if request.method == 'POST':
+        user = request.user
+        json_data = json.loads( request.body )
+        favorite = json_data['aa'] # favorite = str( json_data['aa'] ) or # models.py: CharField -> IntegerField 
+    
+
+        print("=============================", user.username, json_data)
+
+
+        # 데이터타입 체크 # if type(favorite) is int
+        if isinstance(favorite, int):
+            global fv
+            fv = str(favorite)
+            print("result_code's dtype: ", type(fv))
+            for favorite in fv:
+                musicfile = MusicUploadModel(user=user, result_favorite=favorite)
+                # musicfile.save()
+                imgfile = ImageUploadModel(user=user, result_favorite=favorite)
+                # imgfile.save()
+        else:
+            print("result_code's dtype: ", type(favorite))
+            for favorite in favorite:
+                musicfile = MusicUploadModel(user=user, result_favorite=favorite)
+                # musicfile.save()
+                imgfile = ImageUploadModel(user=user, result_favorite=favorite)
+                # imgfile.save()
+
+        # 데이터타입 체크 if문이 없을 때 사용
+        # for favorite in favorite:
+        #     musicfile = MusicUploadModel(user=user, result_favorite=favorite)
+        #     #musicfile.save()
+        #     imgfile = ImageUploadModel(user=user, result_favorite=favorite)
+        #     #imgfile.save()
+        
+        data = {'result':'successful', 'result_code': favorite}
+        return JsonResponse(data)
+    else:
+        data = {'result':'kwang'}
+        return JsonResponse(data)

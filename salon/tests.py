@@ -34,3 +34,10 @@ class YourTestClass(TestCase):
     def test_str_index(self):
         a = 'music_file.mid'
         print('---------', a[-3:])
+
+    def test_result_favorite(self):
+        result_favorite = 1
+        user = Member.objects.get(id=1)
+        favorite = MusicUploadModel(user = user, result_favorite=result_favorite)
+        favorite.save()
+        print(favorite, favorite.result_favorite )
