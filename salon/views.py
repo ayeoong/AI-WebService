@@ -3,13 +3,19 @@ import json
 from django.http import JsonResponse
 from django.contrib import auth
 from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel
-# import MinDalle
-# model = MinDalle(is_mega=True, is_reusable=True)
+import os
+import openai
+from PIL import Image
+import matplotlib.pyplot as plt
+import requests
+from io import BytesIO
+from pilkit.processors import Thumbnail
 import re
 import nltk
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 from django.conf import settings
-from django.middleware.csrf import get_token
+
 
 
 def index(request):
@@ -35,40 +41,59 @@ def start(request):
 
 # 출력창
 def result(request):
+    openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
+    openai.api_key = "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"
+
     text = ''
     if request.method == "POST":
         text = request.POST['title']
-        # music_file = music.generateMusic()
+        response = openai.Image.create( prompt=text,
+                                n=1,
+                                size="1024x1024")
+        image_url = response['data'][0]['url']
     
+    # music_file = music.generateMusic()
     music_file = 'MuseNet-Composition.mid'
-    # 이미지 파일이 나온다.
-    # img = model.generate_image(text, 7, 1) 이곳에 모델 연결
-    img = 'img'
-    img_file =  text + '.jpg'
-    # img = Image.open('./media/a.png')
-    # img.save('./media/' + img_file, 'png')
+
+    # 섬네일
+    res = requests.get(image_url)
+    img_file = Image.open(BytesIO(res.content))
+    processor = Thumbnail(width=100)
+    tn_img = processor.process(img_file)
+
+    
 
     # 텍스트 -> 태그화 리스트
     only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
-    no_capitals = only_english.lower().split()      # 대문자 -> 소
-    stops = set(stopwords.words('english'))         # 불용어 제거
-    no_stops = [word for word in no_capitals if not word in stops]
+    only_english_lower = only_english.lower()       # 대문자 -> 소
+    word_tokens =  nltk.word_tokenize(only_english_lower)   # 토큰화
+    tokens_pos = nltk.pos_tag(word_tokens)          # 품사 분류
+    
+    # 명사만 뽑기
+    NN_words = [word for word, pos in tokens_pos if 'NN' in pos]
 
-    stemmer = nltk.stem.SnowballStemmer('english')  # 어간 추출
-    tags = [stemmer.stem(word) for word in no_stops]
+    # 원형 추출
+    wlem = WordNetLemmatizer()
+    lemmatized_words = []
+    for word in NN_words:
+        new_word = wlem.lemmatize(word)
+        lemmatized_words.append(new_word)
 
+    # 불용어 제거 - stopwords_list 에 따로 추가 가능
+    stopwords_list = set(stopwords.words('english'))
+    no_stops = [word for word in lemmatized_words if not word in stopwords_list]
 
+    img = 'img'
+    
     context = {'text': text, 
                 'img':img, 
                 "music_file":music_file, 
-                "img_file":img_file,
-                "tags":tags}
+                'img_url':image_url,
+                # 'tn_img':tn_img,
+                "tags":no_stops,
+    }
 
     request.session['test_keyword'] = context
-
-    # res = render_to_response('salon/result.html', context)
-    # token = get_token(request)
-    # res.set_cookie('X-CSRF-TOKEN', token)
 
     return render(request, 'salon/result.html', context)
 
