@@ -7,6 +7,7 @@ contourpy==1.0.5
 cycler==0.11.0
 Django==3.2
 emoji==2.1.0
+et-xmlfile==1.1.0
 fluidsynth==0.2
 fonttools==4.37.4
 idna==3.4
@@ -17,8 +18,13 @@ midi2audio==0.1.1
 min-dalle==0.4.11
 nltk==3.7
 numpy==1.23.3
+openai==0.25.0
 opencv-python==4.5.5.62
+openpyxl==3.0.10
 packaging==21.3
+pandas==1.5.1
+pandas-stubs==1.5.1.221024
+pilkit==2.0
 Pillow==8.2.0
 pyparsing==3.0.9
 python-dateutil==2.8.2
@@ -29,5 +35,6 @@ six==1.16.0
 sqlparse==0.4.3
 torch==1.12.1
 tqdm==4.64.1
+types-pytz==2022.6.0.1
 typing_extensions==4.4.0
 urllib3==1.26.12
