@@ -70,6 +70,7 @@ def result(request):
     img_file = Image.open(BytesIO(res.content))
     processor = Thumbnail(width=100)
     tn_img = processor.process(img_file)
+    tn_img.save(f'salon/media/{text}_tn.png')
 
     # 텍스트 -> 태그화 리스트
     only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
