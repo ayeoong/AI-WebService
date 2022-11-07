@@ -1,19 +1,16 @@
 import json
 from django.http import JsonResponse
 from django.shortcuts import render
-# from .dalle import dalle
-from . import music
+import json
+from django.http import JsonResponse
 from django.contrib import auth
-from mypage.models import Member
 from salon.models import ImageUploadModel, KeywordModel, MusicUploadModel
 import re
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-
-# import MinDalle
-# model = MinDalle(is_mega=True, is_reusable=True)
-
+from django.conf import settings
+from django.middleware.csrf import get_token
 
 def index(request):
     return render(request, 'salon/index.html', {})
@@ -45,7 +42,8 @@ def result(request):
     if request.method == "POST":
         text = request.POST['title']
         # music_file = music.generateMusic()
-        music_file = 'MuseNet-Composition.mid'
+    
+    music_file = 'MuseNet-Composition.mid'
     # 이미지 파일이 나온다.
     # img = model.generate_image(text, 7, 1) 이곳에 모델 연결
     img = 'img'
@@ -77,6 +75,12 @@ def result(request):
                 "img_file":img_file,
                 "tags":no_stops}
 
+    # res = render_to_response('salon/result.html', context)
+    # token = get_token(request)
+    # res.set_cookie('X-CSRF-TOKEN', token)
+
+
+
     return render(request, 'salon/result.html', context)
 
 
@@ -91,9 +95,9 @@ def save_result(request):
         except:
             word = KeywordModel(word=keyword)
             word.input_num += 1
-            word.save()
+            # word.save()
     if request.method == 'POST':
-        user = auth.get_user(request)
+        user = request.user
         selected = request.POST.getlist("selected")
         text = request.POST.get("input_text")
  
@@ -101,25 +105,23 @@ def save_result(request):
             # 유저 정보와 같이 저장 필요
             if 'mid' == filepath[-3:]:
                 musicfile = MusicUploadModel(user=user, name="music", filename=filepath, input_text=text)
-                musicfile.save()
+                # musicfile.save()
             else:
                 imgfile = ImageUploadModel(user=user, name="photo", filename=filepath, input_text=text)
-                imgfile.save()
+                # imgfile.save()
         return render(request, 'salon/save_result.html', {'files':selected})
     
-    print("=============================", keywords)
     return render(request, 'salon/save_result.html', {})
+
 
 def result_favorite(request):
     if request.method == 'POST':
-        # user_id = request.session.get('user')
-        # user = Member.objects.get(id=user_id)
         user = request.user
         json_data = json.loads( request.body )
         favorite = json_data['aa'] # favorite = str( json_data['aa'] ) or # models.py: CharField -> IntegerField 
     
 
-        print("=============================", user.username, favorite)
+        print("=============================", user.username, json_data)
 
 
         # 데이터타입 체크 # if type(favorite) is int
@@ -129,16 +131,16 @@ def result_favorite(request):
             print("result_code's dtype: ", type(fv))
             for favorite in fv:
                 musicfile = MusicUploadModel(user=user, result_favorite=favorite)
-                musicfile.save()
+                # musicfile.save()
                 imgfile = ImageUploadModel(user=user, result_favorite=favorite)
-                imgfile.save()
+                # imgfile.save()
         else:
             print("result_code's dtype: ", type(favorite))
             for favorite in favorite:
                 musicfile = MusicUploadModel(user=user, result_favorite=favorite)
-                musicfile.save()
+                # musicfile.save()
                 imgfile = ImageUploadModel(user=user, result_favorite=favorite)
-                imgfile.save()
+                # imgfile.save()
 
         # 데이터타입 체크 if문이 없을 때 사용
         # for favorite in favorite:
