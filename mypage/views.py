@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib import auth
+from .forms import UserForm
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
 from .forms import LoginForm
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
@@ -12,19 +12,25 @@ from django.contrib.auth import login, authenticate
 # Create your views here.
 def signup(request):
     if request.method == 'POST':
-        if request.POST['password1'] == request.POST['password2']:
-            user = User.objects.create_user(
-    			username=request.POST['username'],
-    			password=request.POST['password1'],
-    			email=request.POST['email'],
-            )
-            user.save()
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+        # if request.POST['password1'] == request.POST['password2']:
+        #     user = User.objects.create_user(
+    	# 		username=request.POST['username'],
+    	# 		password=request.POST['password1'],
+    	# 		email=request.POST['email'],
+        #     )
+        #     user.save()
             return redirect('login')
-        return render(request, 'mypage/signup.html')
+        # return render(request, 'mypage/signup.html')
 
     else:
-        form = UserCreationForm()
-        return render(request, 'mypage/signup.html', {'form':form})
+        form = UserForm()
+    return render(request, 'mypage/signup.html', {'form':form})
 
 
 def check_id(request):
