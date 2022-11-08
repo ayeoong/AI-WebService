@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -7,6 +7,7 @@ from .forms import LoginForm
 from django.contrib.auth import login, authenticate
 # from django.contrib.auth.hashers import check_password
 from .models import Member
+from salon.models import ImageUploadModel, ImageKeywordModel, KeywordModel
 
 # Create your views here.
 def signup(request):
@@ -101,6 +102,51 @@ def logout(request):
     # 로그아웃 후 127.0.0.1:8000/ 이동   
     return redirect('/')
 
+# def mypage(request, user_id):
+#     user = request.user
 
-def mypage(request):
-    return render(request, 'mypage/mypage.html', {})
+#     result_str = f'{user_id} user={user.id}'
+#     print('===========================/', result_str)
+
+#     images = []
+#     try:
+#         images = ImageUploadModel.objects.filter(user=user)
+#         print( images )
+#     except Exception as e:
+#         print(e)
+
+#     context = {'userid':user, 'images':images}
+
+#     if user_id == user.id:
+#         return render(request, 'mypage/mypage.html', context)
+
+#     user = User.objects.get(pk=user_id)
+#     context = {'userid':user, 'images':images}
+#     return render(request, 'mypage/opage.html', context)
+
+def mypage(request, user_name):
+    user = request.user
+
+    result_str = f'{user_name} user={user.username}'
+    print('===========================/', result_str)
+
+    images = []
+    try:
+        images = ImageUploadModel.objects.filter(user=user)
+        print( images )
+    except Exception as e:
+        print(e)
+
+    context = {'userid':user, 'images':images}
+
+    if user_name == user.username:
+        return render(request, 'mypage/mypage.html', context)
+
+    user = None
+    try:
+        user = User.objects.get(username=user_name, default=None)
+    except Exception as e:
+        print(e)
+
+    context = {'userid':user, 'images':images}
+    return render(request, 'mypage/opage.html', context)

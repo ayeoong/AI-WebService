@@ -25,7 +25,7 @@
                 </li>
                 {% if user.is_authenticated %} 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'mypage:mypage' %}">MyPage</a>
+                    <a class="nav-link" href="{% url 'mypage:mypage' user.username %}">MyPage</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled">{{ user.username }}님</a>
