@@ -12,7 +12,8 @@
       <form method="POST">
         {% csrf_token %}
         아이디: <br>
-        <input name="username" type="text">
+        <input id="username" name="username" type="text">
+        <input id="btn-username" type="button" value="아이디 중복 체크">
         <br>
         비밀번호: <br>
         <input name="password1" type="password">
@@ -23,8 +24,65 @@
         이메일: <br>
         <input name="email" type="email">
         <br><br>
-        <input type="submit" class="btn btn-primary" value="Sign Up">
+        <input type="submit" id="join-form" class="btn btn-primary" value="Sign Up">
       </form>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
+    <script>
+      /* 중복체크! */
+      $(function(){
+        /* 아이디 수정했을 때 */
+        $('#username').change(function () {
+          $('#btn-username').show();
+        });
+
+        $('#btn-username').click(function(){
+          var username = $('#username').val()
+          if(username == ''){
+            alert('아이디를 입력해주세요.')
+            return;
+          }
+          $.ajax({
+            url:'/check_id?username='+username,
+            type:'get',
+            dataType:'json',
+            success:function(response){
+              if(response.result != 'success'){
+                console.error(response.data)
+                return;
+              }
+              if(response.data == 'exist'){
+                alert("존재하는 아이디 입니다!ㅇㅠㅇ");
+                $('#username').val('').focus();
+                return;
+              }else{
+                alert("사용 가능한 아이디 입니다!");
+                $('#btn-username').hide();
+                $("#join-submit").attr("id_check_result", "success");
+                return;
+              }
+            },
+              error : function(xhr, error){
+              alert("서버와의 통신에서 문제가 발생했습니다.");
+              console.error("error : " + error);
+            }
+          })
+        });
+        $('#join-form').submit(function() {
+          console.log($("#join-submit").attr("id_check_result"));
+
+          if($("#join-submit").attr("id_check_result") == "fail") {
+              alert("id 중복체크를 해주시기 바랍니다.");
+              $("#email").focus();
+              return false;
+          }
+        });
+
+        $("#username").on("propertychange change keyup paste input", function(){
+          $('#btn-username').show();
+          $("#join-submit").attr("id_check_result", "fail");
+        });
+      });
+    </script>
   </body>
 </html>

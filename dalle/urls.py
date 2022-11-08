@@ -27,6 +27,7 @@ urlpatterns = [
     path('mypage/', include('mypage.urls')),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('signup/', views.signup, name='signup'),
+    path('check_id/', views.check_id, name='check_id'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('setting/', views.setting, name='setting'),
 
