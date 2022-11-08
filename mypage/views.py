@@ -7,12 +7,11 @@ from .forms import LoginForm
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 # from django.contrib.auth.hashers import check_password
-<<<<<<< HEAD
 from .models import Member
 from salon.models import ImageUploadModel, ImageKeywordModel, KeywordModel
-=======
-
->>>>>>> 0811b864267e88d4ebd493409abceb190f5f7984
+from django.contrib.auth import login, authenticate
+# from django.contrib.auth.hashers import check_password
+from .models import Member
 
 # Create your views here.
 def signup(request):
@@ -62,13 +61,11 @@ def login(request):
     else:
         form = LoginForm()
         return render(request, 'mypage/login.html', {'form': form})
-
 # 로그아웃 # auth
 def logout(request):
     auth.logout(request)
     return redirect('index')
 
-<<<<<<< HEAD
 # # 로그인 # Session
 # def login(request):
 #     if request.method == 'POST': # 사용자가 보내는 데이터와 데이터베이스의 정보 일치여부 확인
@@ -122,6 +119,7 @@ def logout(request):
     # 로그아웃 후 127.0.0.1:8000/ 이동   
     return redirect('/')
 
+# user id로 url 구현하는 법
 # def mypage(request, user_id):
 #     user = request.user
 
@@ -142,8 +140,9 @@ def logout(request):
 
 #     user = User.objects.get(pk=user_id)
 #     context = {'userid':user, 'images':images}
-#     return render(request, 'mypage/opage.html', context)
+#     return render(request, 'mypage/opage.html', context) 
 
+### user name으로 구현
 def mypage(request, user_name):
     user = request.user
 
@@ -170,7 +169,9 @@ def mypage(request, user_name):
 
     context = {'userid':user, 'images':images}
     return render(request, 'mypage/opage.html', context)
-=======
+
 def mypage(request):
     return render(request, 'mypage/mypage.html', {})
->>>>>>> 0811b864267e88d4ebd493409abceb190f5f7984
+
+def setting(request):
+    return render(request, 'mypage/setting.html', {})
