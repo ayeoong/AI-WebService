@@ -1,5 +1,8 @@
 from django.db import models
+<<<<<<< HEAD
 from django.contrib.auth.models import User
+=======
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 
 # Create your models here.
 # Member
@@ -14,6 +17,10 @@ class Member(models.Model): #장고에서 제공하는 models.Model를 상속받
         return self.username
 
     class Meta: #메타 클래스를 이용하여 테이블명 지정
+<<<<<<< HEAD
         db_table = 'test_user'
 
 
+=======
+        db_table = 'test_user'
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1

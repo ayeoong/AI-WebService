@@ -11,12 +11,17 @@
     <div>
       <button value="Let's Go!"> <a type='button' href="{% url 'salon:start' %}" class='login'>Let's Go!</a></button>
       <br>
+<<<<<<< HEAD
       {% if user.is_authenticated %} 
       <a type='button' href="{% url 'logout' %}" class='logout'>logout</a>
       {% else %}
       <a type='button' href="{% url 'login' %}" class='login'>login</a>
       <a type='button' href="{% url 'signup' %}" class='signup'>sign up</a>
       {% endif %}
+=======
+      <a type='button' href="{% url 'login' %}" class='login'>login</a>
+      <a type='button' href="{% url 'signup' %}" class='signup'>sign up</a>
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
     </div>
   </body>
 </html>

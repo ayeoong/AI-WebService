@@ -11,9 +11,14 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('start/', views.start, name='start'),
     path('result/', views.result, name='result'),
+<<<<<<< HEAD
     path('save_result/', views.save_result, name='save_result'),
     path('search/', views.search, name='search'),
     path('result_favorite/', views.result_favorite, name='result_favorite'),
+=======
+    path('save_result', views.save_result, name='save_result'),
+    path('search', views.search, name='search'),
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
