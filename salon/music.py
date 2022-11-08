@@ -179,7 +179,7 @@ def generateMusic():
     # uploaded_file_url = fs.url(filename)
 
 
-    with open('media/'+ output_file_name + '.mid', 'wb') as midi_file:
+    with open('media/musics/'+ output_file_name + '.mid', 'wb') as midi_file:
         	   midi_file.write(midi_data)
         	   midi_file.close()
 

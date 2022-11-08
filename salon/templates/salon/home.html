@@ -19,9 +19,9 @@
   </div>
     <main class="grid-item main">
       {% for keyword in keywords %}
-      <p>{{ keyword.keyword }}</p>
+      <p>{{ keyword }}</p>
       <div class="items" id="s{{forloop.counter}}">
-        <div class="item item1"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+        <div class="item item1"><img class="sample-img" src="{{image.thumbnail}}" alt="로고"></div>
         <div class="item item2"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
         <div class="item item3"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
         <div class="item item4"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
