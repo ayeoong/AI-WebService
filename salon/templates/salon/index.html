@@ -11,8 +11,12 @@
     <div>
       <button value="Let's Go!"> <a type='button' href="{% url 'salon:start' %}" class='login'>Let's Go!</a></button>
       <br>
+      {% if user.is_authenticated %} 
+      <a type='button' href="{% url 'logout' %}" class='logout'>logout</a>
+      {% else %}
       <a type='button' href="{% url 'login' %}" class='login'>login</a>
       <a type='button' href="{% url 'signup' %}" class='signup'>sign up</a>
+      {% endif %}
     </div>
   </body>
 </html>

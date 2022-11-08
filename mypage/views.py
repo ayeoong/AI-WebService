@@ -4,10 +4,15 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .forms import LoginForm
+from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 # from django.contrib.auth.hashers import check_password
+<<<<<<< HEAD
 from .models import Member
 from salon.models import ImageUploadModel, ImageKeywordModel, KeywordModel
+=======
+
+>>>>>>> 0811b864267e88d4ebd493409abceb190f5f7984
 
 # Create your views here.
 def signup(request):
@@ -27,6 +32,20 @@ def signup(request):
         return render(request, 'mypage/signup.html', {'form':form})
 
 
+def check_id(request):
+    try:
+        user = User.objects.get(username=request.GET['username'])
+    except Exception as e:
+        user = None
+    result = {
+        'result':'success',
+        # 'data' : model_to_dict(user)  # console에서 확인
+        'data' : "not exist" if user is None else "exist"
+    }
+    print(result)
+    return JsonResponse(result)
+
+
 
 # 로그인 # auth
 def login(request):
@@ -43,12 +62,13 @@ def login(request):
     else:
         form = LoginForm()
         return render(request, 'mypage/login.html', {'form': form})
-#
+
 # 로그아웃 # auth
 def logout(request):
     auth.logout(request)
     return redirect('index')
 
+<<<<<<< HEAD
 # # 로그인 # Session
 # def login(request):
 #     if request.method == 'POST': # 사용자가 보내는 데이터와 데이터베이스의 정보 일치여부 확인
@@ -150,3 +170,7 @@ def mypage(request, user_name):
 
     context = {'userid':user, 'images':images}
     return render(request, 'mypage/opage.html', context)
+=======
+def mypage(request):
+    return render(request, 'mypage/mypage.html', {})
+>>>>>>> 0811b864267e88d4ebd493409abceb190f5f7984

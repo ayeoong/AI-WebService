@@ -16,18 +16,15 @@
     <div>
       <h2>결과 페이지 입니다.</h2>
     </div>
-    <div>
-      <stong>텍스트 내용: </strong>
-      <p>{{text}}</p>
-    </div>
-    <img src="/media/{{text}}.jpg", alt="ERROR">
+    <img src="{{img_file}}", alt="image">
+    <img src="{{tn_img}}", alt="thumbnail">
     <div>
       <strong>텍스트 내용: </strong>
       <p>{{text}}</p>
       <p>{{tags}}</p>
       <p>{{music_file}}</p>
 
-      <midi-player src="/media/{{music_file}}" sound-font/>
+      <midi-player src="{{music_file}}" sound-font/>
     </div>
     <div>
       <h2>결과가 마음에 드시나요?</h2>
@@ -55,6 +52,7 @@
         
         var select_value = e.target.value
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        axios.defaults.headers.post['X-CSRFToken'] = csrftoken;
         // instanace.defaults.headers.common['X-CSRF-TOKEN'] = response.data._csrf;
         console.log("==========="+csrftoken)
         axios.post("/result_favorite/", {aa: select_value})
@@ -70,7 +68,7 @@
       {% csrf_token %}
       <input type="hidden" id="input_text" name="input_text" value="{{text}}">
       <input type="checkbox" id="selected" name="selected" value="{{music_file}}" onclick="toggleVisibility(this)">음악저장DB에기록</checkbox>
-      <input type="checkbox" id="selected" name="selected" value="{{text}}.png" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
+      <input type="checkbox" id="selected" name="selected" value="{{img_file}} {{tn_img}}" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
       <p><button id="save_button" disabled=true>저장하기</button></p>
     </form>
       <br>
