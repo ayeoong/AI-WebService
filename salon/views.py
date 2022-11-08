@@ -1,23 +1,16 @@
-import json
-from django.http import JsonResponse
 from django.shortcuts import render
 import json
 from django.http import JsonResponse
-from django.contrib import auth
 from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel
-import os
 import openai
 from PIL import Image
-import matplotlib.pyplot as plt
 import requests
 from io import BytesIO
 from pilkit.processors import Thumbnail
-import re
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-from django.conf import settings
-from django.middleware.csrf import get_token
+# import re
+# import nltk # from ~~ import 로 필요한 부분만 import
+# from nltk.corpus import stopwords
+# from nltk.stem import WordNetLemmatizer
 
 def index(request):
     return render(request, 'salon/index.html', {})
@@ -45,16 +38,7 @@ def start(request):
 
 # 출력창
 def result(request):
-    openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
-    openai.api_key = "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"
-
-    text = ''
-    if request.method == "POST":
-        text = request.POST['title']
-        response = openai.Image.create( prompt=text,
-                                n=1,
-                                size="1024x1024")
-        image_url = response['data'][0]['url']
+    text, image_url = image_generation(request)
     
     # music_file = music.generateMusic()
     music_file = 'MuseNet-Composition.mid'
@@ -67,25 +51,25 @@ def result(request):
 
     
 
-    # 텍스트 -> 태그화 리스트
-    only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
-    only_english_lower = only_english.lower()       # 대문자 -> 소
-    word_tokens =  nltk.word_tokenize(only_english_lower)   # 토큰화
-    tokens_pos = nltk.pos_tag(word_tokens)          # 품사 분류
+    # # 텍스트 -> 태그화 리스트
+    # only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
+    # only_english_lower = only_english.lower()       # 대문자 -> 소
+    # word_tokens =  nltk.word_tokenize(only_english_lower)   # 토큰화
+    # tokens_pos = nltk.pos_tag(word_tokens)          # 품사 분류
     
-    # 명사만 뽑기
-    NN_words = [word for word, pos in tokens_pos if 'NN' in pos]
+    # # 명사만 뽑기
+    # NN_words = [word for word, pos in tokens_pos if 'NN' in pos]
 
-    # 원형 추출
-    wlem = WordNetLemmatizer()
-    lemmatized_words = []
-    for word in NN_words:
-        new_word = wlem.lemmatize(word)
-        lemmatized_words.append(new_word)
+    # # 원형 추출
+    # wlem = WordNetLemmatizer()
+    # lemmatized_words = []
+    # for word in NN_words:
+    #     new_word = wlem.lemmatize(word)
+    #     lemmatized_words.append(new_word)
 
-    # 불용어 제거 - stopwords_list 에 따로 추가 가능
-    stopwords_list = set(stopwords.words('english'))
-    no_stops = [word for word in lemmatized_words if not word in stopwords_list]
+    # # 불용어 제거 - stopwords_list 에 따로 추가 가능
+    # stopwords_list = set(stopwords.words('english'))
+    # no_stops = [word for word in lemmatized_words if not word in stopwords_list]
 
     img = 'img'
     
@@ -94,12 +78,25 @@ def result(request):
                 "music_file":music_file, 
                 'img_url':image_url,
                 # 'tn_img':tn_img,
-                "tags":no_stops,
+                "tags": "!!token test!!",#메모리 차지로 nltk 제외 일단 돌아가게 처리
     }
 
     request.session['test_keyword'] = context
 
     return render(request, 'salon/result.html', context)
+
+def image_generation(request):
+    openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
+    openai.api_key = "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"
+
+    text = ''
+    if request.method == "POST":
+        text = request.POST['title']
+        response = openai.Image.create( prompt=text,
+                                n=1,
+                                size="1024x1024")
+        image_url = response['data'][0]['url']
+    return text,image_url
 
 
 def save_result(request):
