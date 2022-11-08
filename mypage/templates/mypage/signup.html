@@ -11,6 +11,7 @@
     <div>
       <form method="POST">
         {% csrf_token %}
+        {% include "mypage/form_errors.html" %}
         아이디: <br>
         <input id="username" name="username" type="text">
         <input id="btn-username" type="button" value="아이디 중복 체크">
