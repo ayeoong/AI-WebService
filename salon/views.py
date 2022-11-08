@@ -1,4 +1,5 @@
 from django.shortcuts import render
+<<<<<<< HEAD
 import json
 from django.http import JsonResponse
 from django.contrib import auth
@@ -14,6 +15,15 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+=======
+# from .dalle import dalle
+from .models import SampleKeyword
+from . import music
+from mypage.models import Member
+from salon.models import ImageUploadModel, MusicUploadModel
+# import MinDalle
+# model = MinDalle(is_mega=True, is_reusable=True)
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 
 
 def index(request):
@@ -21,6 +31,7 @@ def index(request):
 
 
 def home(request):
+<<<<<<< HEAD
     keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품', "Today's Favorite"]
     image = ImageUploadModel.objects.get(name='melon_image')
     return render(request, 'salon/home.html', {'keywords':keywords, 'image':image})
@@ -33,6 +44,16 @@ def search(request):
     else:
         search_result_list = []
         return render(request, 'salon/search.html', {'search_result_list':search_result_list})
+=======
+    keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품',"Today's Favorite"]
+    if SampleKeyword.objects.all():
+        keywords = SampleKeyword.objects.all()
+    
+    return render(request, 'salon/home.html', {'keywords':keywords})
+
+def search(request):
+    return render(request, 'salon/search.html', {})
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 
 # 입력창
 def start(request):
@@ -40,6 +61,7 @@ def start(request):
 
 # 출력창
 def result(request):
+<<<<<<< HEAD
     openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
     openai.api_key = "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"
 
@@ -92,11 +114,29 @@ def result(request):
     }
 
     request.session['test_keyword'] = context
+=======
+    text = ''
+    if request.method == "POST":
+        text = request.POST['title']
+        music_file = music.generateMusic()
+    # 이미지 파일이 나온다.
+    # img = model.generate_image(text, 7, 1) 이곳에 모델 연결
+    img = 'img'
+    img_file =  text + '.png'
+    # img = Image.open('./media/a.png')
+    # img.save('./media/' + img_file, 'png')
+
+    context = {'text': text, 
+                'img':img, 
+                "music_file":music_file, 
+                "img_file":img_file}
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 
     return render(request, 'salon/result.html', context)
 
 
 def save_result(request):
+<<<<<<< HEAD
     context = request.session['test_keyword']
     keywords = context['tags']
     for keyword in keywords:
@@ -122,11 +162,26 @@ def save_result(request):
                 filename = filepath.split(' ')[0]
                 thumbnail = filepath.split(' ')[1]
                 imgfile = ImageUploadModel(user=user, name=text+"_image", filename=filename, thumbnail=thumbnail, input_text=text)
+=======
+    if request.method == 'POST':
+        # member_id = request.session.get('user') # request.POST.get("member_id")
+        member_id = request.session['user'] # dict로 id 키값을 가져옴
+        selected = request.POST.getlist("selected")
+        print("=============================", member_id, selected)
+        user = Member.objects.get(id=member_id) # id=member_id
+        for filepath in selected:
+            if 'mid' == filepath[-3:]:
+                musicfile = MusicUploadModel(user=user, title="music", file=filepath)
+                musicfile.save()
+            else:
+                imgfile = ImageUploadModel(user=user, description="photo", document=filepath)
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
                 imgfile.save()
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
 
+<<<<<<< HEAD
 @csrf_exempt
 def result_favorite(request):
     if request.method == 'POST':
@@ -168,3 +223,5 @@ def result_favorite(request):
     else:
         data = {'result':'kwang'}
         return JsonResponse(data)
+=======
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1

@@ -33,6 +33,7 @@ class YourTestClass(TestCase):
 
     def test_str_index(self):
         a = 'music_file.mid'
+<<<<<<< HEAD
         print('---------', a[-3:])
 
     def test_result_favorite(self):
@@ -41,3 +42,6 @@ class YourTestClass(TestCase):
         favorite = MusicUploadModel(user = user, result_favorite=result_favorite)
         favorite.save()
         print(favorite, favorite.result_favorite )
+=======
+        print('---------', a[-3:])
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1

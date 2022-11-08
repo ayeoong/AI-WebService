@@ -27,8 +27,13 @@ urlpatterns = [
     path('mypage/', include('mypage.urls')),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('signup/', views.signup, name='signup'),
+<<<<<<< HEAD
     path('check_id/', views.check_id, name='check_id'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+=======
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('setting/', views.setting, name='setting'),
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 ]
 
 # urlpatterns += staticfiles_urlpatterns()

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+<<<<<<< HEAD
 import nltk
 
 # 먼저 실행되어야 할 것
@@ -22,6 +23,8 @@ nltk.download('wordnet')
 nltk.download('omw-1.4')
 nltk.download('stopwords')
 
+=======
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -112,7 +115,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+<<<<<<< HEAD
 AUTH_USER_MODEL = 'auth.User'
+=======
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -151,8 +157,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 
 # 로그아웃 성공 시 자동으로 이동할 URL
+<<<<<<< HEAD
 LOGOUT_REDIRECT_URL = '/'
 
 CSRF_COOKIE_NAME = 'XSRF-TOKEN'
 CSRF_HEADER_NAME = 'X-XSRF-TOKEN'
 CSRF_USE_SESSIONS=True
+=======
+LOGOUT_REDIRECT_URL = '/'
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1

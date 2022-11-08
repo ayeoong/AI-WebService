@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 from django.shortcuts import render, redirect, get_object_or_404
+=======
+from django.shortcuts import render, redirect
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 from django.http import HttpResponse
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .forms import LoginForm
+<<<<<<< HEAD
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 # from django.contrib.auth.hashers import check_password
@@ -13,6 +18,11 @@ from salon.models import ImageUploadModel, ImageKeywordModel, KeywordModel
 =======
 
 >>>>>>> 0811b864267e88d4ebd493409abceb190f5f7984
+=======
+from django.contrib.auth import login, authenticate
+# from django.contrib.auth.hashers import check_password
+from .models import Member
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 
 # Create your views here.
 def signup(request):
@@ -32,6 +42,7 @@ def signup(request):
         return render(request, 'mypage/signup.html', {'form':form})
 
 
+<<<<<<< HEAD
 def check_id(request):
     try:
         user = User.objects.get(username=request.GET['username'])
@@ -46,6 +57,8 @@ def check_id(request):
     return JsonResponse(result)
 
 
+=======
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 
 # 로그인 # auth
 def login(request):
@@ -62,13 +75,20 @@ def login(request):
     else:
         form = LoginForm()
         return render(request, 'mypage/login.html', {'form': form})
+<<<<<<< HEAD
 
+=======
+#
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 # 로그아웃 # auth
 def logout(request):
     auth.logout(request)
     return redirect('index')
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
 # # 로그인 # Session
 # def login(request):
 #     if request.method == 'POST': # 사용자가 보내는 데이터와 데이터베이스의 정보 일치여부 확인
@@ -122,6 +142,7 @@ def logout(request):
     # 로그아웃 후 127.0.0.1:8000/ 이동   
     return redirect('/')
 
+<<<<<<< HEAD
 # def mypage(request, user_id):
 #     user = request.user
 
@@ -174,3 +195,11 @@ def mypage(request, user_name):
 def mypage(request):
     return render(request, 'mypage/mypage.html', {})
 >>>>>>> 0811b864267e88d4ebd493409abceb190f5f7984
+=======
+
+def mypage(request):
+    return render(request, 'mypage/mypage.html', {})
+
+def setting(request):
+    return render(request, 'mypage/setting.html', {})
+>>>>>>> a33a112e685bb6dc4d3439bac1b9ee0dd132d4d1
