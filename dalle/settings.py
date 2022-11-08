@@ -17,6 +17,15 @@ from google.cloud import secretmanager
 
 from pathlib import Path
 import os
+import nltk
+
+# 먼저 실행되어야 할 것
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+nltk.download('stopwords')
+
 
 import nltk
 nltk.download('punkt')
