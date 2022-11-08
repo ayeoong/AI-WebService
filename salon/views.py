@@ -6,16 +6,14 @@ from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel
 import os
 import openai
 from PIL import Image
-import matplotlib.pyplot as plt
 import requests
 from io import BytesIO
-from pilkit.processors import Thumbnail
 import re
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from django.conf import settings
-
+from django.views.decorators.csrf import csrf_exempt
 
 
 def index(request):
@@ -23,8 +21,9 @@ def index(request):
 
 
 def home(request):
-    keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품', "Today's Favorite"]   
-    return render(request, 'salon/home.html', {'keywords':keywords})
+    keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품', "Today's Favorite"]
+    image = ImageUploadModel.objects.get(name='melon_image')
+    return render(request, 'salon/home.html', {'keywords':keywords, 'image':image})
 
 def search(request):
     if request.method == 'POST':
@@ -47,21 +46,22 @@ def result(request):
     text = ''
     if request.method == "POST":
         text = request.POST['title']
-        response = openai.Image.create( prompt=text,
-                                n=1,
-                                size="1024x1024")
-        image_url = response['data'][0]['url']
+        # response = openai.Image.create( prompt=text,
+        #                         n=1,
+        #                         size="1024x1024")
+        # image_url = response['data'][0]['url']
     
-    # music_file = music.generateMusic()
-    music_file = 'MuseNet-Composition.mid'
+        # music_file = '/media/musics/' + music.generateMusic()
+        image_url = 'https://ifh.cc/g/5qCAX2.jpg'
+        music_file = '/media/musics/MuseNet-Composition.mid'
 
-    # 섬네일
+    # 이미지 & 섬네일 media에 저장
     res = requests.get(image_url)
     img_file = Image.open(BytesIO(res.content))
-    processor = Thumbnail(width=100)
-    tn_img = processor.process(img_file)
+    img_file.save('media/images/'+text+'.jpg')
+    img_file.thumbnail((300, 300))
+    img_file.save('media/images/'+text+'_tn.jpg')
 
-    
 
     # 텍스트 -> 태그화 리스트
     only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
@@ -82,14 +82,12 @@ def result(request):
     # 불용어 제거 - stopwords_list 에 따로 추가 가능
     stopwords_list = set(stopwords.words('english'))
     no_stops = [word for word in lemmatized_words if not word in stopwords_list]
-
-    img = 'img'
     
     context = {'text': text, 
-                'img':img, 
+                'img_file':'/media/images/'+text+'.jpg', 
                 "music_file":music_file, 
-                'img_url':image_url,
-                # 'tn_img':tn_img,
+                # 'img_url':image_url,
+                'tn_img':'/media/images/'+text+'_tn.jpg',
                 "tags":no_stops,
     }
 
@@ -118,16 +116,18 @@ def save_result(request):
         for filepath in selected:
             # 유저 정보와 같이 저장 필요
             if 'mid' == filepath[-3:]:
-                musicfile = MusicUploadModel(user=user, name="music", filename=filepath, input_text=text)
+                musicfile = MusicUploadModel(user=user, name=text+"_music", filename=filepath, input_text=text)
                 # musicfile.save()
             else:
-                imgfile = ImageUploadModel(user=user, name="photo", filename=filepath, input_text=text)
-                # imgfile.save()
+                filename = filepath.split(' ')[0]
+                thumbnail = filepath.split(' ')[1]
+                imgfile = ImageUploadModel(user=user, name=text+"_image", filename=filename, thumbnail=thumbnail, input_text=text)
+                imgfile.save()
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
 
-
+@csrf_exempt
 def result_favorite(request):
     if request.method == 'POST':
         user = request.user
