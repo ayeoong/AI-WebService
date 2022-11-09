@@ -15,14 +15,18 @@ from nltk.stem import WordNetLemmatizer
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 
+# from .dalle import dalle
+from . import music
+from salon.models import ImageUploadModel, MusicUploadModel
+# import MinDalle
+# model = MinDalle(is_mega=True, is_reusable=True)
 
 def index(request):
     return render(request, 'salon/index.html', {})
 
-
 def home(request):
     keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품', "Today's Favorite"]
-    image = ImageUploadModel.objects.get(name='melon_image')
+    image = ImageUploadModel.objects.filter(name='melon_image').first()
     return render(request, 'salon/home.html', {'keywords':keywords, 'image':image})
 
 def search(request):
@@ -168,3 +172,4 @@ def result_favorite(request):
     else:
         data = {'result':'kwang'}
         return JsonResponse(data)
+

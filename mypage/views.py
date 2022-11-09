@@ -9,9 +9,7 @@ from django.contrib.auth import login, authenticate
 # from django.contrib.auth.hashers import check_password
 from .models import Member
 from salon.models import ImageUploadModel, ImageKeywordModel, KeywordModel
-from django.contrib.auth import login, authenticate
-# from django.contrib.auth.hashers import check_password
-from .models import Member
+
 
 # Create your views here.
 def signup(request):
@@ -30,7 +28,6 @@ def signup(request):
         form = UserCreationForm()
         return render(request, 'mypage/signup.html', {'form':form})
 
-
 def check_id(request):
     try:
         user = User.objects.get(username=request.GET['username'])
@@ -43,8 +40,6 @@ def check_id(request):
     }
     print(result)
     return JsonResponse(result)
-
-
 
 # 로그인 # auth
 def login(request):
@@ -61,6 +56,7 @@ def login(request):
     else:
         form = LoginForm()
         return render(request, 'mypage/login.html', {'form': form})
+
 # 로그아웃 # auth
 def logout(request):
     auth.logout(request)
@@ -119,29 +115,6 @@ def logout(request):
     # 로그아웃 후 127.0.0.1:8000/ 이동   
     return redirect('/')
 
-# user id로 url 구현하는 법
-# def mypage(request, user_id):
-#     user = request.user
-
-#     result_str = f'{user_id} user={user.id}'
-#     print('===========================/', result_str)
-
-#     images = []
-#     try:
-#         images = ImageUploadModel.objects.filter(user=user)
-#         print( images )
-#     except Exception as e:
-#         print(e)
-
-#     context = {'userid':user, 'images':images}
-
-#     if user_id == user.id:
-#         return render(request, 'mypage/mypage.html', context)
-
-#     user = User.objects.get(pk=user_id)
-#     context = {'userid':user, 'images':images}
-#     return render(request, 'mypage/opage.html', context) 
-
 ### user name으로 구현
 def mypage(request, user_name):
     user = request.user
@@ -169,7 +142,6 @@ def mypage(request, user_name):
 
     context = {'userid':user, 'images':images}
     return render(request, 'mypage/opage.html', context)
-
 
 def setting(request):
     return render(request, 'mypage/setting.html', {})

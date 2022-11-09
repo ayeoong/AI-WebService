@@ -1,41 +1,6 @@
 from django.db import models
 from django.conf import settings
 
-# # keywords
-# class SampleKeyword(models.Model):
-#     keyword = models.CharField(max_length=255, blank=True)
-#     updated_at = models.DateTimeField(auto_now_add=True)
-
-# # img
-# class ImageUploadModel(models.Model):
-#     name = models.CharField(max_length=100)
-#     filename = models.CharField(max_length=255)
-#     thumbnail = models.CharField(max_length=255)
-#     input_text = models.CharField(max_length=100)
-#     # blank=True : Form에서 빈 채로 저장되는 것을 허용 (views.py에서 활용한 .is_valid() 함수가 검증 진행 시)
-#     description = models.CharField(max_length=255, blank=True) 
-#     # upload_to : 저장될 파일의 경로를 지정 (ex. ‘images/2020/02/21/test_image.jpg’)
-#     document = models.CharField(max_length=255) # 원래코드 'images/%Y/%m/%d'
-#     # auto_now_add : 자동으로 저장되는 시점을 기준으로 현재 시간을 세팅
-#     user = models.ForeignKey(Member, on_delete=models.CASCADE)
-#     uploaded_at = models.DateTimeField(auto_now_add=True)
-
-#         # Java의 toString
-#     def __str__(self):
-#         return self.document
-
-
-
-# # music
-# class MusicUploadModel(models.Model):
-#     title = models.CharField(max_length=122, blank=True, null=True, default="No Title")
-#     file = models.CharField(max_length=255) # 원래코드 "media/"%Y/%m/%d" 
-#     user = models.ForeignKey(Member, on_delete=models.CASCADE)
-#     uploaded_at = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return self.file
-
 
 # keywords
 class KeywordModel(models.Model):
@@ -57,7 +22,6 @@ class ImageUploadModel(models.Model):
         # Java의 toString
     def __str__(self):
         return self.name
-
 
 
 # music
