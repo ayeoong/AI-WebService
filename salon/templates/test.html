@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta characterset="UTF-8"><title></title>
+</head>
+<body>
+    <h6>img_month</h6>
+    {% for file in profile %}
+    <img src="{{ file.image.url }}" width="100" height="80">
+    
+
+    <hr> 
+    show({{profile}})
+    {% endfor %}
+   
+</body>
+</html>

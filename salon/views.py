@@ -2,12 +2,14 @@ from django.shortcuts import render
 # from .dalle import dalle
 from . import music
 from mypage.models import Member
-from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel
+from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel, Img_Mon
 # import MinDalle
 # model = MinDalle(is_mega=True, is_reusable=True)
 import re
 import nltk
 from nltk.corpus import stopwords
+from django.http import HttpResponse
+from django.shortcuts import redirect
 
 
 def index(request):
@@ -92,4 +94,52 @@ def save_result(request):
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
+#DB에서 이미지업로드모델파일 가져오기시도. 
+def si(request):
+    save_img_in_admin_km=[ImageUploadModel]
+    
+    print("Hello")
+    save_img_in_admin_km.save()
+    return render(request, 'salon/img_m.html', {'save_img_in_admin_km':save_img_in_admin_km})
+#test_img_month
+def sia(request):
+    siamonth=['link=salon/img_month/*']
+    num=3
+    return render(request, save_result, 'salon/img_m.html', {'siamonth':siamonth})
+
+#.format 및 HttpResponse시도
+def num_format(request):
+    num_test="month{{img_month.id}}".__format__
+    return HttpResponse(request,"num_1=숫자",num_test)
+# Hello World 출력시도
+def HelloWork(request):
+    return HttpResponse('Hello world')
+# upload.
+def upload(request):
+    return render(request, 'salon/img_m.html')
+
+# create
+def upload_create(request):
+    form = Img_Mon()
+    form.title=request.POST['title']
+    try:
+        form.image=request.FILES['image']
+    except: #이미지가 없어도 지나가도록
+        pass
+    form.save()
+    return redirect('/salon/static/salon/images') 
+
+#결과화면 보이는 img_m.html
+def profile(request):
+    profile = Img_Mon.objects.all().order_by('pub_date') #  날짜별 정렬 
+    #profile = Img_Mon.objects.filter(user=login_user).order_by('pub_date') #  날짜별 정렬 
+     
+    return render(request, 'test.html',{'profile':profile})  
+
+def im(request):
+    o = Img_Mon.objects.all().order_by('-pub_date')
+    
+    return render(request, 'test.html', {'o':o})
+
+
 

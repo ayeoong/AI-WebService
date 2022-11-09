@@ -1,0 +1,28 @@
+<html>
+    <head></head>
+    <body>
+    <form action="{% url'upload_create'%}" method="POST"
+ enctype="multipart/form-data">
+    {% csrf_token %}
+    업로드<br>
+    <input type="text" name="title"><br>
+    month<br>
+    <input method="POST" type="file" name="image_m"><br>
+    <input method="POST" type="submit" value="Submit"/>
+</form>
+    {% for file in profile %}
+    <h1> {{file.title}} </h1>
+    <img src="{{ file.image.url }}" width="100"height="100">
+    <img src="{{ file.image.path }}" >
+    <hr>
+    <br>
+    {% endfor %}
+
+
+
+
+
+
+
+    </body>
+</html>

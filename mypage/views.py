@@ -7,6 +7,17 @@ from .forms import LoginForm
 from django.contrib.auth import login, authenticate
 # from django.contrib.auth.hashers import check_password
 from .models import Member
+from datetime import datetime, timedelta
+from django.utils import timezone
+
+
+def test(request):
+    user=list(User.objects.values())
+    for n in user:
+        n['date_joined']+=timedelta(hours=9)
+    return render(request, 'test.html',{"user":user})
+    #{{n.date_joined}}
+  
 
 # Create your views here.
 def signup(request):
@@ -104,3 +115,18 @@ def logout(request):
 
 def mypage(request):
     return render(request, 'mypage/mypage.html', {})
+
+
+
+
+
+def month(request):
+    imglist=list([])
+    for i in imglist:
+        i
+    return render(request, 'mypage/test.html', {})
+
+
+
+
+

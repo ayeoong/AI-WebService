@@ -2,9 +2,9 @@ from django.db import models
 from mypage.models import Member
 
 # # keywords
-# class SampleKeyword(models.Model):
-#     keyword = models.CharField(max_length=255, blank=True)
-#     updated_at = models.DateTimeField(auto_now_add=True)
+class SampleKeyword(models.Model):
+    keyword = models.CharField(max_length=255, blank=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
 # # img
 # class ImageUploadModel(models.Model):
@@ -53,10 +53,14 @@ class ImageUploadModel(models.Model):
     input_text = models.CharField(max_length=100, default='')
     keyword = models.CharField(max_length=100, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    
 
+
+    
         # Java의 toString
     def __str__(self):
         return self.name
+        
 
 
 
@@ -86,3 +90,16 @@ class MusicKeywordModel(models.Model):
 
     def __str__(self):
         return self.music_id + self.keyword_id
+
+
+#모델하나어드민이랑등록
+class Img_Mon(models.Model):
+    pub_date=models.DateTimeField('date published')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    upload_to=models
+    title=models.CharField(max_length=255)
+    image = models.ImageField(upload_to='images/')
+    
+    def __str__(self):
+        return self.title
+
