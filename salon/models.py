@@ -7,6 +7,9 @@ class KeywordModel(models.Model):
     input_num = models.IntegerField(default=0)
     admin_mode = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.word
+
 
 # img
 class ImageUploadModel(models.Model):
@@ -40,11 +43,11 @@ class ImageKeywordModel(models.Model):
     keyword = models.ForeignKey(KeywordModel, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.image + self.keyword
+        return self.image.name + " " + self.keyword.word
 
 class MusicKeywordModel(models.Model):
     music = models.ForeignKey(MusicUploadModel, on_delete=models.CASCADE)
     keyword = models.ForeignKey(KeywordModel, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.music + self.keyword
+        return self.music.name + " " + self.keyword.word
