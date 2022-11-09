@@ -2,7 +2,7 @@ from django.shortcuts import render
 import json
 from django.http import JsonResponse
 from django.contrib import auth
-from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel
+from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel, ImageKeywordModel, MusicKeywordModel
 import os
 import openai
 from PIL import Image
@@ -126,11 +126,12 @@ def save_result(request):
             if 'mid' == filepath[-3:]:
                 musicfile = MusicUploadModel(user=user, name=text+"_music", filename=filepath, input_text=text)
                 # musicfile.save()
+                # MusicKeywordModel(music=musicfile, keyword=keyword).save()
             else:
                 filename = filepath.split(' ')[0]
                 thumbnail = filepath.split(' ')[1]
                 imgfile = ImageUploadModel(user=user, name=text+"_image", filename=filename, thumbnail=thumbnail, input_text=text)
-                imgfile.save()
+                # imgfile.save()
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
