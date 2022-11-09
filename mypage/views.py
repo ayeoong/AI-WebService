@@ -73,8 +73,4 @@ def mypage(request):
     return render(request, 'mypage/mypage.html', {})
 
 def setting(request):
-<<<<<<< HEAD
     return render(request, 'mypage/setting.html', {})
-=======
-    return render(request, 'mypage/setting.html', {})
->>>>>>> 268c007... 명훈님, 지원님 코드 병함
