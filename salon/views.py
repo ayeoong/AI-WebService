@@ -138,6 +138,7 @@ def result_favorite(request):
         data = {'result':'kwang'}
         return JsonResponse(data)
 
+# 모델 호출 함수
 def result_model(request):
     json_data = json.loads( request.body )
     text = json_data['aa']
