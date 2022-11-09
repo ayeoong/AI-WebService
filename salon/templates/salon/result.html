@@ -64,39 +64,6 @@
 
 
     <div>
-      <h2>결과가 마음에 드시나요?</h2>
-        <p><button id="result_favorite" value="1">마음에 들어요</button></p>
-        <p><button id="result_favorite" value="0">마음에 들지 않아요</button></p>
-        <br>
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
-    <script type="text/javascript" src="{% static 'salon/js/accessOnce.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script type="text/javascript">
-      
-      // 조건문 없이 모든 요청에 대해 timeout 일괄 적용
-      const instanace = axios.create({
-        headers: {
-          timeout: 1000
-        },
-      })
-
-      var cols = document.querySelectorAll('#result_favorite'); 
-      [].forEach.call(cols, function(col){ 
-        col.addEventListener("click", click, false); 
-      }); 
-      function click(e){ 
-        
-        var select_value = e.target.value
-
-        axios.post("/result_favorite/", {aa: select_value})
-        .then(function (res) {return res.data} )
-        .then(function (data) { console.log(data) } )
-        .catch(function (error) {console.log(error)} )
-      }
-    </script>
-
-    <div>
     <form method="post" action="{% url 'salon:save_result' %}">
       {% csrf_token %}
       <input type="hidden" id="input_text" name="input_text" value="{{text}}">
@@ -111,4 +78,3 @@
   </body>
   <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.22.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.4.0"></script>
 </html>
-    
