@@ -12,6 +12,7 @@ from io import BytesIO
 #from nltk.stem import WordNetLemmatizer
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+import time
 
 
 def index(request):
@@ -44,7 +45,7 @@ def result(request):
     text, image_url = image_generation(request)
     
     # music_file = '/media/musics/' + music.generateMusic()
-    image_url = 'https://ifh.cc/g/5qCAX2.jpg'
+    # image_url = 'https://ifh.cc/g/5qCAX2.jpg'
     music_file = '/media/musics/MuseNet-Composition.mid'
 
     # 이미지 & 섬네일 media에 저장
@@ -114,7 +115,7 @@ def save_result(request):
         except:
             word = KeywordModel(word=keyword)
             word.input_num += 1
-            # word.save()
+            word.save()
     if request.method == 'POST':
         user = request.user
         selected = request.POST.getlist("selected")
@@ -185,4 +186,3 @@ def result_model(request):
     img_file = 'aa.png'
     data = {'result':'successful', 'result_code': '1', 'imgfile':img_file, 'musfile':music_file}
     return JsonResponse(data)
-
