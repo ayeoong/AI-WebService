@@ -1,8 +1,10 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <title>Gallery</title>
+    <link rel="stylesheet" href="{% static 'salon/css/progressBar.css' %}">
   </head>
   <body>
     <div>
@@ -15,8 +17,41 @@
 
         <input type="text" id="title" name="title" required
          minlength="4" maxlength="30" size="40"><br>
-        <input type="submit" value="Submit">
+        <input type="submit" id="submit" value="생성하기">
       </form>
     </div>
+    <br/>
+    <div class="progress">
+      <label for="progress">작품 생성 중...</label>
+      <br/>
+      <progress id="progressBar" value="0" min="0" max="100"></progress>
+    </div>
+    <div class="status"></div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- <script type="text/javascript" src="{% static 'salon/js/progressBar.js' %}"></script> -->
+    <script>
+      var onceTimer;
+      var step = 5;
+      function progress_step() {
+        document.getElementById('progressBar').value += step;
+        if (document.getElementById('progressBar').value >= 99) {
+          clearInterval(onceTimer);
+          console.log('=================end')
+        }
+      }
+      function progress_start() {
+        axios.post("/result_model/", {}) //인풋데이터넣기
+        .then(function () {alert("작품 생성이 완료되었습니다.")} )
+        .then(() => {location.href = "/result/"} )
+        .catch(function (error) {console.log(error)} ) 
+
+        onceTimer = setInterval(progress_step, 1000);
+      }
+
+    </script>
+    <div>
+      <button onclick="progress_start()">Click step!!</button>
+    </div>
+
   </body>
 </html>

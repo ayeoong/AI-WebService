@@ -14,10 +14,14 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+import time
 
 
 def index(request):
     return render(request, 'salon/index.html', {})
+
+def main(request):
+    return render(request, 'salon/main.html')
 
 
 def home(request):
@@ -40,20 +44,11 @@ def start(request):
 
 # 출력창
 def result(request):
-    openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
-    openai.api_key = "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"
-
-    text = ''
-    if request.method == "POST":
-        text = request.POST['title']
-        # response = openai.Image.create( prompt=text,
-        #                         n=1,
-        #                         size="1024x1024")
-        # image_url = response['data'][0]['url']
+    text, image_url = image_generation(request)
     
-        # music_file = '/media/musics/' + music.generateMusic()
-        image_url = 'https://ifh.cc/g/5qCAX2.jpg'
-        music_file = '/media/musics/MuseNet-Composition.mid'
+    # music_file = '/media/musics/' + music.generateMusic()
+    # image_url = 'https://ifh.cc/g/5qCAX2.jpg'
+    music_file = '/media/musics/MuseNet-Composition.mid'
 
     # 이미지 & 섬네일 media에 저장
     res = requests.get(image_url)
@@ -95,6 +90,19 @@ def result(request):
 
     return render(request, 'salon/result.html', context)
 
+def image_generation(request):
+    openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
+    openai.api_key = "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"
+
+    text = ''
+    if request.method == "POST":
+        text = request.POST['title']
+        response = openai.Image.create( prompt=text,
+                                n=1,
+                                size="1024x1024")
+        image_url = response['data'][0]['url']
+    return text,image_url
+
 
 def save_result(request):
     context = request.session['test_keyword']
@@ -107,7 +115,7 @@ def save_result(request):
         except:
             word = KeywordModel(word=keyword)
             word.input_num += 1
-            # word.save()
+            word.save()
     if request.method == 'POST':
         user = request.user
         selected = request.POST.getlist("selected")
@@ -168,3 +176,13 @@ def result_favorite(request):
     else:
         data = {'result':'kwang'}
         return JsonResponse(data)
+
+def result_model(request):
+    json_data = json.loads( request.body )
+    text = json_data['aa']
+    # model process
+    time.sleep(30)
+    music_file = 'aa.mid' 
+    img_file = 'aa.png'
+    data = {'result':'successful', 'result_code': '1', 'imgfile':img_file, 'musfile':music_file}
+    return JsonResponse(data)

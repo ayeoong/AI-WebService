@@ -71,3 +71,6 @@ def logout(request):
 
 def mypage(request):
     return render(request, 'mypage/mypage.html', {})
+
+def setting(request):
+    return render(request, 'mypage/setting.html', {})
