@@ -30,7 +30,6 @@ urlpatterns = [
     path('check_id/', views.check_id, name='check_id'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('setting/', views.setting, name='setting'),
-
 ]
 
 #urlpatterns += staticfiles_urlpatterns()

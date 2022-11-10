@@ -8,15 +8,28 @@
     <body>
         <div>
             <h2>검색 결과 페이지</h2>
+            {% if search_result_list or search_img_list %}
             {% if search_result_list %}
             <ul>
-                <!-- <p>{{ search_result_list.word }}</p> -->
+                <p>{{ search_result_list.word }}</p>
                 {% for search_result in search_result_list %}
                 <li>
                 <p>{{ search_result.word }}</p>
                 </li>
                 {% endfor %}
             </ul>
+            {% endif %}
+            {% if search_img_list %}
+            <hr>
+            <ul>
+                {% for search_result in search_img_list %}
+                <li>
+                <p>{{search_result.input_text}}</p>
+                <img src="{{ search_result.thumbnail }}"> 
+                </li>
+                {% endfor %} 
+            </ul> 
+            {% endif %}
             {% else %}
             <p>검색 결과가 없습니다.</p>
             {% endif %}

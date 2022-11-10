@@ -84,11 +84,12 @@ class YourTestClass(TestCase):
 
         ###############################
         img = ImageUploadModel.objects.get(id=1)
-        print('img id 1',img)
+        print('img id 1', img)
         imgkeys = ImageKeywordModel.objects.filter(image=img)
         print( imgkeys )
 
-
-
-
-
+        ################################
+        km = KeywordModel.objects.get(word='you')
+        ikm = ImageKeywordModel.objects.filter(keyword=km)
+        print(ikm[0].image.filename)
+        print( [k.image.filename for k in ikm] )
