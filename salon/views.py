@@ -42,21 +42,44 @@ def search(request):
 def start(request):
     return render(request, 'salon/start.html', {})
 
-# 출력창
-def result(request):
-    text, image_url = image_generation(request)
-    
-    # music_file = '/media/musics/' + music.generateMusic()
-    # image_url = 'https://ifh.cc/g/5qCAX2.jpg'
-    music_file = '/media/musics/MuseNet-Composition.mid'
+def result_model(request):
+    json_data = json.loads( request.body )
+    text = json_data['text']
+
+    # mock model process
+    time.sleep(5)
+
+    # img_filename = text+'.jpg'
+    img_filename = 'test.jpg'
+    img_filepath = 'media/images/' + img_filename
+    # img_tn_filepath = 
+
+
+    # image_url = image_generation(text)
 
     # 이미지 & 섬네일 media에 저장
-    res = requests.get(image_url)
-    img_file = Image.open(BytesIO(res.content))
-    img_file.save('media/images/'+text+'.jpg')
-    img_file.thumbnail((300, 300))
-    img_file.save('media/images/'+text+'_tn.jpg')
+    # res = requests.get(image_url)
+    # img_file = Image.open(BytesIO(res.content))
+    # img_file.save(img_filepath)
+    # img_file.thumbnail((300, 300))
+    # img_file.save('media/images/'+text+'_tn.jpg')
+    
 
+    # music_file = '/media/musics/' + music.generateMusic()
+    # image_url = 'https://ifh.cc/g/5qCAX2.jpg'
+    mus_filename = 'MuseNet-Composition.mid'
+
+
+    data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'mus_file':mus_filename}
+    print('====================', data)
+    return JsonResponse(data)
+
+# 출력창
+def result(request):
+
+    text = request.POST.get('input_text')
+    img_filename = request.POST.get('img_file')
+    mus_filename = request.POST.get('mus_file')
 
     # 텍스트 -> 태그화 리스트
     only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
@@ -80,7 +103,7 @@ def result(request):
     
     context = {'text': text, 
                 'img_file':'/media/images/'+text+'.jpg', 
-                "music_file":music_file, 
+                "music_file":mus_filename, 
                 # 'img_url':image_url,
                 'tn_img':'/media/images/'+text+'_tn.jpg',
                 "tags":no_stops,
@@ -90,18 +113,15 @@ def result(request):
 
     return render(request, 'salon/result.html', context)
 
-def image_generation(request):
+def image_generation(text):
     openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
     openai.api_key = "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"
 
-    text = ''
-    if request.method == "POST":
-        text = request.POST['title']
-        response = openai.Image.create( prompt=text,
-                                n=1,
-                                size="1024x1024")
-        image_url = response['data'][0]['url']
-    return text,image_url
+    response = openai.Image.create( prompt=text,
+                            n=1,
+                            size="1024x1024")
+    image_url = response['data'][0]['url']
+    return image_url
 
 
 def save_result(request):
@@ -177,12 +197,3 @@ def result_favorite(request):
         data = {'result':'kwang'}
         return JsonResponse(data)
 
-def result_model(request):
-    json_data = json.loads( request.body )
-    text = json_data['aa']
-    # model process
-    time.sleep(30)
-    music_file = 'aa.mid' 
-    img_file = 'aa.png'
-    data = {'result':'successful', 'result_code': '1', 'imgfile':img_file, 'musfile':music_file}
-    return JsonResponse(data)

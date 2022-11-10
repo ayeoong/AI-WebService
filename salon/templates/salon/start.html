@@ -25,31 +25,60 @@
           }
         }
         function progress_start() {
-          axios.post("/result_model/", {'text':document.getElementById('title'.value)}) //인풋데이터넣기
-          // .then(function () 파일세이브?)
+          var title = document.getElementById('title').value
+          axios.post("/result_model/", {'text':title}) //post로 인풋데이터넣기
+          .then( finish_model )
           .then(function () {alert("작품 생성이 완료되었습니다.")} )
-          .then(() => {location.href = "/result/"} )
+          // .then(() => {location.href = "/result/"} )
           .catch(function (error) {console.log(error)} ) 
   
           onceTimer = setInterval(progress_step, 1000);
           
-        function cannotClickBtn() { //텍스트 입력없으면 버튼못누름 
-          if (document.write(getElementById('title', length))==0) {
-            document.getElementById('title').click = disable
-          }
         }
+        function finish_model(res) {
+          console.log(res.data);
+          img_file = res.data['img_file']
+          mus_file = res.data['mus_file']
+          title = document.getElementById('title').value
+          console.log(img_file, mus_file, title);
+
+          var form = document.createElement('form'); // 폼객체 생성
+          var img, mus, txt;
+          img = document.createElement('input'); // 값이 들어있는 녀석의 형식
+          img.setAttribute('type', 'text'); // 값이 들어있는 녀석의 type
+          img.setAttribute('name', 'img_file'); // 객체이름
+          img.setAttribute('value', img_file); //객체값
+          form.appendChild(img);
+          
+          mus = document.createElement('input');
+          mus.setAttribute('type', 'text');
+          mus.setAttribute('name', 'mus_file');
+          mus.setAttribute('value', mus_file);
+          form.appendChild(mus);
+          
+          txt = document.createElement('input');
+          txt.setAttribute('type', 'text');
+          txt.setAttribute('name', 'input_text');
+          txt.setAttribute('value', title);
+          form.appendChild(txt);
+
+          form.setAttribute('method', 'post'); //get,post 가능
+          form.setAttribute('action', "/result/"); //보내는 url
+          document.body.appendChild(form);
+          form.submit();
         }
     
       </script>
-      <form action="{% url 'salon:result' %}" method='POST' enctype="multipart/form-data">
+      <!-- <form action="{% url 'salon:result' %}" method='POST' enctype="multipart/form-data"> -->
         {% csrf_token %}
         <label for="name">Enter 4 to 30 characters:</label>
         <input type="text" id="title" name="title" required
          minlength="4" maxlength="30" size="40"><br>
-        <button id="btn_create" onclick="progress_start()">생성하기</button>
+        <button disabled id="btn_create" onclick="progress_start()">생성하기</button>
           <progress id="progressBar" value="0" min="0" max="100"></progress>
-      </form>
+      <!-- </form> -->
     </div>
     <br/>
+  <script type="text/javascript" src="{% static 'salon/js/createBtn.js' %}"></script>
   </body>
 </html>
