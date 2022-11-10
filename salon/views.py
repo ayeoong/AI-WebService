@@ -26,14 +26,16 @@ def main(request):
 
 def home(request):
     keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품', "Today's Favorite"]
-    image = ImageUploadModel.objects.get(name='melon_image')
+    image = ImageUploadModel.objects.all()[:10]
     return render(request, 'salon/home.html', {'keywords':keywords, 'image':image})
 
 def search(request):
     if request.method == 'POST':
         search_word = request.POST['search']
         search_result_list = KeywordModel.objects.filter(word__contains=search_word)
-        return render(request, 'salon/search.html', {'search_result_list':search_result_list})
+        search_imagekeys_list = ImageKeywordModel.objects.filter(keyword__word__contains=search_word)        
+        search_img_list = [imgkey.image for imgkey in search_imagekeys_list]
+        return render(request, 'salon/search.html', {'search_result_list':search_result_list, 'search_img_list':search_img_list})
     else:
         search_result_list = []
         return render(request, 'salon/search.html', {'search_result_list':search_result_list})
@@ -107,15 +109,18 @@ def image_generation(request):
 def save_result(request):
     context = request.session['test_keyword']
     keywords = context['tags']
+    kw_model_list = []
     for keyword in keywords:
         try:
             exist_word = KeywordModel.objects.get(word=keyword)
             exist_word.input_num += 1
             exist_word.save()
+            kw_model_list.append(exist_word)
         except:
             word = KeywordModel(word=keyword)
             word.input_num += 1
             word.save()
+            kw_model_list.append(word)
     if request.method == 'POST':
         user = request.user
         selected = request.POST.getlist("selected")
@@ -125,13 +130,16 @@ def save_result(request):
             # 유저 정보와 같이 저장 필요
             if 'mid' == filepath[-3:]:
                 musicfile = MusicUploadModel(user=user, name=text+"_music", filename=filepath, input_text=text)
-                # musicfile.save()
-                # MusicKeywordModel(music=musicfile, keyword=keyword).save()
+                musicfile.save()
+                mkms = [MusicKeywordModel(music=musicfile, keyword=km) for km in kw_model_list]
+                MusicKeywordModel.objects.bulk_create(mkms)
             else:
-                filename = filepath.split(' ')[0]
-                thumbnail = filepath.split(' ')[1]
+                filename = filepath.split(',')[0]
+                thumbnail = filepath.split(',')[1]
                 imgfile = ImageUploadModel(user=user, name=text+"_image", filename=filename, thumbnail=thumbnail, input_text=text)
-                # imgfile.save()
+                imgfile.save()
+                ikms = [ImageKeywordModel(image=imgfile, keyword=km) for km in kw_model_list]
+                ImageKeywordModel.objects.bulk_create(ikms)
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})

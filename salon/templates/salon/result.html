@@ -68,7 +68,7 @@
       {% csrf_token %}
       <input type="hidden" id="input_text" name="input_text" value="{{text}}">
       <input type="checkbox" id="selected" name="selected" value="{{music_file}}" onclick="toggleVisibility(this)">음악저장DB에기록</checkbox>
-      <input type="checkbox" id="selected" name="selected" value="{{img_file}} {{tn_img}}" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
+      <input type="checkbox" id="selected" name="selected" value="{{img_file}},{{tn_img}}" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
       <p><button id="save_button" disabled=true>저장하기</button></p>
     </form>
       <br>

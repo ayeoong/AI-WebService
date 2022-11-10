@@ -20,17 +20,10 @@
     <main class="grid-item main">
       {% for keyword in keywords %}
       <p>{{ keyword }}</p>
-      <div class="items" id="s{{forloop.counter}}">
-        <div class="item item1"><img class="sample-img" src="{{image.thumbnail}}" alt="로고"></div>
-        <div class="item item2"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
-        <div class="item item3"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
-        <div class="item item4"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
-        <div class="item item5"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
-        <div class="item item6"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
-        <div class="item item7"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
-        <div class="item item8"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
-        <div class="item item9"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
-        <div class="item item10"><img class="sample-img" src="/static/salon/images/sea.jpg" alt="로고"></div>
+      <div class="items">
+        {% for img in image %}
+        <div class="item item{{forloop.counter}}"><img class="sample-img" src="{{img.thumbnail}}" alt="thumbnail"></div>
+        {% endfor %}
       </div>
       {% endfor %}
     </main> 
