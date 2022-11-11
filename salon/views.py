@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import json
 from django.http import JsonResponse
-from django.contrib import auth
+from django.contrib.auth.models import User
 from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel, ImageKeywordModel, MusicKeywordModel
 import os
 import openai
@@ -34,13 +34,25 @@ def home(request):
 def search(request):
     if request.method == 'POST':
         search_word = request.POST['search']
-        search_result_list = KeywordModel.objects.filter(word__contains=search_word)
-        search_imagekeys_list = ImageKeywordModel.objects.filter(keyword__word__contains=search_word)        
+        search_token_list = search_word.split(' ')
+        search_user_list=[]
+        search_result_list=[]
+        search_imagekeys_list=[ImageKeywordModel]
+        for search_token in search_token_list:
+            search_user_list.extend(User.objects.filter(username__contains=search_token))
+            search_result_list.extend(KeywordModel.objects.filter(word__contains=search_token))
+            search_imagekeys_list.extend(ImageKeywordModel.objects.filter(keyword__word__contains=search_token))
+        del search_imagekeys_list[0]
         search_img_list = [imgkey.image for imgkey in search_imagekeys_list]
-        return render(request, 'salon/search.html', {'search_result_list':search_result_list, 'search_img_list':search_img_list})
+        search_img_set = set(search_img_list)
+        context = {
+            'search_user_list':search_user_list,
+            'search_result_list':search_result_list, 
+            'search_img_set':search_img_set,
+        }
+        return render(request, 'salon/search.html', context)
     else:
-        search_result_list = []
-        return render(request, 'salon/search.html', {'search_result_list':search_result_list})
+        return render(request, 'salon/search.html', {})
 
 # 입력창
 def start(request):
