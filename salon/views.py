@@ -16,7 +16,6 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import time
 
-
 def index(request):
     return render(request, 'salon/index.html', {})
 
@@ -47,7 +46,7 @@ def result(request):
     text, image_url = image_generation(request)
     
     # music_file = '/media/musics/' + music.generateMusic()
-    # image_url = 'https://ifh.cc/g/5qCAX2.jpg'
+    #image_url = 'https://ifh.cc/g/5qCAX2.jpg'
     music_file = '/media/musics/MuseNet-Composition.mid'
 
     # 이미지 & 섬네일 media에 저장
@@ -81,7 +80,7 @@ def result(request):
 
     
     context = {'text': text, 
-                'img_file':'/media/images/'+text+'.jpg', 
+                'img_file':'/media/images/'+text+'.jpg',
                 "music_file":music_file, 
                 'img_url':image_url,
                 'tn_img':'/media/images/'+text+'_tn.jpg',

@@ -223,3 +223,7 @@ LOGOUT_REDIRECT_URL = '/'
 CSRF_COOKIE_NAME = 'XSRF-TOKEN'
 CSRF_HEADER_NAME = 'X-XSRF-TOKEN'
 CSRF_USE_SESSIONS=True
+
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = 'dall-e-2-media'
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
