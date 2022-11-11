@@ -8,6 +8,7 @@ app_name = 'mypage'
 urlpatterns = [
     path('<str:user_name>/', views.mypage, name='mypage'), # <str:user_name> or <int:user_id>
     path('', views.mypage, name='mypage'),
+    
 
 ]
 

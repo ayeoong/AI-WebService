@@ -63,32 +63,34 @@ def logout(request):
     return redirect('index')
 
 ### user name으로 구현
+# 타인 접속 or 로그인 하지 않았을 때, opage.html 화면 보여줌
+# current_user 현재 사용하고 있는 유저, exist_user = 존재하는 유저 네임
 def mypage(request, user_name):
-    user = request.user
-
-    result_str = f'{user_name} user={user.username}'
-    print('===========================/', result_str)
-
-    images = []
+    current_user = request.user
+    print(user_name)
     try:
-        images = ImageUploadModel.objects.filter(user=user)
+        exist_user = User.objects.get(username=user_name)
+    except Exception as e:
+        exist_user = None
+        print(e)
+        return HttpResponse("error 404")
+    # return render(request, 'mypage/404.html', {})
+    
+    images = []
+
+    try:
+        images = ImageUploadModel.objects.filter(user=exist_user)
         print( images )
     except Exception as e:
         print(e)
 
-    context = {'userid':user, 'images':images}
-
-    if user_name == user.username:
+    if current_user == exist_user:
+        context = {'userid':current_user.username, 'images':images}
         return render(request, 'mypage/mypage.html', context)
 
-    user = None
-    try:
-        user = User.objects.get(username=user_name, default=None)
-    except Exception as e:
-        print(e)
-
-    context = {'userid':user, 'images':images}
-    return render(request, 'mypage/opage.html', context)
-
+    else:
+        context = {'userid':user_name, 'images':images}
+        return render(request, 'mypage/opage.html', context)
+    
 def setting(request):
     return render(request, 'mypage/setting.html', {})
