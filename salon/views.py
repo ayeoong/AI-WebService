@@ -15,6 +15,8 @@ from nltk.stem import WordNetLemmatizer
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import time
+from salon.utils import uuid_name_upload_to
+from salon.music import generateMusic
 
 
 def index(request):
@@ -38,10 +40,21 @@ def search(request):
         search_result_list = []
         return render(request, 'salon/search.html', {'search_result_list':search_result_list})
 
+def image_generation(text):
+    openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
+    openai.api_key = "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"
+
+    response = openai.Image.create( prompt=text,
+                            n=1,
+                            size="1024x1024")
+    image_url = response['data'][0]['url']
+    return image_url
+
 # 입력창
 def start(request):
     return render(request, 'salon/start.html', {})
 
+# 모델 호출 함수
 def result_model(request):
     json_data = json.loads( request.body )
     text = json_data['text']
@@ -49,10 +62,14 @@ def result_model(request):
     # mock model process
     time.sleep(5)
 
-    # img_filename = text+'.jpg'
-    img_filename = 'test.jpg'
+    # img_filename = text + '.jpg'
+    # img_filename = 'test.jpg'
+    image_url = image_generation(text) # https://~~~.jpg 형식
+    img_filename = uuid_name_upload_to(None, image_url)
+    img_tn_filename = "_tn.".join(img_filename.split('.')) # 이미지파일명_tn.jpg 
+    
     img_filepath = 'media/images/' + img_filename
-    # img_tn_filepath = 
+    img_tn_filepath = 'media/images/' + img_tn_filename
 
 
     # image_url = image_generation(text)
@@ -67,7 +84,10 @@ def result_model(request):
 
     # music_file = '/media/musics/' + music.generateMusic()
     # image_url = 'https://ifh.cc/g/5qCAX2.jpg'
-    mus_filename = 'MuseNet-Composition.mid'
+    # mus_filename = 'MuseNet-Composition.mid'
+    mus_filename = uuid_name_upload_to(None, text + '.mid')
+
+    mus_filefath = '/media/musics/' + mus_filename
 
 
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'mus_file':mus_filename}
@@ -78,8 +98,9 @@ def result_model(request):
 def result(request):
 
     text = request.POST.get('input_text')
-    img_filename = request.POST.get('img_file')
     mus_filename = request.POST.get('mus_file')
+    img_filename = request.POST.get('img_file')
+    # img_tn_filename = 
 
     # 텍스트 -> 태그화 리스트
     only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
@@ -112,16 +133,6 @@ def result(request):
     request.session['test_keyword'] = context
 
     return render(request, 'salon/result.html', context)
-
-def image_generation(text):
-    openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
-    openai.api_key = "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"
-
-    response = openai.Image.create( prompt=text,
-                            n=1,
-                            size="1024x1024")
-    image_url = response['data'][0]['url']
-    return image_url
 
 
 def save_result(request):
