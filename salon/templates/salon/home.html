@@ -3,53 +3,6 @@
   <header class="grid-item header">
     {% include 'shared/_hp.html' %}
     <link rel="stylesheet" href="{% static 'salon/css/style.css' %}">
-    <style>
-      .modal {
-        position: absolute;
-        top: 0;
-        left: 0;
-
-        width: 100%;
-        height: 100%;
-
-        display: none;
-
-        background-color: rgba(0, 0, 0, 0.4);
-      }
-
-      .modal.show {
-        display: block;
-      }
-
-      .modal-body {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-
-        width: 1000px;
-        height: 600px;
-
-        padding: 40px;
-
-        text-align: center;
-
-        background-color: rgb(255, 255, 255);
-        border-radius: 10px;
-        box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-
-        transform: translateX(-50%) translateY(-50%);
-      }
-
-      .modal-close {
-        position: absolute;
-        right: 20px;
-        top: 20px;
-      }
-
-      .modal-items {
-        display: flex;
-      }
-    </style>
   </header>
   <body>
     <div class="grid-container">
@@ -60,12 +13,7 @@
       <p>{{ keyword }}</p>
       <div class="items">
         {% for img in image %}
-        <div class="btn-open-popup item item{{forloop.counter}}">
-          <img class="sample-img" src="{{img.thumbnail}}" alt="thumbnail">
-          <img class="test ori-img" src="{{img.filename}}" alt="filename" style="width: 500px; display: none;">
-          <p class="test input-text" style="display: none;">{{img.input_text}}</p>
-          <p class="test img-user" style="display: none;">made by... <a href="{% url 'mypage:mypage' %}" style="display: inline;">@{{img.user}}</a></p>
-        </div>
+        <div class="item item{{forloop.counter}}"><img class="sample-img" src="{{img.thumbnail}}" alt="thumbnail"></div>
         {% endfor %}
       </div>
       <div class="items">
@@ -79,93 +27,7 @@
       <hr>
       {% endfor %}
     </main> 
-    <div class="modal">
-      <div class="modal-body">
-        <div class="modal-close">
-          <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="black"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18" />
-          <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </div>
-        <div class="modal-items">
-          <div class="modal-img"></div>
-          <div class="modal-text"></div>
-        </div>
-      </div>
-    </div>
-  
-  <script>
-    const body = document.querySelector('body');
-    const modal = document.querySelector('.modal');
-    const modalClose = document.querySelector('.modal-close');
-    const btnOpenPopupList = document.querySelectorAll('.btn-open-popup');
-    const modalItem = document.querySelector('.modal-items');
 
-    btnOpenPopupList.forEach(btnOpenPopup =>
-      btnOpenPopup.addEventListener('click', (e) => {
-        modal.classList.toggle('show');
-
-        if (modal.classList.contains('show')) {
-          body.style.overflow = 'hidden';
-        }
-        var originImg = e.currentTarget.querySelector('.ori-img');
-        var testImg = originImg.cloneNode(true)
-        var inputText = e.currentTarget.querySelector('.input-text');
-        var testText = inputText.cloneNode(true)
-        var imgUser = e.currentTarget.querySelector('.img-user');
-        var testUser = imgUser.cloneNode(true)
-
-        testImg.style.display = 'block'
-        testText.style.display = 'block'
-        testUser.style.display = 'block'
-        modalItem.children[0].appendChild(testImg)
-        modalItem.children[1].appendChild(testText)
-        modalItem.children[1].appendChild(testUser)
-        console.log(testImg)
-      })
-    );
-
-    modalClose.addEventListener('click', (event) => {
-      modal.classList.toggle('show');
-      while (modalItem.children[0].firstChild) {
-        modalItem.children[0].removeChild(modalItem.children[0].firstChild);
-      } 
-      while (modalItem.children[1].firstChild) {
-        modalItem.children[1].removeChild(modalItem.children[1].firstChild);
-      } 
-      if (!modal.classList.contains('show')) {
-          body.style.overflow = 'auto';
-      }
-    });
-
-    modal.addEventListener('click', (event) => {
-      if (event.target === modal) {
-        modal.classList.toggle('show');
-        while (modalItem.children[0].firstChild) {
-        modalItem.children[0].removeChild(modalItem.children[0].firstChild);
-        } 
-        while (modalItem.children[1].firstChild) {
-          modalItem.children[1].removeChild(modalItem.children[1].firstChild);
-        } 
-        if (!modal.classList.contains('show')) {
-            body.style.overflow = 'auto';
-        }
-
-        if (!modal.classList.contains('show')) {
-          body.style.overflow = 'auto';
-        }
-      }
-    });
-  </script>
   <script src="{% static 'salon/js/scroll.js' %}"></script>
   <script src="{% static 'salon/js/index.js' %}"></script>
   <script>
