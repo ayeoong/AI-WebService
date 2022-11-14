@@ -64,7 +64,7 @@
           <img class="sample-img" src="{{img.thumbnail}}" alt="thumbnail">
           <img class="test ori-img" src="{{img.filename}}" alt="filename" style="width: 500px; display: none;">
           <p class="test input-text" style="display: none;">{{img.input_text}}</p>
-          <p class="test img-user" style="display: none;">made by... <a href="{% url 'mypage:mypage' %}" style="display: inline;">@{{img.user}}</a></p>
+          <p class="test img-user" style="display: none;">made by... <a href="{% url 'mypage:mypage' img.user %}" style="display: inline;">@{{img.user}}</a></p>
         </div>
         {% endfor %}
       </div>

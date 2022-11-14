@@ -8,16 +8,13 @@ import openai
 from PIL import Image
 import requests
 from io import BytesIO
-#import re
-#import nltk
-#from nltk.corpus import stopwords
-#from nltk.stem import WordNetLemmatizer
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import time
 
 from django.core.files.storage import default_storage
 from .utils import save_storage_img
+from . import music
 
 def index(request):
     return render(request, 'salon/index.html', {})
@@ -66,12 +63,13 @@ def result(request):
     music_file = '/media/musics/MuseNet-Composition.mid' #
 
     save_image(image_url, text)
-
+    img_path = 'https://storage.cloud.google.com/dall-e-2-media/images/'
+    
     context = {'text': text, 
-                'img_file':'https://storage.cloud.google.com/dall-e-2-media/melon.jpg',#+text+'.jpg',
+                'img_file':img_path + text +'.jpg',
                 "music_file":music_file, 
                 'img_url':image_url,
-                'tn_img':'/media/images/'+text+'_tn.jpg',
+                'tn_img':img_path + text +'_tn.jpg',
                 "tags": "!!token test!!",#메모리 차지로 nltk 제외 일단 돌아가게 처리
     }
 
@@ -98,8 +96,8 @@ def image_generation(request):
     if request.method == "POST":
         text = request.POST['title']
         # response = openai.Image.create( prompt=text, #토큰 소비로 주석처리 임시 이미지로 대체
-        #                         n=1,
-        #                         size="1024x1024")
+        #                          n=1,
+        #                          size="1024x1024")
         # image_url = response['data'][0]['url']
         image_url = 'https://ifh.cc/g/5qCAX2.jpg'
     return text,image_url

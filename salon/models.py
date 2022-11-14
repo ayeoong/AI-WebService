@@ -25,6 +25,7 @@ class ImageUploadModel(models.Model):
     def __str__(self):
         return self.name
 
+
 # music
 class MusicUploadModel(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
