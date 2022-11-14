@@ -22,7 +22,6 @@ import nltk
 # nltk.download('omw-1.4')
 # nltk.download('stopwords')
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -156,3 +155,4 @@ LOGOUT_REDIRECT_URL = '/'
 CSRF_COOKIE_NAME = 'XSRF-TOKEN'
 CSRF_HEADER_NAME = 'X-XSRF-TOKEN'
 CSRF_USE_SESSIONS=True
+LOGOUT_REDIRECT_URL = '/'

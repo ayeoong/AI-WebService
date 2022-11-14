@@ -180,8 +180,8 @@ def generateMusic():
 
 
     with open('media/musics/'+ output_file_name + '.mid', 'wb') as midi_file:
-        	   midi_file.write(midi_data)
-        	   midi_file.close()
+        midi_file.write(midi_data)
+        midi_file.close()
 
     # synth_path = Path('static\salon\sf2\FluidR3_GM.sf2')
     # FluidSynth(synth_path, 16000).midi_to_audio(str(output_file_name + '.mid'), str(output_file_name + '.wav'))

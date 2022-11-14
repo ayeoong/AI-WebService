@@ -16,6 +16,11 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import time
 
+# from .dalle import dalle
+from . import music
+from salon.models import ImageUploadModel, MusicUploadModel
+# import MinDalle
+# model = MinDalle(is_mega=True, is_reusable=True)
 
 def index(request):
     return render(request, 'salon/index.html', {})

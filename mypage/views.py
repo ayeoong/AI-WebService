@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib import auth
 from .forms import UserForm
@@ -7,6 +7,8 @@ from .forms import LoginForm
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 # from django.contrib.auth.hashers import check_password
+from .models import Member
+from salon.models import ImageUploadModel, ImageKeywordModel, KeywordModel
 
 
 # Create your views here.
@@ -32,7 +34,6 @@ def signup(request):
         form = UserForm()
     return render(request, 'mypage/signup.html', {'form':form})
 
-
 def check_id(request):
     try:
         user = User.objects.get(username=request.GET['username'])
@@ -45,8 +46,6 @@ def check_id(request):
     }
     print(result)
     return JsonResponse(result)
-
-
 
 # 로그인 # auth
 def login(request):
@@ -69,8 +68,35 @@ def logout(request):
     auth.logout(request)
     return redirect('index')
 
-def mypage(request):
-    return render(request, 'mypage/mypage.html', {})
+### user name으로 구현
+# 타인 접속 or 로그인 하지 않았을 때, opage.html 화면 보여줌
+# current_user 현재 사용하고 있는 유저, exist_user = 존재하는 유저 네임
+def mypage(request, user_name):
+    current_user = request.user
+    print(user_name)
+    try:
+        exist_user = User.objects.get(username=user_name)
+    except Exception as e:
+        exist_user = None
+        print(e)
+        return HttpResponse("error 404")
+    # return render(request, 'mypage/404.html', {})
+    
+    images = []
 
+    try:
+        images = ImageUploadModel.objects.filter(user=exist_user)
+        print( images )
+    except Exception as e:
+        print(e)
+
+    if current_user == exist_user:
+        context = {'userid':current_user.username, 'images':images}
+        return render(request, 'mypage/mypage.html', context)
+
+    else:
+        context = {'userid':user_name, 'images':images}
+        return render(request, 'mypage/opage.html', context)
+    
 def setting(request):
     return render(request, 'mypage/setting.html', {})
