@@ -63,12 +63,12 @@ def result(request):
     text, image_url = image_generation(request)
     
     # music_file = '/media/musics/' + music.generateMusic()
-    music_file = '/media/musics/MuseNet-Composition.mid'
+    music_file = '/media/musics/MuseNet-Composition.mid' #
 
     save_image(image_url, text)
 
     context = {'text': text, 
-                'img_file':'/media/images/'+text+'.jpg',
+                'img_file':'https://storage.cloud.google.com/dall-e-2-media/melon.jpg',#+text+'.jpg',
                 "music_file":music_file, 
                 'img_url':image_url,
                 'tn_img':'/media/images/'+text+'_tn.jpg',

@@ -15,7 +15,7 @@ django_env
 /static
 DS_Store
 /media
-
+dall-e-2-22b4918e8d7e.json
 # sql 보안 파일
 .env
 

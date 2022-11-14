@@ -19,9 +19,9 @@ def uuid_name_upload_to(instance, filename): # instance는 이미지, 음악 파
 
 
 def save_storage_img(img_file, filename):
-    with BytesIO() as output:  #메모리 반환 후 이미지를 150*150으로 만들어 메모리에 올림
+    with BytesIO() as output:  
         img_file.save(output, 'PNG')
-        with default_storage.open(filename, 'w') as f:
+        with default_storage.open('/images/' + filename, 'w') as f:
             f.write(output.getvalue())
 
 def save_media_img(img_file, filename):

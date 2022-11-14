@@ -17,6 +17,8 @@ from google.cloud import secretmanager
 
 from pathlib import Path
 import os
+
+from google.oauth2 import service_account
 # import nltk
 
 # 먼저 실행되어야 할 것
@@ -227,3 +229,7 @@ CSRF_USE_SESSIONS=True
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_BUCKET_NAME = 'dall-e-2-media'
 STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    "dall-e-2-22b4918e8d7e.json"
+)
