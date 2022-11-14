@@ -16,6 +16,9 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import time
 
+from django.core.files.storage import default_storage
+from .utils import save_storage_img
+
 def index(request):
     return render(request, 'salon/index.html', {})
 
@@ -48,39 +51,10 @@ def result(request):
     text, image_url = image_generation(request)
     
     # music_file = '/media/musics/' + music.generateMusic()
-    #image_url = 'https://ifh.cc/g/5qCAX2.jpg'
     music_file = '/media/musics/MuseNet-Composition.mid'
 
-    # 이미지 & 섬네일 media에 저장
-    res = requests.get(image_url)
-    img_file = Image.open(BytesIO(res.content))
-    img_file.save('media/images/'+text+'.jpg')
-    img_file.thumbnail((300, 300))
-    img_file.save('media/images/'+text+'_tn.jpg')
+    save_image(image_url, text)
 
-    
-
-    # # 텍스트 -> 태그화 리스트
-    # only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
-    # only_english_lower = only_english.lower()       # 대문자 -> 소
-    # word_tokens =  nltk.word_tokenize(only_english_lower)   # 토큰화
-    # tokens_pos = nltk.pos_tag(word_tokens)          # 품사 분류
-    
-    # # 명사만 뽑기
-    # NN_words = [word for word, pos in tokens_pos if 'NN' in pos]
-
-    # # 원형 추출
-    # wlem = WordNetLemmatizer()
-    # lemmatized_words = []
-    # for word in NN_words:
-    #     new_word = wlem.lemmatize(word)
-    #     lemmatized_words.append(new_word)
-
-    # # 불용어 제거 - stopwords_list 에 따로 추가 가능
-    # stopwords_list = set(stopwords.words('english'))
-    # no_stops = [word for word in lemmatized_words if not word in stopwords_list]
-
-    
     context = {'text': text, 
                 'img_file':'/media/images/'+text+'.jpg',
                 "music_file":music_file, 
@@ -93,6 +67,17 @@ def result(request):
 
     return render(request, 'salon/result.html', context)
 
+def save_image(image_url, text):
+    res = requests.get(image_url)
+    img_file = Image.open(BytesIO(res.content)) #url에서 바이트를 가져와 메모리에 올림, 그걸 이미지로 open
+
+    filename = text + '.jpg'
+    save_storage_img(img_file, filename)
+
+    img_file.thumbnail((150, 150))  
+    filename = text + '_tn' + '.jpg'
+    save_storage_img(img_file, filename)
+
 def image_generation(request):
     openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
     openai.api_key = "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"
@@ -100,10 +85,11 @@ def image_generation(request):
     text = ''
     if request.method == "POST":
         text = request.POST['title']
-        response = openai.Image.create( prompt=text,
-                                n=1,
-                                size="1024x1024")
-        image_url = response['data'][0]['url']
+        # response = openai.Image.create( prompt=text, #토큰 소비로 주석처리 임시 이미지로 대체
+        #                         n=1,
+        #                         size="1024x1024")
+        # image_url = response['data'][0]['url']
+        image_url = 'https://ifh.cc/g/5qCAX2.jpg'
     return text,image_url
 
 
