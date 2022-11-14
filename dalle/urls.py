@@ -24,6 +24,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('salon.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('mypage/', include('mypage.urls')),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('signup/', views.signup, name='signup'),

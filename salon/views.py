@@ -16,14 +16,14 @@ from django.core.files.storage import default_storage
 from .utils import save_storage_img
 from . import music
 
-def index(request):
+def home(request):
     return render(request, 'salon/index.html', {})
 
 def main(request):
     return render(request, 'salon/main.html')
 
 
-def home(request):
+def index(request):
     keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품', "Today's Favorite"]
     image = ImageUploadModel.objects.all()[:10]
     return render(request, 'salon/home.html', {'keywords':keywords, 'image':image})
