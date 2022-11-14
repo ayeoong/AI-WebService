@@ -68,6 +68,7 @@ def logout(request):
     auth.logout(request)
     return redirect('index')
 
+
 ### user name으로 구현
 # 타인 접속 or 로그인 하지 않았을 때, opage.html 화면 보여줌
 # current_user 현재 사용하고 있는 유저, exist_user = 존재하는 유저 네임
