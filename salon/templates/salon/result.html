@@ -17,7 +17,7 @@
       <h2>결과 페이지 입니다.</h2>
     </div>
     <img src="{{img_file}}" alt="image">
-    <img src="{{tn_img}}" alt="thumbnail">
+    <img src="{{img_tn_file}}" alt="thumbnail">
     <div>
       <strong>텍스트 내용: </strong>
       <p>{{text}}</p>
@@ -26,10 +26,11 @@
 
       <midi-player src="{{music_file}}" sound-font/>
     </div>
+
     <div>
-      <h2>결과가 마음에 드시나요?</h2>
-        <p><button id="result_favorite" value="1">마음에 들어요</button></p>
-        <p><button id="result_favorite" value="0">마음에 들지 않아요</button></p>
+      <h2>어떤 결과가 마음에 드시나요?</h2>
+        <p><button id="result_favorite" value="1">그림이 마음에 들어요</button></p>
+        <p><button id="result_favorite" value="2">음악이 마음에 들어요</button></p>
         <br>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
@@ -43,32 +44,30 @@
           timeout: 1000
         },
       })
-      // axios.defaults.withCredentials = true;
+
       var cols = document.querySelectorAll('#result_favorite'); 
       [].forEach.call(cols, function(col){ 
         col.addEventListener("click", click, false); 
       }); 
       function click(e){ 
         
-        var select_value = e.target.value
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        axios.defaults.headers.post['X-CSRFToken'] = csrftoken;
-        // instanace.defaults.headers.common['X-CSRF-TOKEN'] = response.data._csrf;
-        console.log("==========="+csrftoken)
-        axios.post("/result_favorite/", {aa: select_value})
-        .then(function (res) {return res.data} )
-        .then(function (data) { console.log(data) } )
-        .catch(function (error) {console.log(error)} )
+        // var select_value = e.target.value
+
+        // axios.post("/result_favorite/", {aa: select_value})
+        // .then(function (res) {return res.data} )
+        // .then(function (data) { console.log(data) } )
+        // .catch(function (error) {console.log(error)} )
+        document.getElementById('favorite').value = e.target.value;
+        console.log( document.getElementById('favorite').value );
       }
     </script>
 
-
     <div>
     <form method="post" action="{% url 'salon:save_result' %}">
-      {% csrf_token %}
+      <input type="hidden" id="favorite" name="favorite" value="2">
       <input type="hidden" id="input_text" name="input_text" value="{{text}}">
+      <input type="checkbox" id="selected" name="selected" value="{{img_file}}" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
       <input type="checkbox" id="selected" name="selected" value="{{music_file}}" onclick="toggleVisibility(this)">음악저장DB에기록</checkbox>
-      <input type="checkbox" id="selected" name="selected" value="{{img_file}},{{tn_img}}" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
       <p><button id="save_button" disabled=true>저장하기</button></p>
     </form>
       <br>
