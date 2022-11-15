@@ -13,7 +13,6 @@ urlpatterns = [
     path('result/', views.result, name='result'),
     path('save_result/', views.save_result, name='save_result'),
     path('search/', views.search, name='search'),
-    path('result_favorite/', views.result_favorite, name='result_favorite'),
     path('result_model/', views.result_model, name='result_model')
 ]
 
