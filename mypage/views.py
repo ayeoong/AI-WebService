@@ -9,7 +9,9 @@ from django.contrib.auth import login, authenticate
 # from django.contrib.auth.hashers import check_password
 from .models import Member
 from salon.models import ImageUploadModel, ImageKeywordModel, KeywordModel
-
+from django.core.mail.message import EmailMessage
+import smtplib
+from email.mime.text import MIMEText
 
 # Create your views here.
 def signup(request):
@@ -101,3 +103,12 @@ def mypage(request, user_name):
     
 def setting(request):
     return render(request, 'mypage/setting.html', {})
+
+
+def send_email(request):
+    subject = "message2"
+    to = ["ohns1994@gmail.com"]
+    from_email = "ohns1994@gmail.com"
+    message = "메지시 테스트22"
+    EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+    return render(request, 'mypage/send_email.html')

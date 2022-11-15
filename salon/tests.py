@@ -13,6 +13,8 @@ class YourTestClass(TestCase):
         user = User.objects.create(username='testuser')
         user.set_password('1234')
         user.save()
+        KeywordModel(word='tester').save()
+        KeywordModel(word='testy').save()
 
     def setUp(self):
         print()
@@ -63,33 +65,53 @@ class YourTestClass(TestCase):
     #     print(len(key_ins), len(key_all))
     #     self.assertEquals(len(key_ins), len(key_all))
 
-    def test_image_keyword(self):
-        user = User.objects.get(username='testuser')
+    # def test_image_keyword(self):
+    #     user = User.objects.get(username='testuser')
 
-        keywords = ['hello', 'world', 'you']
+    #     keywords = ['hello', 'world', 'you']
 
-        keyword_models = [KeywordModel(word=key) for key in keywords]
-        [k.save() for k in keyword_models]
+    #     keyword_models = [KeywordModel(word=key) for key in keywords]
+    #     [k.save() for k in keyword_models]
 
-        image = ImageUploadModel(user=user, name="photo", filename='test.png')
-        image.save()
+    #     image = ImageUploadModel(user=user, name="photo", filename='test.png')
+    #     image.save()
 
-        ikms = [ImageKeywordModel(image=image, keyword=km) for km in keyword_models]
+    #     ikms = [ImageKeywordModel(image=image, keyword=km) for km in keyword_models]
         
-        ImageKeywordModel.objects.bulk_create(ikms)
+    #     ImageKeywordModel.objects.bulk_create(ikms)
 
 
-        image_keywords = ImageKeywordModel.objects.all()
-        print('----------->', len(image_keywords) )
+    #     image_keywords = ImageKeywordModel.objects.all()
+    #     print('----------->', len(image_keywords) )
 
-        ###############################
-        img = ImageUploadModel.objects.get(id=1)
-        print('img id 1', img)
-        imgkeys = ImageKeywordModel.objects.filter(image=img)
-        print( imgkeys )
+    #     ###############################
+    #     img = ImageUploadModel.objects.get(id=1)
+    #     print('img id 1', img)
+    #     imgkeys = ImageKeywordModel.objects.filter(image=img)
+    #     print( imgkeys )
 
-        ################################
-        km = KeywordModel.objects.get(word='you')
-        ikm = ImageKeywordModel.objects.filter(keyword=km)
-        print(ikm[0].image.filename)
-        print( [k.image.filename for k in ikm] )
+    #     ################################
+    #     km = KeywordModel.objects.get(word='you')
+    #     ikm = ImageKeywordModel.objects.filter(keyword=km)
+    #     print(ikm[0].image.filename)
+    #     print( [k.image.filename for k in ikm] )
+
+    def test_search(self):
+        search_word = "test"
+        search_token_list = search_word.split(' ')
+        search_user_list=[]
+        search_result_list=[]
+        search_imagekeys_list=[ImageKeywordModel]
+        for search_token in search_token_list:
+            search_user_list.extend(User.objects.filter(username__contains=search_token))
+            search_result_list.extend(KeywordModel.objects.filter(word__contains=search_token))
+            search_imagekeys_list.extend(ImageKeywordModel.objects.filter(keyword__word__contains=search_token))
+        del search_imagekeys_list[0]
+        search_img_list = [imgkey.image for imgkey in search_imagekeys_list]
+        search_img_set = set(search_img_list)
+        context = {
+            'search_user_list':search_user_list,
+            'search_result_list':search_result_list, 
+            'search_img_set':search_img_set,
+        }
+        print("====>", search_user_list, search_result_list, search_img_set)
