@@ -71,33 +71,36 @@ def result_model(request):
     # mock model process
     time.sleep(5)
 
-    image_url = image_generation_beta(text) # https://~~~.jpg 형식
+    image_url = image_generation_beta(text) #image_generation(text) # https://~~~.jpg 형식
     img_filename = uuid_name_upload_to(None, image_url)
 
     res = requests.get(image_url)
-    save_img_and_thumbnail(res.content, img_filename)
+    _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
 
 
-    music_file = generateMusic_beta() # '~~~.mid' 형식
+    music_file = generateMusic_beta() #generateMusic() # '~~~.mid' 형식
     # mus_filename = uuid_name_upload_to(None, music_file)
     mus_filename = music_file
 
     img_filename = '/media/images/' + img_filename
+    img_tn_file = '/media/images/' + img_tn_file
     mus_filename = '/media/musics/' + mus_filename
 
-    data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'mus_file':mus_filename}
+    data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
     print('====================', data)
     return JsonResponse(data)
 
 
 def save_img_and_thumbnail(content, img_filename):
-    img_tn_filename = "_tn.".join(img_filename.split('.')) # 이미지파일명_tn.jpg 
+    img_tn_filename = "_tn.".join(img_filename.split('.')) # 섬네일명: 이미지파일명_tn.jpg 
 
     img_file = Image.open(BytesIO(content))
     save_img(img_file, img_filename)
 
     img_file.thumbnail((300, 300))
-    img_file.save(img_tn_filename)
+    save_img(img_file, img_tn_filename)  # 섬네일저장
+
+    return img_filename, img_tn_filename
 
 
 def save_img(image, filename):
@@ -112,7 +115,7 @@ def result(request):
     text = request.POST.get('input_text')
     mus_filename = request.POST.get('mus_file')
     img_filename = request.POST.get('img_file')
-    # img_tn_filename = 
+    img_tn_filename = request.POST.get('img_tn_file')
 
     # 텍스트 -> 태그화 리스트
     only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
@@ -135,10 +138,10 @@ def result(request):
     no_stops = [word for word in lemmatized_words if not word in stopwords_list]
     
     context = {'text': text, 
-                'img_file':'/media/images/'+text+'.jpg', 
+                'img_file':img_filename, 
                 "music_file":mus_filename, 
                 # 'img_url':image_url,
-                'tn_img':'/media/images/'+text+'_tn.jpg',
+                'img_tn_file':img_tn_filename,
                 "tags":no_stops,
     }
 
@@ -163,18 +166,27 @@ def save_result(request):
         user = request.user
         selected = request.POST.getlist("selected")
         text = request.POST.get("input_text")
+        favorite = request.POST.get("favorite")
+
+        print('=================>', favorite)
  
         for filepath in selected:
             # 유저 정보와 같이 저장 필요
             if 'mid' == filepath[-3:]:
-                musicfile = MusicUploadModel(user=user, name=text+"_music", filename=filepath, input_text=text)
-                # musicfile.save()
+                # musicfile = MusicUploadModel(user=user, name=text+"_music", filename=filepath, input_text=text)
+                musicfile = MusicUploadModel(user=user, name=text+"_music", filename=filepath, input_text=text, result_favorite=favorite)
+                musicfile.save()
+                print("-------------------->", text, filepath, favorite)
                 # MusicKeywordModel(music=musicfile, keyword=keyword).save()
             else:
-                filename = filepath.split(' ')[0]
-                thumbnail = filepath.split(' ')[1]
-                imgfile = ImageUploadModel(user=user, name=text+"_image", filename=filename, thumbnail=thumbnail, input_text=text)
+                # filename = filepath.split(' ')[0]
+                # thumbnail = filepath.split(' ')[1]
+                filename = context['img_file']
+                thumbnail = context['img_tn_file']
+                # imgfile = ImageUploadModel(user=user, name=text+"_image", filename=filename, thumbnail=thumbnail, input_text=text)
+                imgfile = ImageUploadModel(user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=favorite)
                 imgfile.save()
+                print("-------------------->", text, filename, thumbnail, favorite)
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
@@ -196,24 +208,28 @@ def result_favorite(request):
             fv = str(favorite)
             print("result_code's dtype: ", type(fv))
             for favorite in fv:
-                musicfile = MusicUploadModel(user=user, result_favorite=favorite)
-                # musicfile.save()
-                imgfile = ImageUploadModel(user=user, result_favorite=favorite)
-                # imgfile.save()
+                # imgfile = ImageUploadModel(user=user, result_favorite=favorite)
+                imgfile = ImageUploadModel.objects.get(user=user)
+                imgfile.result_favorite = favorite
+                imgfile.save(update_fields=['result_favorite'])
+
+                # musicfile = MusicUploadModel(user=user, result_favorite=favorite)
+                musicfile = MusicUploadModel.objects.get(user=user)
+                musicfile.result_favorite = favorite
+                musicfile.save(update_fields=['result_favorite'])
         else:
             print("result_code's dtype: ", type(favorite))
             for favorite in favorite:
-                musicfile = MusicUploadModel(user=user, result_favorite=favorite)
-                # musicfile.save()
-                imgfile = ImageUploadModel(user=user, result_favorite=favorite)
-                # imgfile.save()
+                # imgfile = ImageUploadModel(user=user, result_favorite=favorite)
+                imgfile = ImageUploadModel.objects.get(user=user)
+                imgfile.result_favorite = favorite
+                imgfile.save(update_fields=['result_favorite'])
 
-        # 데이터타입 체크 if문이 없을 때 사용
-        # for favorite in favorite:
-        #     musicfile = MusicUploadModel(user=user, result_favorite=favorite)
-        #     #musicfile.save()
-        #     imgfile = ImageUploadModel(user=user, result_favorite=favorite)
-        #     #imgfile.save()
+                # musicfile = MusicUploadModel(user=user, result_favorite=favorite)
+                musicfile = MusicUploadModel.objects.get(user=user)
+                musicfile.result_favorite = favorite
+                musicfile.save(update_fields=['result_favorite'])
+
         
         data = {'result':'successful', 'result_code': favorite}
         return JsonResponse(data)

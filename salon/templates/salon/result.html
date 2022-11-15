@@ -30,9 +30,9 @@
     </div>
 
     <div>
-      <h2>결과가 마음에 드시나요?</h2>
-        <p><button id="result_favorite" value="1">마음에 들어요</button></p>
-        <p><button id="result_favorite" value="0">마음에 들지 않아요</button></p>
+      <h2>어떤 결과가 마음에 드시나요?</h2>
+        <p><button id="result_favorite" value="1">그림이 마음에 들어요</button></p>
+        <p><button id="result_favorite" value="2">음악이 마음에 들어요</button></p>
         <br>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
@@ -53,19 +53,23 @@
       }); 
       function click(e){ 
         
-        var select_value = e.target.value
+        // var select_value = e.target.value
 
-        axios.post("/result_favorite/", {aa: select_value})
-        .then(function (res) {return res.data} )
-        .then(function (data) { console.log(data) } )
-        .catch(function (error) {console.log(error)} )
+        // axios.post("/result_favorite/", {aa: select_value})
+        // .then(function (res) {return res.data} )
+        // .then(function (data) { console.log(data) } )
+        // .catch(function (error) {console.log(error)} )
+        document.getElementById('favorite').value = e.target.value;
+        console.log( document.getElementById('favorite').value );
       }
     </script>
 
     <div>
     <form method="post" action="{% url 'salon:save_result' %}">
+      <input type="hidden" id="favorite" name="favorite" value="2">
+      <input type="hidden" id="input_text" name="input_text" value="{{text}}">
+      <input type="checkbox" id="selected" name="selected" value="{{img_file}}" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
       <input type="checkbox" id="selected" name="selected" value="{{music_file}}" onclick="toggleVisibility(this)">음악저장DB에기록</checkbox>
-      <input type="checkbox" id="selected" name="selected" value="{{text}}.png" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
       <p><button id="save_button" disabled=true>저장하기</button></p>
     </form>
       <br>

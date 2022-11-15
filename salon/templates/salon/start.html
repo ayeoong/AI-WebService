@@ -37,17 +37,24 @@
         function finish_model(res) {
           console.log(res.data);
           img_file = res.data['img_file']
+          img_tn_file = res.data['img_tn_file']
           mus_file = res.data['mus_file']
           title = document.getElementById('title').value
-          console.log(img_file, mus_file, title);
+          console.log(img_file, img_tn, mus_file, title);
 
           var form = document.createElement('form'); // 폼객체 생성
-          var img, mus, txt;
+          var img, img_tn, mus, txt;
           img = document.createElement('input'); // 값이 들어있는 녀석의 형식
           img.setAttribute('type', 'text'); // 값이 들어있는 녀석의 type
           img.setAttribute('name', 'img_file'); // 객체이름
           img.setAttribute('value', img_file); //객체값
           form.appendChild(img);
+
+          img_tn = document.createElement('input');
+          img_tn.setAttribute('type', 'text');
+          img_tn.setAttribute('name', 'img_tn_file');
+          img_tn.setAttribute('value', img_tn_file);
+          form.appendChild(img_tn);
           
           mus = document.createElement('input');
           mus.setAttribute('type', 'text');
