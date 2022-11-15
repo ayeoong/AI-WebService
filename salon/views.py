@@ -84,7 +84,7 @@ def save_image(image_url, text):
     filename = text + '.jpg'
     save_storage_img(img_file, filename)
 
-    img_file.thumbnail((150, 150))  
+    img_file.thumbnail((300, 300))  
     filename = text + '_tn' + '.jpg'
     save_storage_img(img_file, filename)
 
