@@ -2,6 +2,8 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel, ImageKeywordModel, MusicKeywordModel
 from salon.utils import uuid_name_upload_to
+from googletrans import Translator
+
 
 # Create your tests here.
 
@@ -115,3 +117,13 @@ class YourTestClass(TestCase):
             'search_img_set':search_img_set,
         }
         print("====>", search_user_list, search_result_list, search_img_set)
+
+    def test_translator(self):
+        translator = Translator()
+        print("****")
+        prompt = "안녕하세요"
+
+        # which_lang = translator.detect("안녕하세요")
+        # print(which_lang)
+
+        print("translate=>", translator.translate(text=prompt, dest='en', src='auto').text)
