@@ -3,7 +3,7 @@ import json
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib import auth
-from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel, ImageKeywordModel, MusicKeywordModel
+from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel
 import os
 import openai
 from PIL import Image
@@ -17,7 +17,6 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import time
 from . import music
-from salon.models import ImageUploadModel, MusicUploadModel
 from salon.utils import uuid_name_upload_to
 from salon.music import generateMusic
 from googletrans import Translator
@@ -32,7 +31,7 @@ def main(request):
 
 def index(request):
     keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품', "Today's Favorite"]
-    image = ImageUploadModel.objects.all()[:10]
+    image = ArtUploadModel.objects.filter(kind=1)[:10]
     return render(request, 'salon/home.html', {'keywords':keywords, 'image':image})
 
 def search(request):
@@ -41,11 +40,11 @@ def search(request):
         search_token_list = search_word.split(' ')
         search_user_list=[]
         search_result_list=[]
-        search_imagekeys_list=[ImageKeywordModel]
+        search_imagekeys_list=[ArtKeywordModel]
         for search_token in search_token_list:
             search_user_list.extend(User.objects.filter(username__contains=search_token))
             search_result_list.extend(KeywordModel.objects.filter(word__contains=search_token))
-            search_imagekeys_list.extend(ImageKeywordModel.objects.filter(keyword__word__contains=search_token))
+            search_imagekeys_list.extend(ArtKeywordModel.objects.filter(keyword__word__contains=search_token, kind=1))
         del search_imagekeys_list[0]
         search_img_list = [imgkey.image for imgkey in search_imagekeys_list]
         search_img_set = set(search_img_list)
@@ -179,15 +178,18 @@ def get_taglist(text):
 def save_result(request):
     context = request.session['test_keyword']
     keywords = context['tags']
+    keyword_list = []
     for keyword in keywords:
         try:
             exist_word = KeywordModel.objects.get(word=keyword)
             exist_word.input_num += 1
             exist_word.save()
+            keyword_list.append(exist_word)
         except:
             word = KeywordModel(word=keyword)
             word.input_num += 1
             word.save()
+            keyword_list.append(word)
     if request.method == 'POST':
         user = request.user
         selected = request.POST.getlist("selected")
@@ -197,12 +199,18 @@ def save_result(request):
         for filepath in selected:
             # 유저 정보와 같이 저장 필요
             if 'mid' == filepath[-3:]:
-                MusicUploadModel(user=user, name=text+"_music", filename=filepath, input_text=text, result_favorite=favorite).save()
+                art = ArtUploadModel(kind=2, user=user, name=text+"_music", filename=filepath, input_text=text, result_favorite=favorite)
+                art.save()
+                akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
+                ArtKeywordModel.objects.bulk_create(akms)
                 print("-------------------->", text, filepath, favorite)
             else:
                 filename = context['img_file']
                 thumbnail = context['img_tn_file']
-                ImageUploadModel(user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=favorite).save()
+                art = ArtUploadModel(kind=1, user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=favorite)
+                art.save()
+                akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
+                ArtKeywordModel.objects.bulk_create(akms)
                 print("-------------------->", text, filename, thumbnail, favorite)
         return render(request, 'salon/save_result.html', {'files':selected})
     

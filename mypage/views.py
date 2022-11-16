@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 # from django.contrib.auth.hashers import check_password
 from .models import Member
-from salon.models import ImageUploadModel, ImageKeywordModel, KeywordModel
+from salon.models import ArtUploadModel, ArtKeywordModel, KeywordModel
 from django.core.mail.message import EmailMessage
 import smtplib
 from email.mime.text import MIMEText
