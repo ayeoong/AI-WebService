@@ -15,6 +15,10 @@ import time
 from django.core.files.storage import default_storage
 from .utils import save_storage_img
 from . import music
+from salon.utils import uuid_name_upload_to
+from salon.music import generateMusic
+from googletrans import Translator
+
 
 def home(request):
     return render(request, 'salon/index.html', {})
@@ -51,56 +55,123 @@ def search(request):
     else:
         return render(request, 'salon/search.html', {})
 
+def image_generation(text):
+    openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
+    openai.api_key = "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"
+
+    response = openai.Image.create( prompt=text,
+                            n=1,
+                            size="1024x1024")
+    image_url = response['data'][0]['url']
+    return image_url
+
+def image_generation_beta(text):
+    time.sleep(5)
+    image_url = 'https://ifh.cc/g/5qCAX2.jpg'
+    return image_url
+
+def music_generateMusic_beta():
+    mus_filename = 'MuseNet-Composition.mid'
+    return mus_filename
+
+def translate(prompt):
+    # translator = Translator()
+    # return translator.translate(text=prompt, dest='en', src='auto').text
+    return prompt
+
+
+
 # 입력창
 def start(request):
     return render(request, 'salon/start.html', {})
 
+# 모델 호출 함수
+def result_model(request):
+    json_data = json.loads( request.body )
+
+    text = json_data['text']
+    text = translate(text)
+
+    image_url = image_generation_beta(text) #image_generation(text) # https://~~~.jpg 형식
+    img_filename = uuid_name_upload_to(None, image_url)
+
+    res = requests.get(image_url)
+    _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
+
+
+    music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
+    # mus_filename = uuid_name_upload_to(None, music_file)
+    mus_filename = music_file
+
+    img_filename = settings.IMG_PATH + img_filename
+    img_tn_file = settings.IMG_PATH + img_tn_file
+    mus_filename = settings.MUS_PATH + mus_filename
+
+    data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
+    return JsonResponse(data)
+
+
+def save_img_and_thumbnail(content, img_filename):
+    img_tn_filename = "_tn.".join(img_filename.split('.')) # 섬네일명: 이미지파일명_tn.jpg 
+
+    img_file = Image.open(BytesIO(content))
+    save_img(img_file, img_filename)
+
+    img_file.thumbnail((300, 300))
+    save_img(img_file, img_tn_filename)  # 섬네일저장
+
+    return img_filename, img_tn_filename
+
+
+def save_img(image, filename):
+    img_storage_path = 'media/images/' #setting.media_images
+    img_filepath = img_storage_path + filename
+    image.save(img_filepath, 'PNG')
+
+
 # 출력창
 def result(request):
-    text, image_url = image_generation(request)
-    
-    # music_file = '/media/musics/' + music.generateMusic()
-    music_file = '/media/musics/MuseNet-Composition.mid' #
+    text = request.POST.get('input_text')
+    mus_filename = request.POST.get('mus_file')
+    img_filename = request.POST.get('img_file')
+    img_tn_filename = request.POST.get('img_tn_file')
 
-    save_image(image_url, text)
-    img_path = 'https://storage.cloud.google.com/dall-e-2-media/images/'
+    # 텍스트 -> 태그화 리스트
+    no_stops = get_taglist(text)
     
     context = {'text': text, 
-                'img_file':img_path + text +'.jpg',
-                "music_file":music_file, 
-                'img_url':image_url,
-                'tn_img':img_path + text +'_tn.jpg',
-                "tags": "!!token test!!",#메모리 차지로 nltk 제외 일단 돌아가게 처리
+                'img_file':img_filename, 
+                "music_file":mus_filename, 
+                # 'img_url':image_url,
+                'img_tn_file':img_tn_filename,
+                "tags":no_stops,
     }
 
     request.session['test_keyword'] = context
 
     return render(request, 'salon/result.html', context)
 
-def save_image(image_url, text):
-    res = requests.get(image_url)
-    img_file = Image.open(BytesIO(res.content)) #url에서 바이트를 가져와 메모리에 올림, 그걸 이미지로 open
+def get_taglist(text):
+    # only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
+    # only_english_lower = only_english.lower()       # 대문자 -> 소
+    # word_tokens =  nltk.word_tokenize(only_english_lower)   # 토큰화
+    # tokens_pos = nltk.pos_tag(word_tokens)          # 품사 분류
+    
+    # # music_file = '/media/musics/' + music.generateMusic()
+    # music_file = '/media/musics/MuseNet-Composition.mid' #
 
-    filename = text + '.jpg'
-    save_storage_img(img_file, filename)
+    # # 원형 추출
+    # wlem = WordNetLemmatizer()
+    # lemmatized_words = []
+    # for word in NN_words:
+    #     new_word = wlem.lemmatize(word)
+    #     lemmatized_words.append(new_word)
 
-    img_file.thumbnail((300, 300))  
-    filename = text + '_tn' + '.jpg'
-    save_storage_img(img_file, filename)
-
-def image_generation(request):
-    openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
-    openai.api_key = "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"
-
-    text = ''
-    if request.method == "POST":
-        text = request.POST['title']
-        # response = openai.Image.create( prompt=text, #토큰 소비로 주석처리 임시 이미지로 대체
-        #                          n=1,
-        #                          size="1024x1024")
-        # image_url = response['data'][0]['url']
-        image_url = 'https://ifh.cc/g/5qCAX2.jpg'
-    return text,image_url
+    # # 불용어 제거 - stopwords_list 에 따로 추가 가능
+    # stopwords_list = set(stopwords.words('english'))
+    # no_stops = [word for word in lemmatized_words if not word in stopwords_list]
+    no_stops = 'test_word'
+    return no_stops
 
 
 def save_result(request):
@@ -122,21 +193,18 @@ def save_result(request):
         user = request.user
         selected = request.POST.getlist("selected")
         text = request.POST.get("input_text")
+        favorite = request.POST.get("favorite")
  
         for filepath in selected:
             # 유저 정보와 같이 저장 필요
             if 'mid' == filepath[-3:]:
-                musicfile = MusicUploadModel(user=user, name=text+"_music", filename=filepath, input_text=text)
-                musicfile.save()
-                mkms = [MusicKeywordModel(music=musicfile, keyword=km) for km in kw_model_list]
-                MusicKeywordModel.objects.bulk_create(mkms)
+                MusicUploadModel(user=user, name=text+"_music", filename=filepath, input_text=text, result_favorite=favorite).save()
+                print("-------------------->", text, filepath, favorite)
             else:
-                filename = filepath.split(',')[0]
-                thumbnail = filepath.split(',')[1]
-                imgfile = ImageUploadModel(user=user, name=text+"_image", filename=filename, thumbnail=thumbnail, input_text=text)
-                imgfile.save()
-                ikms = [ImageKeywordModel(image=imgfile, keyword=km) for km in kw_model_list]
-                ImageKeywordModel.objects.bulk_create(ikms)
+                filename = context['img_file']
+                thumbnail = context['img_tn_file']
+                ImageUploadModel(user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=favorite).save()
+                print("-------------------->", text, filename, thumbnail, favorite)
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})

@@ -40,7 +40,7 @@ class MusicUploadModel(models.Model):
         return self.name
 
 class ImageKeywordModel(models.Model):
-    image = models.ForeignKey(ImageUploadModel, related_name="image_set", on_delete=models.CASCADE)
+    image = models.ForeignKey(ImageUploadModel, on_delete=models.CASCADE)
     keyword = models.ForeignKey(KeywordModel, on_delete=models.CASCADE)
 
     def __str__(self):
