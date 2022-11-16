@@ -1,6 +1,9 @@
-from django.db import models
-from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.db import models
+
+from salon.models import ArtUploadModel
+
 
 # Create your models here.
 # Member
@@ -17,13 +20,11 @@ class Member(models.Model): #장고에서 제공하는 models.Model를 상속받
     class Meta: #메타 클래스를 이용하여 테이블명 지정
         db_table = 'test_user'
 
-class Like(models.Model):
+class ArtLike(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_articles')
-    title = models.CharField(max_length=10)
-    content = models.TextField()
+    art = models.ForeignKey(ArtUploadModel, on_delete=models.CASCADE, related_name='like_art')
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
+    kind = models.IntegerField(default=0) #  # 0:None, 1:image, 2:music, 
+    
     def __str__(self):
-        return self.title
+        return f'{self.art.name} {self.user.username}'

@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 # from django.contrib.auth.hashers import check_password
 from .models import Member
-from salon.models import ArtUploadModel, ArtKeywordModel, KeywordModel
+from salon.models import ArtUploadModel, ArtKeywordModel
 from django.core.mail.message import EmailMessage
 import smtplib
 from email.mime.text import MIMEText
@@ -71,6 +71,16 @@ def logout(request):
     return redirect('index')
 
 
+def send_email(request):
+    subject = "message2"
+    to = ["ohns1994@gmail.com"]
+    from_email = "ohns1994@gmail.com"
+    message = "메지시 테스트22"
+    EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+    return render(request, 'mypage/send_email.html')
+
+
+
 ### user name으로 구현
 # 타인 접속 or 로그인 하지 않았을 때, opage.html 화면 보여줌
 # current_user 현재 사용하고 있는 유저, exist_user = 존재하는 유저 네임
@@ -88,7 +98,7 @@ def mypage(request, user_name):
     images = []
 
     try:
-        images = ImageUploadModel.objects.filter(user=exist_user)
+        images = ArtUploadModel.objects.filter(user=exist_user)
         print( images )
     except Exception as e:
         print(e)
@@ -105,10 +115,14 @@ def setting(request):
     return render(request, 'mypage/setting.html', {})
 
 
-def send_email(request):
-    subject = "message2"
-    to = ["ohns1994@gmail.com"]
-    from_email = "ohns1994@gmail.com"
-    message = "메지시 테스트22"
-    EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
-    return render(request, 'mypage/send_email.html')
+def art_like(request, pk):
+
+    if request.user.is_authenticated:
+        like = get_object_or_404(like, pk=pk)
+
+        if like.like_users.filter(pk=request.pk):
+            like.like_users.remove(request.user)
+        
+        else:
+            like.like_users.add(request.user)
+            return render(request, 'mypage/mypage.html', {})
