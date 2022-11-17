@@ -1,59 +1,9 @@
-<html>
 {% load static %}
 {% include 'shared/_hp.html' %}
-<div class="grid-container">
-  <header class="grid-item header">
-    <link rel="stylesheet" href="{% static 'salon/css/style.css' %}">
-    <style>
-      .modal {
-        position: absolute;
-        top: 0;
-        left: 0;
+<link rel="stylesheet" href="{% static 'salon/css/style.css' %}">
 
-        width: 100%;
-        height: 100%;
-
-        display: none;
-
-        background-color: rgba(0, 0, 0, 0.4);
-      }
-
-      .modal.show {
-        display: block;
-      }
-
-      .modal-body {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-
-        width: 1000px;
-        height: 600px;
-
-        padding: 40px;
-
-        text-align: center;
-
-        background-color: rgb(255, 255, 255);
-        border-radius: 10px;
-        box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-
-        transform: translateX(-50%) translateY(-50%);
-      }
-
-      .modal-close {
-        position: absolute;
-        right: 20px;
-        top: 20px;
-      }
-
-      .modal-items {
-        display: flex;
-      }
-    </style>
-  </header>
-  <body>
     <div class="grid-container">
+      <p><a href="{% url 'salon:start' %}">작품 생성하러 가기</a></p>
     </div>
       
     <main class="grid-item main">
@@ -81,7 +31,7 @@
       {% endfor %}
     </main> 
     <div class="modal">
-      <div class="modal-body">
+      <div class="modal-body fade">
         <div class="modal-close">
           <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -104,69 +54,7 @@
       </div>
     </div>
   
-  <script>
-    const body = document.querySelector('body');
-    const modal = document.querySelector('.modal');
-    const modalClose = document.querySelector('.modal-close');
-    const btnOpenPopupList = document.querySelectorAll('.btn-open-popup');
-    const modalItem = document.querySelector('.modal-items');
-
-    btnOpenPopupList.forEach(btnOpenPopup =>
-      btnOpenPopup.addEventListener('click', (e) => {
-        modal.classList.toggle('show');
-
-        if (modal.classList.contains('show')) {
-          body.style.overflow = 'hidden';
-        }
-        var originImg = e.currentTarget.querySelector('.ori-img');
-        var testImg = originImg.cloneNode(true)
-        var inputText = e.currentTarget.querySelector('.input-text');
-        var testText = inputText.cloneNode(true)
-        var imgUser = e.currentTarget.querySelector('.img-user');
-        var testUser = imgUser.cloneNode(true)
-
-        testImg.style.display = 'block'
-        testText.style.display = 'block'
-        testUser.style.display = 'block'
-        modalItem.children[0].appendChild(testImg)
-        modalItem.children[1].appendChild(testText)
-        modalItem.children[1].appendChild(testUser)
-        console.log(testImg)
-      })
-    );
-
-    modalClose.addEventListener('click', (event) => {
-      modal.classList.toggle('show');
-      while (modalItem.children[0].firstChild) {
-        modalItem.children[0].removeChild(modalItem.children[0].firstChild);
-      } 
-      while (modalItem.children[1].firstChild) {
-        modalItem.children[1].removeChild(modalItem.children[1].firstChild);
-      } 
-      if (!modal.classList.contains('show')) {
-          body.style.overflow = 'auto';
-      }
-    });
-
-    modal.addEventListener('click', (event) => {
-      if (event.target === modal) {
-        modal.classList.toggle('show');
-        while (modalItem.children[0].firstChild) {
-        modalItem.children[0].removeChild(modalItem.children[0].firstChild);
-        } 
-        while (modalItem.children[1].firstChild) {
-          modalItem.children[1].removeChild(modalItem.children[1].firstChild);
-        } 
-        if (!modal.classList.contains('show')) {
-            body.style.overflow = 'auto';
-        }
-
-        if (!modal.classList.contains('show')) {
-          body.style.overflow = 'auto';
-        }
-      }
-    });
-  </script>
+  <script src="{% static 'salon/js/modal.js' %}"></script>
   <script src="{% static 'salon/js/scroll.js' %}"></script>
   <script src="{% static 'salon/js/index.js' %}"></script>
   <script>
@@ -185,6 +73,3 @@
     };
   
   </script>
-  </body>
-</div>
-</html>
