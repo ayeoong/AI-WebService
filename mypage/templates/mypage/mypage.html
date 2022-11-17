@@ -7,14 +7,16 @@
 
 {% include 'shared/_hp.html' %}
 <body>
-  <h1> {{userid}}'s page </h1>
-  <div class="img">
-    <div class="scale">
-      {% for img in images %}
-      <img src="{{img.thumbnail}}">
-      {% endfor %}
-    </div>
+  <div class="grid-container">
+    <h1> {{userid}}'s page </h1>
   </div>
-
+    <div class="img">
+      <div class="scale">
+        {% for img in images %}
+        <img src="{{img.thumbnail}}">
+        {% endfor %}
+      </div>
+    </div>
+    
 </body>
 </html>
