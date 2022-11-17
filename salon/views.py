@@ -77,9 +77,12 @@ def music_generateMusic_beta():
     return mus_filename
 
 def translate(prompt):
-    # translator = Translator()
-    # return translator.translate(text=prompt, dest='en', src='auto').text
-    return prompt
+    translator = Translator()
+    which_lang = translator.detect(prompt).lang
+    if which_lang != 'en':
+        return translator.translate(text=prompt, dest='en', src='auto').text
+    else:
+        return prompt
 
 
 
@@ -195,11 +198,21 @@ def save_result(request):
         selected = request.POST.getlist("selected")
         text = request.POST.get("input_text")
         favorite = request.POST.get("favorite")
+
+        fav_ind_img = {}
+        fav_ind_img['1'] = "1"
+        fav_ind_img['2'] = "0"
+        fav_ind_img['3'] = "3"
+
+        fav_ind_mus = {}
+        fav_ind_mus['1'] = "0"
+        fav_ind_mus['2'] = "2"
+        fav_ind_mus['3'] = "3"
  
         for filepath in selected:
             # 유저 정보와 같이 저장 필요
             if 'mid' == filepath[-3:]:
-                art = ArtUploadModel(kind=2, user=user, name=text+"_music", filename=filepath, input_text=text, result_favorite=favorite)
+                art = ArtUploadModel(kind=2, user=user, name=text+"_music", filename=filepath, input_text=text, result_favorite=fav_ind_mus[favorite])
                 art.save()
                 akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
                 ArtKeywordModel.objects.bulk_create(akms)
@@ -207,7 +220,7 @@ def save_result(request):
             else:
                 filename = context['img_file']
                 thumbnail = context['img_tn_file']
-                art = ArtUploadModel(kind=1, user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=favorite)
+                art = ArtUploadModel(kind=1, user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=fav_ind_img[favorite])
                 art.save()
                 akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
                 ArtKeywordModel.objects.bulk_create(akms)
