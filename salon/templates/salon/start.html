@@ -45,29 +45,30 @@
           var form = document.createElement('form'); // 폼객체 생성
           var img, img_tn, mus, txt;
           img = document.createElement('input'); // 값이 들어있는 녀석의 형식
-          img.setAttribute('type', 'text'); // 값이 들어있는 녀석의 type
+          img.setAttribute('type', 'hidden'); // 값이 들어있는 녀석의 type
           img.setAttribute('name', 'img_file'); // 객체이름
           img.setAttribute('value', img_file); //객체값
           form.appendChild(img);
 
           img_tn = document.createElement('input');
-          img_tn.setAttribute('type', 'text');
+          img_tn.setAttribute('type', 'hidden');
           img_tn.setAttribute('name', 'img_tn_file');
           img_tn.setAttribute('value', img_tn_file);
           form.appendChild(img_tn);
           
           mus = document.createElement('input');
-          mus.setAttribute('type', 'text');
+          mus.setAttribute('type', 'hidden');
           mus.setAttribute('name', 'mus_file');
           mus.setAttribute('value', mus_file);
           form.appendChild(mus);
           
           txt = document.createElement('input');
-          txt.setAttribute('type', 'text');
+          txt.setAttribute('type', 'hidden');
           txt.setAttribute('name', 'input_text');
           txt.setAttribute('value', title);
           form.appendChild(txt);
 
+          form.setAttribute("charset", "UTF-8");
           form.setAttribute('method', 'post'); //get,post 가능
           form.setAttribute('action', "/result/"); //보내는 url
           document.body.appendChild(form);
