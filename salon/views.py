@@ -13,7 +13,6 @@ from django.views.decorators.csrf import csrf_exempt
 import time
 
 from django.core.files.storage import default_storage
-from .utils import save_storage_img
 from . import music
 from salon.utils import uuid_name_upload_to
 from salon.music import generateMusic
