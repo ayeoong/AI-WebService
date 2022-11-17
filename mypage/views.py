@@ -89,27 +89,14 @@ def mypage(request, user_name):
     print(user_name)
     try:
         exist_user = User.objects.get(username=user_name)
+        images = ArtUploadModel.objects.filter(user=exist_user, kind=1)
+        context = {'userid':exist_user.username, 'images':images}
+        return render(request, 'mypage/mypage.html', context)
+    
     except Exception as e:
         exist_user = None
         print(e)
         return HttpResponse("error 404")
-    # return render(request, 'mypage/404.html', {})
-    
-    images = []
-
-    try:
-        images = ArtUploadModel.objects.filter(user=exist_user)
-        print( images )
-    except Exception as e:
-        print(e)
-
-    if current_user == exist_user:
-        context = {'userid':current_user.username, 'images':images}
-        return render(request, 'mypage/mypage.html', context)
-
-    else:
-        context = {'userid':user_name, 'images':images}
-        return render(request, 'mypage/opage.html', context)
     
 def setting(request):
     return render(request, 'mypage/setting.html', {})
