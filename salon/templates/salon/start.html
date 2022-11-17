@@ -27,7 +27,7 @@
           var title = document.getElementById('title').value
           axios.post("/result_model/", {'text':title}) //post로 인풋데이터넣기
           .then( finish_model )
-          .then(function () {alert("작품 생성이 완료되었습니다.")} )
+          .then(function () { alert("작품 생성이 완료되었습니다.")} )
           // .then(() => {location.href = "/result/"} )
           .catch(function (error) {console.log(error)} ) 
   
@@ -35,6 +35,9 @@
           
         }
         function finish_model(res) {
+          clearInterval(onceTimer); 
+          document.getElementById('progressBar').value = 100;
+
           console.log(res.data);
           img_file = res.data['img_file']
           img_tn_file = res.data['img_tn_file']
