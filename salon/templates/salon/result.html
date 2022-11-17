@@ -1,18 +1,12 @@
-{%load static%}
-{% csrf_token %}
-
 <!DOCTYPE html>
-<html lang="en">
+{%load static%}
+{% include 'shared/_hp.html' %}
+<html lang="ko">
   <head>
     <meta charset="UTF-8">
     <title>Gallery</title>
   </head>
-  {% include 'shared/_hp.html' %}
   <body>
-    <div>
-      <button value="mypage"><a type='button' href="{% url 'mypage:mypage' user.username %}" class='mypage'>My Page</a></button>
-      <button value="home"><a type='button' href="{% url 'salon:index' %}" class='index'>HOME</a></button>
-    </div>
     <div>
       <h2>결과 페이지 입니다.</h2>
     </div>
@@ -34,7 +28,6 @@
         <br>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
-    <!-- <script type="text/javascript" src="{% static 'salon/js/accessOnce.js' %}"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
 
@@ -50,13 +43,6 @@
         col.addEventListener("click", click, false); 
       }); 
       function click(e){ 
-        
-        // var select_value = e.target.value
-
-        // axios.post("/result_favorite/", {aa: select_value})
-        // .then(function (res) {return res.data} )
-        // .then(function (data) { console.log(data) } )
-        // .catch(function (error) {console.log(error)} )
         e.target.setAttribute("disabled",true);
         count += 1;
         document.getElementById('favorite').value = e.target.value;
