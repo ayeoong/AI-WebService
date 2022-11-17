@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from salon.models import ImageUploadModel, MusicUploadModel, KeywordModel, ImageKeywordModel, MusicKeywordModel
+from salon.models import ArtUploadModel, KeywordModel, ArtKeywordModel
 from salon.utils import uuid_name_upload_to
 from googletrans import Translator
 
@@ -98,32 +98,32 @@ class YourTestClass(TestCase):
     #     print(ikm[0].image.filename)
     #     print( [k.image.filename for k in ikm] )
 
-    def test_search(self):
-        search_word = "test"
-        search_token_list = search_word.split(' ')
-        search_user_list=[]
-        search_result_list=[]
-        search_imagekeys_list=[ImageKeywordModel]
-        for search_token in search_token_list:
-            search_user_list.extend(User.objects.filter(username__contains=search_token))
-            search_result_list.extend(KeywordModel.objects.filter(word__contains=search_token))
-            search_imagekeys_list.extend(ImageKeywordModel.objects.filter(keyword__word__contains=search_token))
-        del search_imagekeys_list[0]
-        search_img_list = [imgkey.image for imgkey in search_imagekeys_list]
-        search_img_set = set(search_img_list)
-        context = {
-            'search_user_list':search_user_list,
-            'search_result_list':search_result_list, 
-            'search_img_set':search_img_set,
-        }
-        print("====>", search_user_list, search_result_list, search_img_set)
+    # def test_search(self):
+    #     search_word = "test"
+    #     search_token_list = search_word.split(' ')
+    #     search_user_list=[]
+    #     search_result_list=[]
+    #     search_imagekeys_list=[ArtKeywordModel]
+    #     for search_token in search_token_list:
+    #         search_user_list.extend(User.objects.filter(username__contains=search_token))
+    #         search_result_list.extend(KeywordModel.objects.filter(word__contains=search_token))
+    #         search_imagekeys_list.extend(ArtKeywordModel.objects.filter(keyword__word__contains=search_token))
+    #     del search_imagekeys_list[0]
+    #     search_img_list = [imgkey.image for imgkey in search_imagekeys_list]
+    #     search_img_set = set(search_img_list)
+    #     context = {
+    #         'search_user_list':search_user_list,
+    #         'search_result_list':search_result_list, 
+    #         'search_img_set':search_img_set,
+    #     }
+    #     print("====>", search_user_list, search_result_list, search_img_set)
 
     def test_translator(self):
         translator = Translator()
         print("****")
         prompt = "안녕하세요"
 
-        # which_lang = translator.detect("안녕하세요")
-        # print(which_lang)
+        which_lang = translator.detect("안녕하세요").lang
+        print(which_lang)
 
         print("translate=>", translator.translate(text=prompt, dest='en', src='auto').text)

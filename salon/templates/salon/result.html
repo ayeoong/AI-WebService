@@ -29,22 +29,22 @@
 
     <div>
       <h2>어떤 결과가 마음에 드시나요?</h2>
-        <p><button id="result_favorite" value="1">그림이 마음에 들어요</button></p>
-        <p><button id="result_favorite" value="2">음악이 마음에 들어요</button></p>
+        <p><button id="result_favorite" value="jpg">그림이 마음에 들어요</button></p>
+        <p><button id="result_favorite" value="mid">음악이 마음에 들어요</button></p>
         <br>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
-    <script type="text/javascript" src="{% static 'salon/js/accessOnce.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'salon/js/accessOnce.js' %}"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
-      
+
       // 조건문 없이 모든 요청에 대해 timeout 일괄 적용
       const instanace = axios.create({
         headers: {
           timeout: 1000
         },
       })
-
+      var count = 0
       var cols = document.querySelectorAll('#result_favorite'); 
       [].forEach.call(cols, function(col){ 
         col.addEventListener("click", click, false); 
@@ -57,14 +57,19 @@
         // .then(function (res) {return res.data} )
         // .then(function (data) { console.log(data) } )
         // .catch(function (error) {console.log(error)} )
+        e.target.setAttribute("disabled",true);
+        count += 1;
         document.getElementById('favorite').value = e.target.value;
+        if (count >= 2) {
+          document.getElementById('favorite').value = 'both';
+        }
         console.log( document.getElementById('favorite').value );
       }
     </script>
 
     <div>
     <form method="post" action="{% url 'salon:save_result' %}">
-      <input type="hidden" id="favorite" name="favorite" value="2">
+      <input type="hidden" id="favorite" name="favorite" value="0">
       <input type="hidden" id="input_text" name="input_text" value="{{text}}">
       <input type="checkbox" id="selected" name="selected" value="{{img_file}}" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
       <input type="checkbox" id="selected" name="selected" value="{{music_file}}" onclick="toggleVisibility(this)">음악저장DB에기록</checkbox>

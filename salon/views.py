@@ -44,9 +44,9 @@ def search(request):
         for search_token in search_token_list:
             search_user_list.extend(User.objects.filter(username__contains=search_token))
             search_result_list.extend(KeywordModel.objects.filter(word__contains=search_token))
-            search_imagekeys_list.extend(ArtKeywordModel.objects.filter(keyword__word__contains=search_token, kind=1))
+            search_imagekeys_list.extend(ArtKeywordModel.objects.filter(keyword__word__contains=search_token))
         del search_imagekeys_list[0]
-        search_img_list = [imgkey.image for imgkey in search_imagekeys_list]
+        search_img_list = [imgkey.art for imgkey in search_imagekeys_list]
         search_img_set = set(search_img_list)
         context = {
             'search_user_list':search_user_list,
@@ -77,9 +77,12 @@ def music_generateMusic_beta():
     return mus_filename
 
 def translate(prompt):
-    # translator = Translator()
-    # return translator.translate(text=prompt, dest='en', src='auto').text
-    return prompt
+    translator = Translator()
+    which_lang = translator.detect(prompt).lang
+    if which_lang != 'en':
+        return translator.translate(text=prompt, dest='en', src='auto').text
+    else:
+        return prompt
 
 
 
@@ -91,8 +94,7 @@ def start(request):
 def result_model(request):
     json_data = json.loads( request.body )
 
-    text = json_data['text']
-    text = translate(text)
+    text = translate(json_data['text'])
 
     image_url = image_generation_beta(text) #image_generation(text) # https://~~~.jpg 형식
     img_filename = uuid_name_upload_to(None, image_url)
@@ -133,7 +135,7 @@ def save_img(image, filename):
 
 # 출력창
 def result(request):
-    text = request.POST.get('input_text')
+    text = translate(request.POST.get('input_text'))
     mus_filename = request.POST.get('mus_file')
     img_filename = request.POST.get('img_file')
     img_tn_filename = request.POST.get('img_tn_file')
@@ -179,6 +181,7 @@ def save_result(request):
     context = request.session['test_keyword']
     keywords = context['tags']
     keyword_list = []
+    art_dict = {'jpg':'1', 'mid':'2', 'both':'3'}
     for keyword in keywords:
         try:
             exist_word = KeywordModel.objects.get(word=keyword)
@@ -195,23 +198,38 @@ def save_result(request):
         selected = request.POST.getlist("selected")
         text = request.POST.get("input_text")
         favorite = request.POST.get("favorite")
+        thumbnail = context['img_tn_file']
  
         for filepath in selected:
-            # 유저 정보와 같이 저장 필요
+            art = ArtUploadModel(kind=art_dict[filepath[-3:]], user=user, name=text, filename=filepath, input_text=text)
+            art.save()
+            print(favorite)
             if 'mid' == filepath[-3:]:
-                art = ArtUploadModel(kind=2, user=user, name=text+"_music", filename=filepath, input_text=text, result_favorite=favorite)
-                art.save()
-                akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
-                ArtKeywordModel.objects.bulk_create(akms)
-                print("-------------------->", text, filepath, favorite)
+                print("this1")
+                if favorite == 'mid' or favorite == 'both':
+                    print("this2")
+                    art.result_favorite = '1'
+                    art.save()
             else:
-                filename = context['img_file']
-                thumbnail = context['img_tn_file']
-                art = ArtUploadModel(kind=1, user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=favorite)
-                art.save()
-                akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
-                ArtKeywordModel.objects.bulk_create(akms)
-                print("-------------------->", text, filename, thumbnail, favorite)
+                print("this3")
+                if favorite == 'jpg' or favorite == 'both':
+                    print("this4")
+                    art.thumbnail = thumbnail
+                    art.result_favorite = '1'
+                    art.save()
+
+            akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
+            ArtKeywordModel.objects.bulk_create(akms)
+            # if 'mid' == filepath[-3:]:
+            #     print("-------------------->", text, filepath, favorite)
+            # else:
+            #     filename = context['img_file']
+            #     thumbnail = context['img_tn_file']
+            #     art = ArtUploadModel(kind=1, user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=favorite)
+            #     art.save()
+            #     akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
+            #     ArtKeywordModel.objects.bulk_create(akms)
+            #     print("-------------------->", text, filename, thumbnail, favorite)
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
