@@ -88,7 +88,7 @@ def mypage(request, user_name):
     images = []
 
     try:
-        images = ImageUploadModel.objects.filter(user=exist_user)
+        images = ArtUploadModel.objects.filter(user=exist_user)
         print( images )
     except Exception as e:
         print(e)
@@ -105,10 +105,19 @@ def setting(request):
     return render(request, 'mypage/setting.html', {})
 
 
-def send_email(request):
-    subject = "message2"
-    to = ["ohns1994@gmail.com"]
-    from_email = "ohns1994@gmail.com"
-    message = "메지시 테스트22"
-    EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
-    return render(request, 'mypage/send_email.html')
+def find_id(request):
+    subject = "DALLE에 가입하신 정보입니다."
+    from_email = "dalle@gmail.com"
+    error_msg = []
+    email_ok = False
+    if request.method == "POST":
+        signed_email = request.POST.get('signed-email')
+        try:
+            user_id = User.objects.get(email=signed_email).username
+            to = [signed_email]
+            message = "DALLE에 가입하신 아이디는 [ " + user_id + " ] 입니다."
+            email_ok =  EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+        except:
+            error_msg = ["이메일이 바르게 입력되지 않았거나 가입된 정보가 없습니다."]
+
+    return render(request, 'mypage/find_id.html', {'error_msg':error_msg, 'email_ok':email_ok})
