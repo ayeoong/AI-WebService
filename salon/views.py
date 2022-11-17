@@ -31,7 +31,7 @@ def main(request):
 
 def index(request):
     keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품', "Today's Favorite"]
-    image = ArtUploadModel.objects.filter(kind=1)[:10]
+    image = ArtUploadModel.objects.filter(kind=1).order_by('-uploaded_at')[:10]
     return render(request, 'salon/home.html', {'keywords':keywords, 'image':image})
 
 def search(request):
