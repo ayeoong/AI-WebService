@@ -40,11 +40,12 @@
     max-height: 300px;
     max-width: 300px;
   }
-  .sample-img {
-    max-height: 300px;
-    max-width: 300px;
-  }
 }
+.sample-img {
+  max-height: 300px;
+  max-width: 300px;
+}
+
 a {
   display: block;
   color: #c9e9f6;

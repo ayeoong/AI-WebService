@@ -15,6 +15,7 @@ from urllib.parse import urlparse
 import environ
 from google.cloud import secretmanager
 
+
 from pathlib import Path
 import os, json
 from django.core.exceptions import ImproperlyConfigured
@@ -109,7 +110,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -159,7 +160,6 @@ if os.getenv("TRAMPOLINE_CI", None): ## 추가 코드가 작동안하면 기존 
             "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
         }
     }
-
 
 
 

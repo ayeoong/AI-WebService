@@ -1,7 +1,8 @@
 <html>
 {% load static %}
+{% include 'shared/_hp.html' %}
+<div class="grid-container">
   <header class="grid-item header">
-    {% include 'shared/_hp.html' %}
     <link rel="stylesheet" href="{% static 'salon/css/style.css' %}">
     <style>
       .modal {
@@ -64,7 +65,7 @@
           <img class="sample-img" src="{{img.thumbnail}}" alt="thumbnail">
           <img class="test ori-img" src="{{img.filename}}" alt="filename" style="width: 500px; display: none;">
           <p class="test input-text" style="display: none;">{{img.input_text}}</p>
-          <p class="test img-user" style="display: none;">made by... <a href="{% url 'mypage:mypage' img.user %}" style="display: inline;">@{{img.user}}</a></p>
+          <p class="test img-user" style="display: none;">created by... <a href="{% url 'mypage:mypage' img.user %}" style="display: inline;">@{{img.user}}</a></p>
         </div>
         {% endfor %}
       </div>
@@ -186,5 +187,4 @@
   </script>
   </body>
 </div>
-</body>
 </html>

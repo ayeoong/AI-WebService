@@ -10,9 +10,8 @@ class KeywordModel(models.Model):
     def __str__(self):
         return self.word
 
-
-# img
-class ImageUploadModel(models.Model):
+# image, music etc
+class ArtUploadModel(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, default='')
     filename = models.CharField(max_length=255, default='')
@@ -20,35 +19,14 @@ class ImageUploadModel(models.Model):
     input_text = models.CharField(max_length=100, default='')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     result_favorite = models.CharField(max_length=255, blank=True)
-
-        # Java의 toString
-    def __str__(self):
-        return self.name
-
-
-# music
-class MusicUploadModel(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, default='')
-    filename = models.CharField(max_length=255, default='')
-    thumbnail = models.CharField(max_length=255, default='')
-    input_text = models.CharField(max_length=100, default='')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    result_favorite = models.CharField(max_length=255, blank=True)
+    kind = models.IntegerField(default=0)    # 0:None, 1:image, 2:music, 
 
     def __str__(self):
         return self.name
 
-class ImageKeywordModel(models.Model):
-    image = models.ForeignKey(ImageUploadModel, on_delete=models.CASCADE)
+class ArtKeywordModel(models.Model):
+    art = models.ForeignKey(ArtUploadModel, on_delete=models.CASCADE)
     keyword = models.ForeignKey(KeywordModel, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.image.name + " " + self.keyword.word
-
-class MusicKeywordModel(models.Model):
-    music = models.ForeignKey(MusicUploadModel, on_delete=models.CASCADE)
-    keyword = models.ForeignKey(KeywordModel, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.music.name + " " + self.keyword.word
+        return self.art.name + " " + self.keyword.word
