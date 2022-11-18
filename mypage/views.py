@@ -32,7 +32,7 @@ def check_id(request):
         user = None
     result = {
         'result':'success',
-        'data' : "not exist" if user is None else "exist"
+        'data' : "not exist" if user is None else "exist"gi
     }
     print(result)
     return JsonResponse(result)
