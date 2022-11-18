@@ -212,9 +212,10 @@ def save_result(request):
                     art.save()
             else:
                 print("this3")
+                art.thumbnail = thumbnail
+                art.save()
                 if favorite == 'jpg' or favorite == 'both':
                     print("this4")
-                    art.thumbnail = thumbnail
                     art.result_favorite = '1'
                     art.save()
 
