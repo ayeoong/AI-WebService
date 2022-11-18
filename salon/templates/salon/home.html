@@ -3,12 +3,12 @@
 <link rel="stylesheet" href="{% static 'salon/css/style.css' %}">
 
     <div class="grid-container">
-      <p><a href="{% url 'salon:start' %}">작품 생성하러 가기</a></p>
+      <p class="start-area"><a href="{% url 'salon:start' %}">작품 생성하러 가기</a></p>
     </div>
       
     <main class="grid-item main">
       {% for keyword in keywords %}
-      <p>{{ keyword }}</p>
+      <p class="keyword-area">{{ keyword }}</p>
       <div class="items">
         {% for img in image %}
         <div class="btn-open-popup item item{{forloop.counter}}">
