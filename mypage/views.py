@@ -6,12 +6,9 @@ from django.contrib.auth.models import User
 from .forms import LoginForm
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
-# from django.contrib.auth.hashers import check_password
-from .models import Member
 from salon.models import ArtUploadModel, ArtKeywordModel, KeywordModel
 from django.core.mail.message import EmailMessage
-import smtplib
-from email.mime.text import MIMEText
+
 
 # Create your views here.
 def signup(request):
@@ -22,19 +19,11 @@ def signup(request):
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
-        # if request.POST['password1'] == request.POST['password2']:
-        #     user = User.objects.create_user(
-    	# 		username=request.POST['username'],
-    	# 		password=request.POST['password1'],
-    	# 		email=request.POST['email'],
-        #     )
-        #     user.save()
             return redirect('login')
-        # return render(request, 'mypage/signup.html')
-
     else:
         form = UserForm()
     return render(request, 'mypage/signup.html', {'form':form})
+
 
 def check_id(request):
     try:
@@ -43,11 +32,33 @@ def check_id(request):
         user = None
     result = {
         'result':'success',
-        # 'data' : model_to_dict(user)  # console에서 확인
         'data' : "not exist" if user is None else "exist"
     }
     print(result)
     return JsonResponse(result)
+
+
+def check_email(request):
+    # subject = "DALLE에 가입하신 것을 환영합니다."
+    # from_email = "dalle@gmail.com"
+    # email_ok = False
+    try:
+        email_addr = request.GET['email']
+        user = User.objects.get(email=email_addr)
+    except Exception as e:
+        user = None
+        # to = [email_addr]
+        # message = "DALLE로 바로가기"
+        # email_ok =  EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+    
+    result = {
+        'result':'success',
+        'data' : "not exist" if user is None else "exist",
+        # 'email_ok' : email_ok
+    }
+    print(result)
+    return JsonResponse(result)
+
 
 # 로그인 # auth
 def login(request):
@@ -64,6 +75,7 @@ def login(request):
     else:
         form = LoginForm()
         return render(request, 'mypage/login.html', {'form': form})
+
 
 # 로그아웃 # auth
 def logout(request):
@@ -88,6 +100,7 @@ def mypage(request, user_name):
         print(e)
         return HttpResponse("error 404")
     
+
 def setting(request):
     return render(request, 'mypage/setting.html', {})
 
@@ -103,6 +116,7 @@ def find_id(request):
             user_id = User.objects.get(email=signed_email).username
             to = [signed_email]
             message = "DALLE에 가입하신 아이디는 [ " + user_id + " ] 입니다."
+            print(user_id)
             email_ok =  EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
         except:
             error_msg = ["이메일이 바르게 입력되지 않았거나 가입된 정보가 없습니다."]

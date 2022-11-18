@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import json
+from urllib.request import urlopen
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib import auth
@@ -111,6 +112,7 @@ def result_model(request):
     img_tn_file = '/media/images/' + img_tn_file
     mus_filename = '/media/musics/' + mus_filename
 
+
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
     return JsonResponse(data)
 
@@ -156,25 +158,33 @@ def result(request):
     return render(request, 'salon/result.html', context)
 
 def get_taglist(text):
-    only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
-    only_english_lower = only_english.lower()       # 대문자 -> 소
-    word_tokens =  nltk.word_tokenize(only_english_lower)   # 토큰화
-    tokens_pos = nltk.pos_tag(word_tokens)          # 품사 분류
+    # only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
+    # only_english_lower = only_english.lower()       # 대문자 -> 소
+    # word_tokens =  nltk.word_tokenize(only_english_lower)   # 토큰화
+    # tokens_pos = nltk.pos_tag(word_tokens)          # 품사 분류
     
-    # 명사만 뽑기
-    NN_words = [word for word, pos in tokens_pos if 'NN' in pos]
+    # # 명사만 뽑기
+    # NN_words = [word for word, pos in tokens_pos if 'NN' in pos]
 
-    # 원형 추출
-    wlem = WordNetLemmatizer()
-    lemmatized_words = []
-    for word in NN_words:
-        new_word = wlem.lemmatize(word)
-        lemmatized_words.append(new_word)
+    # # 원형 추출
+    # wlem = WordNetLemmatizer()
+    # lemmatized_words = []
+    # for word in NN_words:
+    #     new_word = wlem.lemmatize(word)
+    #     lemmatized_words.append(new_word)
 
-    # 불용어 제거 - stopwords_list 에 따로 추가 가능
-    stopwords_list = set(stopwords.words('english'))
-    no_stops = [word for word in lemmatized_words if not word in stopwords_list]
-    return no_stops
+    # # 불용어 제거 - stopwords_list 에 따로 추가 가능
+    # stopwords_list = set(stopwords.words('english'))
+    # no_stops = [word for word in lemmatized_words if not word in stopwords_list]
+    # return no_stops
+    nltk_url = 'http://192.168.1.127:5000/'   # 배포 주소
+    text_spapce = text.replace(' ', '%20')
+    url_req = nltk_url + text_spapce
+
+    f = urlopen(url_req)
+    with f as url:
+        data = json.loads(url.read().decode())['tokens']
+    return data
 
 
 def save_result(request):
@@ -221,16 +231,6 @@ def save_result(request):
 
             akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
             ArtKeywordModel.objects.bulk_create(akms)
-            # if 'mid' == filepath[-3:]:
-            #     print("-------------------->", text, filepath, favorite)
-            # else:
-            #     filename = context['img_file']
-            #     thumbnail = context['img_tn_file']
-            #     art = ArtUploadModel(kind=1, user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=favorite)
-            #     art.save()
-            #     akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
-            #     ArtKeywordModel.objects.bulk_create(akms)
-            #     print("-------------------->", text, filename, thumbnail, favorite)
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
