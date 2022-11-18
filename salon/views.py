@@ -101,7 +101,11 @@ def result_model(request):
     text = translate(json_data['text'])
 
     image_url = image_generation(text) #image_generation(text) # https://~~~.jpg 형식
-    img_filename = uuid_name_upload_to(None, image_url)
+    
+    if settings.REAL_LIVE_MODE:
+        img_filename = uuid_name_upload_to(None, image_url) + '.jpg'
+    else:
+        img_filename = uuid_name_upload_to(None, image_url)
 
     res = requests.get(image_url)
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
@@ -113,7 +117,6 @@ def result_model(request):
     img_filename = img_path + img_filename
     img_tn_file = img_path + img_tn_file
     mus_filename = mus_path + mus_filename
-
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
     return JsonResponse(data)
 
@@ -124,6 +127,7 @@ def save_img_and_thumbnail(content, img_filename):
     img_file = Image.open(BytesIO(content))
     save_img(img_file, img_filename)
 
+    img_file = Image.open(BytesIO(content))
     img_file.thumbnail((300, 300))
     save_img(img_file, img_tn_filename)  # 섬네일저장
 
@@ -223,9 +227,11 @@ def save_result(request):
                     art.save()
             else:
                 print("this3")
+                art.thumbnail = thumbnail
+                art.save()
                 if favorite == 'jpg' or favorite == 'both':
                     print("this4")
-                    art.thumbnail = thumbnail
+                    
                     art.result_favorite = '1'
                     art.save()
 

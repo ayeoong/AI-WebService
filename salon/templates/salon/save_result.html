@@ -16,7 +16,7 @@
           <il><a href="/media/{{music_file}}" download="">음악 파일 다운로드하기</a></il><br>
         </ul> -->
         {% for filename in files %}
-        <button value="download"><a type='button' href="/media/{{filename}}" class='download'>{{filename}}</a></button>
+        <button value="download"><a type='button' href="{{filename}}" class='download'>{{filename}}</a></button>
         {% endfor %}
 
       </div>
