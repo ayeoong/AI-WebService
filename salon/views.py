@@ -205,13 +205,26 @@ def save_result(request):
                 ArtKeywordModel.objects.bulk_create(akms)
                 print("-------------------->", text, filepath, favorite)
             else:
-                filename = context['img_file']
-                thumbnail = context['img_tn_file']
-                art = ArtUploadModel(kind=1, user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=favorite)
+                print("this3")
+                art.thumbnail = thumbnail
                 art.save()
-                akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
-                ArtKeywordModel.objects.bulk_create(akms)
-                print("-------------------->", text, filename, thumbnail, favorite)
+                if favorite == 'jpg' or favorite == 'both':
+                    print("this4")
+                    art.result_favorite = '1'
+                    art.save()
+
+            akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
+            ArtKeywordModel.objects.bulk_create(akms)
+            # if 'mid' == filepath[-3:]:
+            #     print("-------------------->", text, filepath, favorite)
+            # else:
+            #     filename = context['img_file']
+            #     thumbnail = context['img_tn_file']
+            #     art = ArtUploadModel(kind=1, user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=favorite)
+            #     art.save()
+            #     akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
+            #     ArtKeywordModel.objects.bulk_create(akms)
+            #     print("-------------------->", text, filename, thumbnail, favorite)
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
