@@ -7,14 +7,29 @@
 
 {% include 'shared/_hp.html' %}
 <body>
-  <h1> {{userid}}'s page </h1>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    function like_count_on(artid) {
+      axios.post('/mypage/art_like/', {'artid':artid})
+      .then(function (res) { console.log(res) })
+      .catch(function (error) { console.log(error) })
+
+      console.log('=================end')
+    }
+  </script>
+  <div class="grid-container">
+    <h1> {{userid}}'s page </h1>
+  </div>
+
   <div class="img">
     <div class="scale">
       {% for img in images %}
       <img src="{{img.thumbnail}}">
+      <p><button class="btn" onclick="like_count_on('{{img.id}}')">좋아요 버튼</button></p>
       {% endfor %}
     </div>
   </div>
+
 
 </body>
 </html>

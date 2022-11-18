@@ -1,3 +1,31 @@
+.grid-container {
+  height: 150px;
+  place-items: center;
+}
+
+.grid-container a {
+  position: relative;
+  margin: auto;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.grid-container a:hover {
+  text-shadow: 1px 1px 2px rgb(187, 122, 173), 0 0 1em blue;
+}
+
+.start-area {
+  margin: auto;
+  padding-top: 50px;
+  padding-left: 700px;
+  padding-right: 700px;
+}
+
+.keyword-area {
+  text-indent: 32px;
+}
+
 .items {
   position: relative;
   width: 100%;
@@ -48,8 +76,7 @@
 
 a {
   display: block;
-  color: #c9e9f6;
-  text-decoration: underline;
+  text-decoration: none;
   margin: 1em auto;
 }
 a:hover {
@@ -58,7 +85,6 @@ a:hover {
 
 p {
   text-align: left;
-  text-indent: 20px;
   font-size: 20px;
   font-weight: 700;
 }
@@ -66,3 +92,59 @@ p {
 i {
   color: skyblue;
 }/*# sourceMappingURL=style.css.map */
+
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: none;
+
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal.show {
+  display: block;
+}
+
+.modal-body {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+
+  width: 1000px;
+  height: 600px;
+
+  padding: 40px;
+
+  text-align: center;
+
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.modal-close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+
+.modal-items {
+  display: flex;
+}
+
+.fade {
+  animation: fadein 1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadein {
+  from {opacity: 0}
+  to {opacity: 1}
+}

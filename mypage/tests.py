@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import ImageLike, MusicLike 
+from .models import ArtLike
 from salon.models import ArtUploadModel
 
 
@@ -26,10 +26,21 @@ class MypageTestClass(TestCase):
     def test_like(self):
         user = User.objects.get(username='tester')
         user2 = User.objects.get(username='tester2')
-        image = ArtUploadModel.objects.get(id=1)
+        art = ArtUploadModel.objects.get(id=1)
 
-        ImageLike(user=user, image=image).save()
-        ImageLike(user=user2, image=image).save()
-        result = ImageLike.objects.filter(image=image).count()
-        print( result )
+        self.save_toggle_like(user, art)
+        self.save_toggle_like(user2, art)
+
+        result = ArtLike.objects.filter(art=art).count()
+        self.assertEqual(2, result )
+
+        self.save_toggle_like(user, art)
+
+        result = ArtLike.objects.filter(art=art).count()
+        self.assertEqual(1, result )
+
+
+    def save_toggle_like(self, user, art):
+        artlikes = ArtLike.objects.filter(user=user, art=art)
+        ArtLike(user=user, art=art).save() if len(artlikes) <= 0 else artlikes[0].delete()
 

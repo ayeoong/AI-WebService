@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib import auth
+from django.views.decorators.csrf import csrf_exempt
 from .forms import UserForm
 from django.contrib.auth.models import User
 from .forms import LoginForm
@@ -8,10 +9,12 @@ from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 # from django.contrib.auth.hashers import check_password
 from .models import Member
-from salon.models import ArtUploadModel, ArtKeywordModel
+from salon.models import ArtUploadModel, ArtKeywordModel, KeywordModel
 from django.core.mail.message import EmailMessage
 import smtplib
+import json
 from email.mime.text import MIMEText
+from .models import ArtLike
 
 # Create your views here.
 def signup(request):
@@ -70,7 +73,6 @@ def logout(request):
     auth.logout(request)
     return redirect('index')
 
-
 def send_email(request):
     subject = "message2"
     to = ["ohns1994@gmail.com"]
@@ -78,8 +80,6 @@ def send_email(request):
     message = "메지시 테스트22"
     EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
     return render(request, 'mypage/send_email.html')
-
-
 
 ### user name으로 구현
 # 타인 접속 or 로그인 하지 않았을 때, opage.html 화면 보여줌
@@ -102,14 +102,51 @@ def setting(request):
     return render(request, 'mypage/setting.html', {})
 
 
-def art_like(request, pk):
+def find_id(request):
+    subject = "DALLE에 가입하신 정보입니다."
+    from_email = "dalle@gmail.com"
+    error_msg = []
+    email_ok = False
+    if request.method == "POST":
+        signed_email = request.POST.get('signed-email')
+        try:
+            user_id = User.objects.get(email=signed_email).username
+            to = [signed_email]
+            message = "DALLE에 가입하신 아이디는 [ " + user_id + " ] 입니다."
+            email_ok =  EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+        except:
+            error_msg = ["이메일이 바르게 입력되지 않았거나 가입된 정보가 없습니다."]
 
-    if request.user.is_authenticated:
-        like = get_object_or_404(like, pk=pk)
+    return render(request, 'mypage/find_id.html', {'error_msg':error_msg, 'email_ok':email_ok})
 
-        if like.like_users.filter(pk=request.pk):
-            like.like_users.remove(request.user)
-        
+
+@csrf_exempt
+def art_like(request):
+    if request.method == 'POST':
+        user = request.user; print('==========', user)
+
+        json_data = json.loads( request.body )
+        print(json_data)
+        # username = json_data['username']
+        art_id = json_data['artid']
+
+        # user = User.objects.get(username=username)
+        art = ArtUploadModel.objects.get(id=art_id)
+        print(user, art)
+
+        artlikes = ArtLike.objects.filter(user=user, art=art)
+        if len(artlikes) <= 0:
+            ArtLike(user=user, art=art).save()
         else:
-            like.like_users.add(request.user)
-            return render(request, 'mypage/mypage.html', {})
+            artlikes[0].delete()
+            
+        result = ArtLike.objects.filter(art=art).count()
+        print( result )
+
+        data = {'result':'successful', 'result_code': result}
+        print(data)
+        return JsonResponse(data)
+    
+    data = {'result':'kwang'}
+    return JsonResponse(data)
+
