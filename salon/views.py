@@ -111,6 +111,7 @@ def result_model(request):
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
 
 
+
     music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
     # mus_filename = uuid_name_upload_to(None, music_file)
     mus_filename = music_file
@@ -134,17 +135,29 @@ def save_img_and_thumbnail(content, img_filename):
     return img_filename, img_tn_filename
 
 
-def save_img(image, filename):
+def save_img(image_file, filename):
     if settings.DEV_MODE or settings.TEST_MODE:
-        img_storage_path = 'media/images/' #setting.media_images
+        img_storage_path = img_path #setting.media_images
         img_filepath = img_storage_path + filename
-        image.save(img_filepath, 'PNG')
+        image_file.save(img_filepath, 'PNG')
     else:
         with BytesIO() as output:  
-            image.save(output, 'PNG')
+            image_file.save(output, 'PNG')
             with default_storage.open('/images/' + filename, 'w') as f:
                 f.write(output.getvalue())
 
+# #공사중
+# def save_mus(music_file, filename):
+#     if settings.DEV_MODE or settings.TEST_MODE:
+#         mus_storage_path = mus_path 
+#         mus_filepath = mus_storage_path + filename
+#         music_file.save(mus_filepath, 'PNG')
+#     else:
+#         with BytesIO() as output:  
+#             music.save(output, 'PNG')
+#             with default_storage.open('/musics/' + filename, 'w') as f:
+#                 f.write(output.getvalue())
+# #midi파일이 오면 컨버젼해서 저장
 
 
 # 출력창
