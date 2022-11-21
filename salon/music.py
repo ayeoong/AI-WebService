@@ -7,7 +7,7 @@ from importlib import import_module
 TMIDIX = import_module('tegridy-tools.tegridy-tools.TMIDIX')
 
 
-def generateMusic():
+def generateMusic(genre):
     #@title Querry API and play/plot results
 
     #@markdown Custom MIDI or self-continuation
@@ -183,10 +183,9 @@ def generateMusic():
         midi_file.write(midi_data)
         midi_file.close()
 
-    # synth_path = Path('static\salon\sf2\FluidR3_GM.sf2')
-    # FluidSynth(synth_path, 16000).midi_to_audio(str(output_file_name + '.mid'), str(output_file_name + '.wav'))
-    # display(Audio(str(output_file_name + '.wav'), rate=16000))
-    #
+    #synth_path = Path('static\salon\sf2\FluidR3_GM.sf2') #음악을 풍부하게 해주는 파일
+    # FluidSynth().midi_to_audio(str(output_file_name + '.mid'), str(output_file_name + '.wav'))
+    
     # print('Done! Enjoy! :)')
 
     return str(output_file_name + '.mid')

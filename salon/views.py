@@ -76,8 +76,11 @@ def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
         image_url = 'https://ifh.cc/g/5qCAX2.jpg'        
     return image_url
 
-def music_generateMusic_beta():
-    mus_filename = 'MuseNet-Composition.mid'
+def music_generateMusic():
+    if settings.REAL_LIVE_MODE:
+       music.generateMusic() #실제 배포용만 음악 생성
+    else:
+        mus_filename = 'MuseNet-Composition.mid'
     return mus_filename
 
 def translate(prompt):
@@ -112,7 +115,7 @@ def result_model(request):
 
 
 
-    music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
+    music_file = music_generateMusic() #generateMusic() # '~~~.mid' 형식
     # mus_filename = uuid_name_upload_to(None, music_file)
     mus_filename = music_file
     img_filename = img_path + img_filename
