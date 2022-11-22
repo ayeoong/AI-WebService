@@ -68,8 +68,16 @@ p {
 
 .modal-close {
   position: absolute;
+  cursor: pointer;
   right: 20px;
   top: 20px;
+}
+
+.modal-delete {
+  position: absolute;
+  cursor: pointer;
+  right: 20px;
+  bottom: 20px;
 }
 
 .modal-items {
