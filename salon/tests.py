@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from salon.models import ArtUploadModel, KeywordModel, ArtKeywordModel
 from salon.utils import uuid_name_upload_to
 from googletrans import Translator
+import os
+from django.conf import settings
 
 
 # Create your tests here.
@@ -143,3 +145,6 @@ class YourTestClass(TestCase):
         self.assertEqual('testuser None tester', f'{user} {art.id} {keyword}')
 
         # print( ArtKeywordModel.objects.all() )
+
+    def test_del_storage(self):
+        os.remove(os.path.join(settings.MEDIA_ROOT, 'images/banana.jpg'))

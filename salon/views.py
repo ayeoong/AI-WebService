@@ -31,8 +31,13 @@ def main(request):
 
 
 def index(request):
-    keywords = ['가장 재미있는','추천이 많은', 'Best 작품', '회원님이 좋아할만한 작품', "Today's Favorite"]
-    image = ArtUploadModel.objects.filter(kind=1).order_by('-uploaded_at')[:10]
+    keywords = ['가장 많이 검색된 키워드', 'Best 작품']
+    best_kw_list = KeywordModel.objects.all().order_by('-input_num')[:10]
+    art_kw_list = []
+    for best_kw in best_kw_list:
+        art_kw_list.extend(ArtKeywordModel.objects.filter(keyword=best_kw))
+    print(art_kw_list)
+    image = set([imgkey.art for imgkey in art_kw_list])
     return render(request, 'salon/home.html', {'keywords':keywords, 'image':image})
 
 def search(request):
