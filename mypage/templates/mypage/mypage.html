@@ -38,7 +38,7 @@
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </div>
-        {% if user.is_authenticated %}
+        {% if user.username == userid %}
         <diV class="modal-delete">
           <svg 
           width="24" 
@@ -87,21 +87,13 @@
       
       itemDelete.addEventListener('click', (event) => {
         console.log(del_item.id);
-        axios.post("/mypage/{{userid}}/delete_item/", {'del_item':del_item.id})
-              .then(function () {confirm("정말 삭제하시겠습니까?");} )
-              .then(check_deletion)
+        del_conf = confirm("정말 삭제하시겠습니까?");
+        axios.post("/mypage/{{userid}}/delete_item/", {'del_item':del_item.id, 'del_conf':del_conf})
+              .then(location.reload())
               .catch(function (error) {console.log(error)} ) 
         })
       })
   );
-
-  function check_deletion(res) {
-    result = res.data['result'];
-    if (result == "successful") {
-      location.reload();
-    }
-
-  }
 
   modalClose.addEventListener('click', (event) => {
     modal.classList.toggle('show');

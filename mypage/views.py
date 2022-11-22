@@ -101,21 +101,24 @@ def mypage(request, user_name):
         print(e)
         return HttpResponse("error 404")
     
+
+
 def delete_item(request, user_name):
     json_data = json.loads( request.body )
     img_id = json_data['del_item']
-    try:
-        del_item = ArtUploadModel.objects.get(pk=img_id)
-        print(del_item)
-        ArtKeywordModel.objects.filter(art=del_item).delete()
-        del_item.delete()
-    except Exception as e:
-        print(e)
-        print("not deleted")
-    data = {'result':'successful'}
+    del_conf = json_data['del_conf']
+    if (del_conf):
+        try:
+            del_item = ArtUploadModel.objects.get(pk=img_id)
+            print(del_item)
+            ArtKeywordModel.objects.filter(art=del_item).delete()
+            del_item.delete()
+            data = {'result':'successful'}
+        except Exception as e:
+            print(e)
+            print("not deleted")
+            data = {'result':'failed'}
     return JsonResponse(data)
-
-
 
 
 def setting(request):

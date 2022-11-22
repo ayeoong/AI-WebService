@@ -103,8 +103,8 @@ def result_model(request):
     res = requests.get(image_url)
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
 
-    music_file = generateMusic()
-    # music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
+    # music_file = generateMusic()
+    music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
     # mus_filename = uuid_name_upload_to(None, music_file)
     mus_filename = music_file
 
