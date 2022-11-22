@@ -3,7 +3,7 @@ import json
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib import auth
-from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel
+from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel, AutoArtUploadModel
 import os
 import openai
 from PIL import Image
@@ -136,6 +136,10 @@ def save_img(image, filename):
 
 # 출력창
 def result(request):
+    if request.session.get('auto_save'):
+        context = request.session['test_keyword']
+        return render(request, 'salon/result.html', context)
+    
     text = request.POST.get('input_text')
     mus_filename = request.POST.get('mus_file')
     img_filename = request.POST.get('img_file')
@@ -143,7 +147,18 @@ def result(request):
 
     # 텍스트 -> 태그화 리스트
     no_stops = get_taglist(text)
-    
+
+    auto_save_art_id_list = []
+
+    art = AutoArtUploadModel(kind=1, name=text, filename=img_filename, thumbnail=img_tn_filename, input_text=text)
+    art.save()
+    auto_save_art_id_list.append(art.id)
+
+    art = AutoArtUploadModel(kind=2, name=text+"_music", filename=mus_filename, input_text=text)
+    art.save()
+    auto_save_art_id_list.append(art.id)
+    print( auto_save_art_id_list )
+
     context = {'text': text, 
                 'img_file':img_filename, 
                 "music_file":mus_filename, 
@@ -153,6 +168,7 @@ def result(request):
     }
 
     request.session['test_keyword'] = context
+    request.session['auto_save'] = auto_save_art_id_list
 
     return render(request, 'salon/result.html', context)
 

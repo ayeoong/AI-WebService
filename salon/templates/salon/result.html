@@ -58,16 +58,31 @@
         document.getElementById('favorite').value = e.target.value;
         console.log( document.getElementById('favorite').value );
       }
+
+      function goto_login() {
+        let text = "로그인하셔야 이용할 수 있습니다.\n로그인 하시겠습니까?";
+        if (confirm(text) == true) {
+          location.href = "{% url 'login' %}?next=/result/";
+        } else {
+          text = "You canceled!";
+        }
+
+      }
     </script>
 
     <div>
     <form method="post" action="{% url 'salon:save_result' %}">
       <input type="hidden" id="favorite" name="favorite" value="2">
       <input type="hidden" id="input_text" name="input_text" value="{{text}}">
-      <input type="checkbox" id="selected" name="selected" value="{{img_file}}" onclick="toggleVisibility(this)">이미지저장DB에기록</checkbox>
-      <input type="checkbox" id="selected" name="selected" value="{{music_file}}" onclick="toggleVisibility(this)">음악저장DB에기록</checkbox>
-      <p><button id="save_button" disabled=true>저장하기</button></p>
+      <input type="checkbox" id="selected" name="selected" value="{{img_file}}" onclick="toggleVisibility(this)">그림</checkbox>
+      <input type="checkbox" id="selected" name="selected" value="{{music_file}}" onclick="toggleVisibility(this)">음악</checkbox>
+    {% if user.is_authenticated %} 
+      <p><button id="save_button" disabled=true>마이페이지에 저장하기</button></p>
     </form>
+    {% else %}
+    </form>
+      <p><button id="save_button" onclick="goto_login()" disabled=true>마이페이지에 저장하기</button></p>
+    {% endif %}
       <br>
     </div>
 

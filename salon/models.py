@@ -30,3 +30,15 @@ class ArtKeywordModel(models.Model):
 
     def __str__(self):
         return self.art.name + " " + self.keyword.word
+
+# auto save, temp image, music etc
+class AutoArtUploadModel(models.Model):
+    name = models.CharField(max_length=100, default='')
+    filename = models.CharField(max_length=255, default='')
+    thumbnail = models.CharField(max_length=255, default='')
+    input_text = models.CharField(max_length=100, default='')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    kind = models.IntegerField(default=0)    # 0:None, 1:image, 2:music, 
+
+    def __str__(self):
+        return self.name
