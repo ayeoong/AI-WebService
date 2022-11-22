@@ -20,26 +20,30 @@
         <br>
 
         비밀번호: <br>
-        <input name="password1" type="password">
+        <input id="password1" name="password1" type="password">
         <br>
 
         비밀번호 확인: <br>
-        <input name="password2" type="password">
+        <input id="password2" name="password2" type="password">
         <br>
 
         이메일: <br>
-        <input name="email" type="email">
+        <input id="email" name="email" type="email">
+        <input id="btn-email" type="button" value="이메일 중복 체크">
         <br><br>
-        <input type="submit" id="join-form" class="btn btn-primary" value="Sign Up">
+        <input type="submit" id="join-form" class="btn btn-primary" value="Sign Up" id_check_result="" email_check_result="" >
       </form>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
     <script>
       /* 중복체크! */
       $(function(){
-        /* 아이디 수정했을 때 */
+          /* 아이디 수정했을 때 */
         $('#username').change(function () {
           $('#btn-username').show();
+        });
+        $('#email').change(function () {
+          $('#btn-email').show();
         });
 
         $('#btn-username').click(function(){
@@ -74,11 +78,46 @@
             }
           })
         });
-        $('#join-form').submit(function() {
-          console.log($("#join-submit").attr("id_check_result"));
+        $('#btn-email').click(function(){
+          var email = $('#email').val()
+          if(email == ''){
+            alert('이메일를 입력해주세요.')
+            return;
+          }
+          $.ajax({
+            url:'/check_email?email='+email,
+            type:'get',
+            dataType:'json',
+            success:function(response){
+              if(response.result != 'success'){
+                console.error(response.data)
+                return;
+              }
+              if(response.data == 'exist'){
+                alert("존재하는 이메일 입니다!ㅇㅠㅇ");
+                $('#email').val('').focus();
+                return;
+              }else {
+                alert("사용 가능한 이메일 입니다!");
+                $('#btn-email').hide();
+                $("#join-submit").attr("email_check_result", "success");
+                return;
+              }
+            },
+              error : function(xhr, error){
+              alert("이메일 형식이 유효한지 확인해 주세요!");
+              console.error("error : " + error);
+            }
+          })
+        });
 
-          if($("#join-submit").attr("id_check_result") == "fail") {
-              alert("id 중복체크를 해주시기 바랍니다.");
+
+        $('#join-form').submit(function() {
+          console.log("submit clicked!");
+          console.log($("#join-submit").attr("email_check_result"));
+
+          if($("#join-submit").attr("email_check_result") == "fail") {
+              alert("이메일 중복체크를 해주시기 바랍니다.");
               $("#email").focus();
               return false;
           }
@@ -87,6 +126,10 @@
         $("#username").on("propertychange change keyup paste input", function(){
           $('#btn-username').show();
           $("#join-submit").attr("id_check_result", "fail");
+        });
+        $("#email").on("propertychange change keyup paste input", function(){
+          $('#btn-email').show();
+          $("#join-submit").attr("email_check_result", "fail");
         });
       });
     </script>

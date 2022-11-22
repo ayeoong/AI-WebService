@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import json
+from urllib.request import urlopen
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib import auth
@@ -17,7 +18,6 @@ import time
 from . import music
 from salon.utils import uuid_name_upload_to
 from django.core.files.storage import default_storage
-from mypage.models import Member
 from googletrans import Translator
 
 if settings.DEV_MODE or settings.TEST_MODE:
@@ -191,8 +191,8 @@ def get_taglist(text):
     # word_tokens =  nltk.word_tokenize(only_english_lower)   # 토큰화
     # tokens_pos = nltk.pos_tag(word_tokens)          # 품사 분류
     
-    # # music_file = '/media/musics/' + music.generateMusic()
-    # music_file = '/media/musics/MuseNet-Composition.mid' #
+    # # 명사만 뽑기
+    # NN_words = [word for word, pos in tokens_pos if 'NN' in pos]
 
     # # 원형 추출
     # wlem = WordNetLemmatizer()
@@ -204,8 +204,15 @@ def get_taglist(text):
     # # 불용어 제거 - stopwords_list 에 따로 추가 가능
     # stopwords_list = set(stopwords.words('english'))
     # no_stops = [word for word in lemmatized_words if not word in stopwords_list]
-    no_stops = 'test_word'
-    return no_stops
+    # return no_stops
+    nltk_url = 'https://silken-oxygen-369215.de.r.appspot.com/'   # 배포 주소
+    text_spapce = text.replace(' ', '%20')
+    url_req = nltk_url + text_spapce
+
+    f = urlopen(url_req)
+    with f as url:
+        data = json.loads(url.read().decode())['tokens']
+    return data
 
 
 def save_result(request):
@@ -252,16 +259,6 @@ def save_result(request):
 
             akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
             ArtKeywordModel.objects.bulk_create(akms)
-            # if 'mid' == filepath[-3:]:
-            #     print("-------------------->", text, filepath, favorite)
-            # else:
-            #     filename = context['img_file']
-            #     thumbnail = context['img_tn_file']
-            #     art = ArtUploadModel(kind=1, user=user, name=text, filename=filename, thumbnail=thumbnail, input_text=text, result_favorite=favorite)
-            #     art.save()
-            #     akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
-            #     ArtKeywordModel.objects.bulk_create(akms)
-            #     print("-------------------->", text, filename, thumbnail, favorite)
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
