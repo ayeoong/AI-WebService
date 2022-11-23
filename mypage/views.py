@@ -134,16 +134,18 @@ def art_like(request):
         art = ArtUploadModel.objects.get(id=art_id)
         print(user, art)
 
+        is_like = False
         artlikes = ArtLike.objects.filter(user=user, art=art)
         if len(artlikes) <= 0:
             ArtLike(user=user, art=art).save()
+            is_like = True
         else:
             artlikes[0].delete()
             
-        result = ArtLike.objects.filter(art=art).count()
-        print( result )
+        like_count = ArtLike.objects.filter(art=art).count()
+        print( like_count )
 
-        data = {'result':'successful', 'result_code': result}
+        data = {'result':'successful', 'like_count': like_count, 'is_like':is_like}
         print(data)
         return JsonResponse(data)
     

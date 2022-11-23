@@ -9,12 +9,22 @@
 <body>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    function like_count_on(artid) {
+    var target
+    function like_count_on(e, artid) {
+      target = e
       axios.post('/mypage/art_like/', {'artid':artid})
-      .then(function (res) { console.log(res) })
-      .catch(function (error) { console.log(error) })
+      .then( draw_like_count )
+      .catch(function (error) { console.log(error) });
+    }
+    function draw_like_count(res) { 
+      like_count = res.data['like_count']
+      is_like = res.data['is_like']
 
-      console.log('=================end')
+      if (is_like) {
+        target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
+      } else {
+        target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138406.png'
+      }
     }
   </script>
   <div class="grid-container">
@@ -23,16 +33,23 @@
 
     <div class="img">
       <div class="container">
-        {% for img in images %}
+
+      {% for img in images %}
         <div class="btn-open-popup">
-          <img src="{{img.thumbnail}}">
+          <img class="tn-img" src="{{img.thumbnail}}">
           <img class="test ori-img" src="{{img.filename}}" alt="filename" style="width: 500px; display: none;">
           <p class="test input-text" style="display: none;">{{img.input_text}}</p>
         </div>
-        <p><button class="btn" onclick="like_count_on('{{img.id}}')">좋아요 버튼</button></p>
+        <p>
+          <button type="button" class="btn-like" onclick="like_count_on(this, '{{img.id}}')">
+            <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
+          </button>
+        </p>
+        
         {% endfor %}
       </div>
     </div>
+    
     <div class="modal">
       <div class="modal-body fade">
         <div class="modal-close">
