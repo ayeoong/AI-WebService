@@ -20,6 +20,7 @@ from . import music
 from salon.utils import uuid_name_upload_to
 from salon.music import generateMusic
 from googletrans import Translator
+from datetime import datetime, timedelta
 
 
 def home(request):
@@ -244,3 +245,9 @@ def save_result(request):
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
+
+
+def delete_autoart(self):
+    day = 1
+    result = AutoArtUploadModel.objects.filter(uploaded_at__lte=(datetime.now() - timedelta(days=day))).delete()
+    return JsonResponse(result, safe=False)

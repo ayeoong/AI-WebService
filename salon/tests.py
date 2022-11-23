@@ -1,8 +1,9 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel
+from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel, AutoArtUploadModel
 from salon.utils import uuid_name_upload_to
 from googletrans import Translator
+from datetime import datetime, timedelta, timezone
 
 
 # Create your tests here.
@@ -127,3 +128,22 @@ class YourTestClass(TestCase):
         # print(which_lang)
 
         print("translate=>", translator.translate(text=prompt, dest='en', src='auto').text)
+
+    def test_auto_save(self):
+        today = datetime.now()
+        for i in range(5):
+            addday = today - timedelta(days=i)
+            a = AutoArtUploadModel.objects.create(name=str(i), uploaded_at=addday)
+            a.uploaded_at = addday
+            a.save()
+            # a.save()
+        
+        queryset = self.delete_autoart(1)
+        print('delete art :', queryset )
+
+        queryset = AutoArtUploadModel.objects.all()
+        for q in queryset:
+            print(q.uploaded_at)
+
+    def delete_autoart(self, day):
+        return  AutoArtUploadModel.objects.filter(uploaded_at__lte=(datetime.now() - timedelta(days=day))).delete()
