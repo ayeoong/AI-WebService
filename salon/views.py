@@ -82,10 +82,10 @@ def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
     return image_url
 
 def music_generateMusic():
-    if settings.REAL_LIVE_MODE:
-       music.generateMusic() #실제 배포용만 음악 생성
-    else:
-        mus_filename = 'MuseNet-Composition.mid'
+    # if settings.REAL_LIVE_MODE:
+    #    music.generateMusic() #실제 배포용만 음악 생성
+    # else:
+    mus_filename = 'MuseNet-Composition.mid'
     return mus_filename
 
 def translate(prompt):
