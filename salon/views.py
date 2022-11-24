@@ -20,7 +20,8 @@ from . import music
 from salon.utils import uuid_name_upload_to
 from salon.music import generateMusic
 from googletrans import Translator
-from datetime import datetime, timedelta
+from datetime import timedelta
+from django.utils import timezone
 
 
 def home(request):
@@ -109,9 +110,9 @@ def result_model(request):
     # mus_filename = uuid_name_upload_to(None, music_file)
     mus_filename = music_file
 
-    img_filename = '/media/images/' + img_filename
-    img_tn_file = '/media/images/' + img_tn_file
-    mus_filename = '/media/musics/' + mus_filename
+    # img_filename = '/media/images/' + img_filename
+    # img_tn_file = '/media/images/' + img_tn_file
+    # mus_filename = '/media/musics/' + mus_filename
 
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
     return JsonResponse(data)
@@ -248,6 +249,30 @@ def save_result(request):
 
 
 def delete_autoart(self):
-    day = 1
-    result = AutoArtUploadModel.objects.filter(uploaded_at__lte=(datetime.now() - timedelta(days=day))).delete()
+    minutes = 1
+    queryset = AutoArtUploadModel.objects.filter(uploaded_at__lte=(timezone.now() - timedelta(minutes=minutes)))
+    delete_filename = list(queryset.values_list('filename'))
+    delete_thumbnail = list(queryset.values_list('thumbnail'))
+    queryset.delete() # DB 삭제
+
+    delete_filename = [file for (file,) in delete_filename]
+    delete_thumbnail = [tn for (tn,) in delete_thumbnail]
+    delete_filename.extend(delete_thumbnail)
+    for file in delete_filename:
+        print("=====>",file)
+        if file[-3:] == 'jpg':
+            images_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'images'), file)
+            print(images_path)
+            os.remove(images_path) # 파일 삭제
+ 
+            # images_tn_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'images'), tn)
+            # print(images_tn_path)
+            # os.remove(images_tn_path)
+
+        elif file[-3:] == 'mid':
+            musics_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'musics'), file) # /media/musics/MusenetComposition.mid
+            print(musics_path)
+            os.remove(musics_path)
+    
+    result = {'delete_count':len(delete_filename) + len(delete_thumbnail), 'filenames':delete_filename + delete_thumbnail}
     return JsonResponse(result, safe=False)

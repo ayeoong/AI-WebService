@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+# import os
+# from datetime import datetime, timedelta
 
 # keywords
 class KeywordModel(models.Model):
@@ -42,3 +44,15 @@ class AutoArtUploadModel(models.Model):
 
     def __str__(self):
         return self.name
+
+    # def delete(self, *args, **kargs):
+    #     # if self.filename:
+    #     #     os.remove(os.path.join(settings.MEDIA_ROOT, self.filename.path)) # FileField일 때 사용가능
+
+    #     minutes = 5
+    #     del_autoart = self.uploaded_at__lte=(datetime.now() - timedelta(minutes=minutes))
+    #     del_autoart_path = self.filename # '/media/이미지or뮤직/파일명.확장자명'
+    #     if os.path.exists(del_autoart):
+    #         os.remove(os.path.join(settings.MEDIA_ROOT, del_autoart_path))
+    #     super(AutoArtUploadModel, self).delete(*args, **kargs)
+        
