@@ -31,7 +31,7 @@ from google.oauth2 import service_account
 # nltk.download('stopwords')
 
 #개발일때는 0번 테스트 할때는 1번 gcp배포는 2번
-PJ_MODE = 2          # 0:dev, 1:test, 2:live 3:real
+PJ_MODE = 3        # 0:dev, 1:test, 2:live 3:real
 
 pj_mode = [False, False, False, False]
 pj_mode[PJ_MODE] = True

@@ -2,7 +2,6 @@ import os
 import json
 import requests
 # from django.core.files.storage import FileSystemStorage
-# from midi2audio import FluidSynth
 from importlib import import_module
 TMIDIX = import_module('tegridy-tools.tegridy-tools.TMIDIX')
 
@@ -183,11 +182,11 @@ def generateMusic(genre):
         midi_file.write(midi_data)
         midi_file.close()
 
-    # synth_path = Path('static\salon\sf2\FluidR3_GM.sf2') #음악을 풍부하게 해주는 파일
-    #FluidSynth().
-    # midi_to_audio(str(output_file_name + '.mid'), str(output_file_name + '.wav'))
-    
+    # synth_path = Path('static\salon\sf2\FluidR3_GM.sf2')
+    # FluidSynth(synth_path, 16000).midi_to_audio(str(output_file_name + '.mid'), str(output_file_name + '.wav'))
+    # display(Audio(str(output_file_name + '.wav'), rate=16000))
+    #
     # print('Done! Enjoy! :)')
 
-    return str(output_file_name + '.wav')
+    return str(output_file_name + '.mid')
     # return uploaded_file_url

@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
+import json
+from django.conf import settings
+import os
 from django.contrib import auth
 from .forms import UserForm
 from django.contrib.auth.models import User
@@ -87,7 +90,7 @@ def logout(request):
 # 타인 접속 or 로그인 하지 않았을 때, opage.html 화면 보여줌
 # current_user 현재 사용하고 있는 유저, exist_user = 존재하는 유저 네임
 def mypage(request, user_name):
-    current_user = request.user
+    # current_user = request.user
     print(user_name)
     try:
         exist_user = User.objects.get(username=user_name)
@@ -100,6 +103,32 @@ def mypage(request, user_name):
         print(e)
         return HttpResponse("error 404")
     
+
+
+def delete_item(request, user_name):
+    json_data = json.loads( request.body )
+    img_id = json_data['del_item']
+    del_conf = json_data['del_conf']
+    if (del_conf):
+        try:
+            del_item = ArtUploadModel.objects.get(pk=img_id)
+            print(del_item)
+
+            # media/images 폴더 안의 이미지 삭제
+            filename = "images/" + str(del_item.filename.split('/')[-1:][0])
+            thumbnail = "images/" + str(del_item.thumbnail.split('/')[-1:][0])
+            print(filename, thumbnail)
+            os.remove(os.path.join(settings.MEDIA_ROOT, filename))
+            os.remove(os.path.join(settings.MEDIA_ROOT, thumbnail))
+            ArtKeywordModel.objects.filter(art=del_item).delete()
+            del_item.delete()
+            data = {'result':'successful'}
+        except Exception as e:
+            print(e)
+            print("not deleted")
+            data = {'result':'failed'}
+    return JsonResponse(data)
+
 
 def setting(request):
     return render(request, 'mypage/setting.html', {})

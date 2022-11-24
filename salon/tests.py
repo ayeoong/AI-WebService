@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from salon.models import ArtUploadModel, KeywordModel, ArtKeywordModel
 from salon.utils import uuid_name_upload_to
 from googletrans import Translator
+import os
+from django.conf import settings
 
 
 # Create your tests here.
@@ -127,3 +129,22 @@ class YourTestClass(TestCase):
         print(which_lang)
 
         print("translate=>", translator.translate(text=prompt, dest='en', src='auto').text)
+    
+    def test_delete_art(self):
+        user = User.objects.get(username='testuser')
+        art = ArtUploadModel(kind=1, user=user, name='test', filename='test.png', input_text='test')
+        art.save()
+        keyword = KeywordModel.objects.get(word='tester')
+        ak = ArtKeywordModel(keyword=keyword, art=art)
+        ak.save()
+
+        self.assertEqual('testuser 1 tester 1', f'{user} {art.id} {keyword} {ak.id}')
+
+        # ArtKeywordModel.objects.filter(art=art).delete()
+        art.delete()
+        self.assertEqual('testuser None tester', f'{user} {art.id} {keyword}')
+
+        # print( ArtKeywordModel.objects.all() )
+
+    def test_del_storage(self):
+        os.remove(os.path.join(settings.MEDIA_ROOT, 'images/banana.jpg'))

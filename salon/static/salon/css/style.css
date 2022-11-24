@@ -89,6 +89,10 @@ p {
   font-weight: 700;
 }
 
+p.test {
+  text-indent: 20px;
+}
+
 i {
   color: skyblue;
 }/*# sourceMappingURL=style.css.map */
