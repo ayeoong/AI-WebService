@@ -24,8 +24,8 @@ if settings.DEV_MODE or settings.TEST_MODE:
     img_path = '/media/images/'
     mus_path = '/media/musics/'
 else:
-    img_path = 'https://storage.cloud.google.com/dall-e-2-media/images/'
-    mus_path = 'https://storage.cloud.google.com/dall-e-2-media/musics/'
+    img_path = 'https://storage.googleapis.com/dall-e-2-contents/images/'
+    mus_path = 'https://storage.googleapis.com/dall-e-2-contents/musics/'
 
 def home(request):
     return render(request, 'salon/index.html', {})
@@ -116,7 +116,7 @@ def result_model(request):
 
 
     music_file = music_generateMusic() #generateMusic() # '~~~.mid' 형식
-    # mus_filename = uuid_name_upload_to(None, music_file)
+    #mus_filename = uuid_name_upload_to(None, music_file)
     mus_filename = music_file
     img_filename = img_path + img_filename
     img_tn_file = img_path + img_tn_file
@@ -149,18 +149,18 @@ def save_img(image_file, filename):
             with default_storage.open('/images/' + filename, 'w') as f:
                 f.write(output.getvalue())
 
-# #공사중
-# def save_mus(music_file, filename):
-#     if settings.DEV_MODE or settings.TEST_MODE:
-#         mus_storage_path = mus_path 
-#         mus_filepath = mus_storage_path + filename
-#         music_file.save(mus_filepath, 'PNG')
-#     else:
-#         with BytesIO() as output:  
-#             music.save(output, 'PNG')
-#             with default_storage.open('/musics/' + filename, 'w') as f:
-#                 f.write(output.getvalue())
-# #midi파일이 오면 컨버젼해서 저장
+#공사중
+def save_mus(music_file, filename):
+    if settings.DEV_MODE or settings.TEST_MODE:
+        mus_storage_path = mus_path 
+        mus_filepath = mus_storage_path + filename
+        music_file.save(mus_filepath, 'WAV')
+    else:
+        with BytesIO() as output:  
+            music.save(output, 'WAV')
+            with default_storage.open('/musics/' + filename, 'w') as f:
+                f.write(output.getvalue())
+#midi파일이 오면 컨버젼해서 저장
 
 
 # 출력창
@@ -174,7 +174,7 @@ def result(request):
     no_stops = get_taglist(text)
     
     context = {'text': text, 
-                'img_file':img_filename, 
+                'img_file': img_filename, 
                 "music_file":mus_filename, 
                 # 'img_url':image_url,
                 'img_tn_file':img_tn_filename,
@@ -186,25 +186,6 @@ def result(request):
     return render(request, 'salon/result.html', context)
 
 def get_taglist(text):
-    # only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
-    # only_english_lower = only_english.lower()       # 대문자 -> 소
-    # word_tokens =  nltk.word_tokenize(only_english_lower)   # 토큰화
-    # tokens_pos = nltk.pos_tag(word_tokens)          # 품사 분류
-    
-    # # 명사만 뽑기
-    # NN_words = [word for word, pos in tokens_pos if 'NN' in pos]
-
-    # # 원형 추출
-    # wlem = WordNetLemmatizer()
-    # lemmatized_words = []
-    # for word in NN_words:
-    #     new_word = wlem.lemmatize(word)
-    #     lemmatized_words.append(new_word)
-
-    # # 불용어 제거 - stopwords_list 에 따로 추가 가능
-    # stopwords_list = set(stopwords.words('english'))
-    # no_stops = [word for word in lemmatized_words if not word in stopwords_list]
-    # return no_stops
     nltk_url = 'https://silken-oxygen-369215.de.r.appspot.com/'   # 배포 주소
     text_spapce = text.replace(' ', '%20')
     url_req = nltk_url + text_spapce

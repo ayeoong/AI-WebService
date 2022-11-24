@@ -5,6 +5,12 @@ from io import BytesIO
 # from .models import TestStorage
 from .utils import save_storage_img
 import requests
+from .music import generateMusic
+from midi2audio import FluidSynth
+import os
+from django.conf import settings
+
+from google.cloud import storage
 
 class StorageTestClass(TestCase):
     @classmethod
@@ -88,3 +94,48 @@ class StorageTestClass(TestCase):
 
         print(DEV_MODE, TEST_MODE, TEST_LIVE_MODE, REAL_LIVE_MODE)
 
+    def test_storage_music(self):
+        filename = 'testmusic'
+        with BytesIO() as output:
+            music =  generateMusic('disney')
+            music.open()
+            music.write(output)
+            with default_storage.open('/musics/' + filename, 'w') as f:
+                f.write(output.getvalue())
+
+    def test_midi_to_wave(self):
+        print( os.listdir(os.getcwd()) )
+        print( os.listdir(settings.MEDIA_ROOT + '/musics/') )
+        FluidSynth().midi_to_audio(str(settings.MEDIA_ROOT + '/musics/MuseNet-Composition.mid'), str(settings.MEDIA_ROOT + '/musics/melody.wav'))
+        #print( os.listdir('/media/musics/') )
+
+
+    def test_storage_corf(self):
+        bucket('dall-e-2-media')
+        def bucket(bucket_name):
+            """Prints out a bucket's metadata."""
+            # bucket_name = 'your-bucket-name'
+
+            storage_client = storage.Client()
+            bucket = storage_client.get_bucket(bucket_name)
+
+            print(f"ID: {bucket.id}")
+            print(f"Name: {bucket.name}")
+            print(f"Storage Class: {bucket.storage_class}")
+            print(f"Location: {bucket.location}")
+            print(f"Location Type: {bucket.location_type}")
+            print(f"Cors: {bucket.cors}")
+            print(f"Default Event Based Hold: {bucket.default_event_based_hold}")
+            print(f"Default KMS Key Name: {bucket.default_kms_key_name}")
+            print(f"Metageneration: {bucket.metageneration}")
+            print(
+                f"Public Access Prevention: {bucket.iam_configuration.public_access_prevention}"
+            )
+            print(f"Retention Effective Time: {bucket.retention_policy_effective_time}")
+            print(f"Retention Period: {bucket.retention_period}")
+            print(f"Retention Policy Locked: {bucket.retention_policy_locked}")
+            print(f"Requester Pays: {bucket.requester_pays}")
+            print(f"Self Link: {bucket.self_link}")
+            print(f"Time Created: {bucket.time_created}")
+            print(f"Versioning Enabled: {bucket.versioning_enabled}")
+            print(f"Labels: {bucket.labels}")

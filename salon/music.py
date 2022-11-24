@@ -179,14 +179,15 @@ def generateMusic(genre):
     # uploaded_file_url = fs.url(filename)
 
 
-    with open('media/musics/'+ output_file_name + '.mid', 'wb') as midi_file:
+    with open('media/musics/'+ output_file_name + '.wav', 'wb') as midi_file:
         midi_file.write(midi_data)
         midi_file.close()
 
-    #synth_path = Path('static\salon\sf2\FluidR3_GM.sf2') #음악을 풍부하게 해주는 파일
-    # FluidSynth().midi_to_audio(str(output_file_name + '.mid'), str(output_file_name + '.wav'))
+    # synth_path = Path('static\salon\sf2\FluidR3_GM.sf2') #음악을 풍부하게 해주는 파일
+    #FluidSynth().
+    # midi_to_audio(str(output_file_name + '.mid'), str(output_file_name + '.wav'))
     
     # print('Done! Enjoy! :)')
 
-    return str(output_file_name + '.mid')
+    return str(output_file_name + '.wav')
     # return uploaded_file_url

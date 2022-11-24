@@ -240,6 +240,7 @@ CSRF_USE_SESSIONS=True
 LOGOUT_REDIRECT_URL = '/'
 
 
+
 # Email 전송
 secret_file = os.path.join(BASE_DIR, 'secrets.json')
 
@@ -253,6 +254,7 @@ def get_secret(setting, secrets=secrets):
         error_msg = "Set the {} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
 
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
 EMAIL_HOST_USER = get_secret("EMAIL_HOST_USER")
@@ -261,7 +263,7 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-GS_BUCKET_NAME = 'dall-e-2-media'
+GS_BUCKET_NAME = 'dall-e-2-contents'
 STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
