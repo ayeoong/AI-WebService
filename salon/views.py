@@ -20,12 +20,6 @@ from salon.utils import uuid_name_upload_to
 from django.core.files.storage import default_storage
 from googletrans import Translator
 
-if settings.DEV_MODE or settings.TEST_MODE:
-    img_path = '/media/images/'
-    mus_path = '/media/musics/'
-else:
-    img_path = 'https://storage.googleapis.com/dall-e-2-contents/images/'
-    mus_path = 'https://storage.googleapis.com/dall-e-2-contents/musics/'
 
 def home(request):
     return render(request, 'salon/index.html', {})
