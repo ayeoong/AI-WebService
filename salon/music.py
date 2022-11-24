@@ -1,8 +1,7 @@
 import os
 import json
 import requests
-# from django.core.files.storage import FileSystemStorage
-from midi2audio import FluidSynth
+from salon.utils import uuid_name_upload_to
 from importlib import import_module
 TMIDIX = import_module('tegridy-tools.tegridy-tools.TMIDIX')
 
@@ -146,7 +145,7 @@ def generateMusic():
     number_of_ticks_per_quarter = 1000
 
     list_of_MIDI_patches = [0, 24, 32, 40, 42, 46, 56, 71, 73, 0, 0, 0, 0, 0, 0, 0]
-    output_file_name = FNAME
+    output_file_name = uuid_name_upload_to(None, FNAME + '.mid')
     text_encoding='ISO-8859-1'
 
     output_header = [number_of_ticks_per_quarter,
@@ -174,21 +173,9 @@ def generateMusic():
 
     midi_data = TMIDIX.opus2midi(output, text_encoding)
 
-    # fs = FileSystemStorage()
-    # filename = fs.save(output_file_name, midi_data)
-    # uploaded_file_url = fs.url(filename)
-
-
-    with open('media/musics/'+ output_file_name + '.mid', 'wb') as midi_file:
+    with open('media/musics/'+ output_file_name, 'wb') as midi_file:
         midi_file.write(midi_data)
         midi_file.close()
+ 
+    return output_file_name
 
-    # synth_path = Path('static\salon\sf2\FluidR3_GM.sf2')
-    # FluidSynth().midi_to_audio(str(output_file_name + '.mid'), str(output_file_name + '.wav'))
-    # FluidSynth(synth_path, 16000).midi_to_audio(str(output_file_name + '.mid'), str(output_file_name + '.wav'))
-    # display(Audio(str(output_file_name + '.wav'), rate=16000))
-    #
-    # print('Done! Enjoy! :)')
-
-    return str(output_file_name + '.wav')
-    # return uploaded_file_url

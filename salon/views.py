@@ -22,6 +22,19 @@ from salon.utils import uuid_name_upload_to
 from salon.music import generateMusic
 from googletrans import Translator
 
+def lambda_handler(event, context):
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': 'http://wik.iptime.org/moongh0825/',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+        },
+        'body': json.dumps('Hello from Lambda!')
+    }
+
+def test(request):
+    return render(request, 'salon/test.html')
 
 def home(request):
     return render(request, 'salon/index.html', {})
@@ -108,8 +121,8 @@ def result_model(request):
     res = requests.get(image_url)
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
 
-    # music_file = generateMusic()
-    music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
+    music_file = generateMusic()
+    # music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
     # mus_filename = uuid_name_upload_to(None, music_file)
     mus_filename = music_file
 
