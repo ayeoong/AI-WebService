@@ -11,7 +11,7 @@ urlpatterns = [
     path('art_like/', views.art_like, name='art_like'),
     path('<str:user_name>/', views.mypage, name='mypage'), # <str:user_name> or <int:user_id>
 ]
-
+ 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

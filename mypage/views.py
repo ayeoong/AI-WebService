@@ -83,14 +83,26 @@ def send_email(request):
 
 ### user name으로 구현
 # 타인 접속 or 로그인 하지 않았을 때, opage.html 화면 보여줌
-# current_user 현재 사용하고 있는 유저, exist_user = 존재하는 유저 네임
+# current_user 현재 로그인한 유저, exist_user = 존재하는 유저 네임
 def mypage(request, user_name):
     current_user = request.user
     print(user_name)
     try:
         exist_user = User.objects.get(username=user_name)
         images = ArtUploadModel.objects.filter(user=exist_user, kind=1)
-        context = {'userid':exist_user.username, 'images':images}
+
+        likeset = ArtLike.objects.filter(art__user=exist_user).filter(user=current_user)
+        likeset = [like.art for like in likeset]
+        print( '==========likeset :', likeset ) 
+
+        image_likes = []
+        for img in images:
+            if img in likeset:
+                image_likes.append(True)  # find like
+            else:
+                image_likes.append(False) # not like img
+
+        context = {'userid':exist_user.username, 'images':zip(images, image_likes)}
         return render(request, 'mypage/mypage.html', context)
     
     except Exception as e:
@@ -123,8 +135,7 @@ def find_id(request):
 @csrf_exempt
 def art_like(request):
     if request.method == 'POST':
-        user = request.user; print('==========', user)
-
+        current_user = request.user; print('==========', current_user)
         json_data = json.loads( request.body )
         print(json_data)
         # username = json_data['username']
@@ -132,16 +143,16 @@ def art_like(request):
 
         # user = User.objects.get(username=username)
         art = ArtUploadModel.objects.get(id=art_id)
-        print(user, art)
+        print(current_user, art)
 
         is_like = False
-        artlikes = ArtLike.objects.filter(user=user, art=art)
+        artlikes = ArtLike.objects.filter(user=current_user, art=art)
         if len(artlikes) <= 0:
-            ArtLike(user=user, art=art).save()
+            ArtLike(user=current_user, art=art).save()
             is_like = True
         else:
             artlikes[0].delete()
-            
+
         like_count = ArtLike.objects.filter(art=art).count()
         print( like_count )
 
@@ -151,4 +162,5 @@ def art_like(request):
     
     data = {'result':'kwang'}
     return JsonResponse(data)
+
 

@@ -29,6 +29,6 @@ class ArtLike(models.Model):
 
     def __str__(self):
         return f'{self.art.name} {self.user.username}'
-    
+     
     # class Meta:
     #     db_table = 'like_count'

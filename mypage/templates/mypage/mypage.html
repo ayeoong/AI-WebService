@@ -34,7 +34,7 @@
     <div class="img">
       <div class="container">
 
-      {% for img in images %}
+      {% for img, islike in images %}
         <div class="btn-open-popup">
           <img class="tn-img" src="{{img.thumbnail}}">
           <img class="test ori-img" src="{{img.filename}}" alt="filename" style="width: 500px; display: none;">
@@ -42,7 +42,11 @@
         </div>
         <p>
           <button type="button" class="btn-like" onclick="like_count_on(this, '{{img.id}}')">
+          {% if islike %}
+            <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
+          {% else %}
             <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
+          {% endif %}
           </button>
         </p>
         

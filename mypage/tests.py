@@ -43,4 +43,30 @@ class MypageTestClass(TestCase):
     def save_toggle_like(self, user, art):
         artlikes = ArtLike.objects.filter(user=user, art=art)
         ArtLike(user=user, art=art).save() if len(artlikes) <= 0 else artlikes[0].delete()
+    
+    def test_like_orm(self):
+        owner_user = User.objects.get(username='tester')
+        like_user = User.objects.get(username='tester2')
+        art = ArtUploadModel.objects.get(id=1)
+
+        self.save_toggle_like(like_user, art)
+        self.save_toggle_like(like_user, art)
+
+        images = ArtUploadModel.objects.filter(user=owner_user)
+
+        likeset = ArtLike.objects.filter(art__user=owner_user).filter(user=like_user)
+        likeset = [like.art for like in likeset]
+        print( likeset ) 
+
+        for img in images:
+            if img in likeset:
+                print('find like', img)
+            else:
+                print('not like img')
+
+        print( str(ArtLike.objects.filter(art__user=owner_user).filter(user=like_user).query) )
+
+
+
+
 
