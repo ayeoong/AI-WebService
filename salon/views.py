@@ -33,9 +33,6 @@ def lambda_handler(event, context):
         'body': json.dumps('Hello from Lambda!')
     }
 
-def test(request):
-    return render(request, 'salon/test.html')
-
 def home(request):
     return render(request, 'salon/index.html', {})
 
