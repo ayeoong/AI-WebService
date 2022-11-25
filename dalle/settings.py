@@ -14,14 +14,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 import os, json
-import nltk
-
-# 먼저 실행되어야 할 것
-# nltk.download('punkt')
-# nltk.download('averaged_perceptron_tagger')
-# nltk.download('wordnet')
-# nltk.download('omw-1.4')
-# nltk.download('stopwords')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,7 +36,6 @@ DEBUG = True
 INSTALLED_APPS = [
     'salon',
     'mypage',
-    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,7 +45,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -127,7 +117,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -160,36 +150,6 @@ CSRF_HEADER_NAME = 'X-XSRF-TOKEN'
 CSRF_USE_SESSIONS=True
 LOGOUT_REDIRECT_URL = '/'
 
-
-#CORS
-# CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = False
-CORS_ALLOWED_ORIGINS = ['http://127.0.0.1:8000',
-                        'https://storage.googleapis.com',
-                        'http://dall-e-2.wl.r.appspot.com']
-CORS_ORIGINS_WHITELIST = ['http://127.0.0.1:8000',
-                        'https://storage.googleapis.com',
-                        'http://dall-e-2.wl.r.appspot.com']
-CORS_ALLOW_METHODS = [
-    "DELETE",
-    "GET",
-    "OPTIONS",
-    "PATCH",
-    "POST",
-    "PUT",
-]
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "accept-encoding",
-    "authorization",
-    "content-type",
-    "dnt",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-]
 
 # Email 전송
 secret_file = os.path.join(BASE_DIR, 'secrets.json')

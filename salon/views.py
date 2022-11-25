@@ -1,10 +1,8 @@
 from django.shortcuts import render
 import json
-from urllib.request import urlopen
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from django.contrib import auth
-from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel
+from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel, AutoArtUploadModel
 import os
 import openai
 from PIL import Image
@@ -17,21 +15,12 @@ from nltk.stem import WordNetLemmatizer
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import time
-from . import music
 from salon.utils import uuid_name_upload_to
 from salon.music import generateMusic
 from googletrans import Translator
+from datetime import timedelta
+from django.utils import timezone
 
-def lambda_handler(event, context):
-    return {
-        'statusCode': 200,
-        'headers': {
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': 'http://wik.iptime.org/moongh0825/',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-        },
-        'body': json.dumps('Hello from Lambda!')
-    }
 
 def home(request):
     return render(request, 'salon/index.html', {})
@@ -43,12 +32,15 @@ def main(request):
 def index(request):
     keywords = ['가장 많이 검색된 키워드', 'Best 작품']
     best_kw_list = KeywordModel.objects.all().order_by('-input_num')[:10]
-    art_kw_list = []
+    art_kw_img_list = []
+    art_kw_mus_list = []
     for best_kw in best_kw_list:
-        art_kw_list.extend(ArtKeywordModel.objects.filter(keyword=best_kw))
-    print(art_kw_list)
-    image = set([imgkey.art for imgkey in art_kw_list])
-    return render(request, 'salon/home.html', {'keywords':keywords, 'image':image})
+        art_kw_img_list.extend(ArtKeywordModel.objects.filter(keyword=best_kw).filter(art__kind=1))
+        art_kw_mus_list.extend(ArtKeywordModel.objects.filter(keyword=best_kw).filter(art__kind=2))
+    print(art_kw_img_list, art_kw_mus_list)
+    images = set([artkey.art for artkey in art_kw_img_list])
+    musics = set([artkey.art for artkey in art_kw_mus_list])
+    return render(request, 'salon/home.html', {'keywords':keywords, 'arts':zip(images, musics)})
 
 def search(request):
     if request.method == 'POST':
@@ -118,15 +110,8 @@ def result_model(request):
     res = requests.get(image_url)
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
 
-    music_file = generateMusic()
+    mus_filename = generateMusic()
     # music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
-    # mus_filename = uuid_name_upload_to(None, music_file)
-    mus_filename = music_file
-
-    img_filename = '/media/images/' + img_filename
-    img_tn_file = '/media/images/' + img_tn_file
-    mus_filename = '/media/musics/' + mus_filename
-
 
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
     return JsonResponse(data)
@@ -152,6 +137,10 @@ def save_img(image, filename):
 
 # 출력창
 def result(request):
+    if request.session.get('auto_save'):
+        context = request.session['test_keyword']
+        return render(request, 'salon/result.html', context)
+    
     text = translate(request.POST.get('input_text'))
     mus_filename = request.POST.get('mus_file')
     img_filename = request.POST.get('img_file')
@@ -159,16 +148,27 @@ def result(request):
 
     # 텍스트 -> 태그화 리스트
     no_stops = get_taglist(text)
-    
+
+    auto_save_art_id_list = []
+
+    art = AutoArtUploadModel(kind=1, name=text, filename=img_filename, thumbnail=img_tn_filename, input_text=text)
+    art.save()
+    auto_save_art_id_list.append(art.id)
+
+    art = AutoArtUploadModel(kind=2, name=text+"_music", filename=mus_filename, input_text=text)
+    art.save()
+    auto_save_art_id_list.append(art.id)
+    print( auto_save_art_id_list )
+
     context = {'text': text, 
                 'img_file':img_filename, 
                 "music_file":mus_filename, 
-                # 'img_url':image_url,
                 'img_tn_file':img_tn_filename,
                 "tags":no_stops,
     }
 
     request.session['test_keyword'] = context
+    request.session['auto_save'] = auto_save_art_id_list
 
     return render(request, 'salon/result.html', context)
 
@@ -192,14 +192,6 @@ def get_taglist(text):
     stopwords_list = set(stopwords.words('english'))
     no_stops = [word for word in lemmatized_words if not word in stopwords_list]
     return no_stops
-    # nltk_url = 'http://192.168.1.127:5000/'   # 배포 주소
-    # text_spapce = text.replace(' ', '%20')
-    # url_req = nltk_url + text_spapce
-
-    # f = urlopen(url_req)
-    # with f as url:
-    #     data = json.loads(url.read().decode())['tokens']
-    # return data
 
 
 def save_result(request):
@@ -224,6 +216,16 @@ def save_result(request):
         text = request.POST.get("input_text")
         favorite = request.POST.get("favorite")
         thumbnail = context['img_tn_file']
+
+        # fav_ind_img = {}
+        # fav_ind_img['1'] = "1"
+        # fav_ind_img['2'] = "0"
+        # fav_ind_img['3'] = "3"
+
+        # fav_ind_mus = {}
+        # fav_ind_mus['1'] = "0"
+        # fav_ind_mus['2'] = "2"
+        # fav_ind_mus['3'] = "3"
  
         for filepath in selected:
             art = ArtUploadModel(kind=art_dict[filepath[-3:]], user=user, name=text, filename=filepath, input_text=text)
@@ -249,3 +251,29 @@ def save_result(request):
         return render(request, 'salon/save_result.html', {'files':selected})
     
     return render(request, 'salon/save_result.html', {})
+
+
+def delete_autoart(self):
+    minutes = 1
+    queryset = AutoArtUploadModel.objects.filter(uploaded_at__lte=(timezone.now() - timedelta(minutes=minutes)))
+    delete_filename = list(queryset.values_list('filename'))
+    delete_thumbnail = list(queryset.values_list('thumbnail'))
+    queryset.delete() # DB 삭제
+
+    delete_filename = [file for (file,) in delete_filename]
+    delete_thumbnail = [tn for (tn,) in delete_thumbnail]
+    delete_filename.extend(delete_thumbnail)
+    for file in delete_filename:
+
+        if file[-3:] == 'jpg':
+            images_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'images'), file)
+            print(images_path)
+            os.remove(images_path) # 파일 삭제
+
+        elif file[-3:] == 'mid':
+            musics_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'musics'), file) # /media/musics/MusenetComposition.mid
+            print(musics_path)
+            os.remove(musics_path)
+    
+    result = {'delete_count':len(delete_filename) + len(delete_thumbnail), 'filenames':delete_filename + delete_thumbnail}
+    return JsonResponse(result, safe=False)

@@ -7,9 +7,10 @@
     <link rel="icon" href="{% static 'salon/images/logo.png' %}" type="image/x-icon" sizes="16x16">
     <title>Gallery</title>
   </head>
+  {% include 'shared/_hp.html' %}
   <body>
     <div>
-      <h2>저장이 완료되었습니다.</h2>
+      <h2>마이페이지에 저장이 완료되었습니다.</h2>
     </div>
     <div>
         <!-- <ul>
@@ -18,7 +19,6 @@
         {% for filename in files %}
         <button value="download"><a type='button' href="/media/{{filename}}" class='download'>{{filename}}</a></button>
         {% endfor %}
-
       </div>
   </body>
 </html>

@@ -10,7 +10,7 @@
       {% for keyword in keywords %}
       <p class="keyword-area">{{ keyword }}</p>
       <div class="items">
-        {% for img in image %}
+        {% for img, mus in arts %}
         {% if img.kind == 1 %}
         <div class="btn-open-popup item item{{forloop.counter}}">
           <img class="sample-img" src="{{img.thumbnail}}" alt="thumbnail">
