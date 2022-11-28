@@ -32,15 +32,24 @@ def main(request):
 def index(request):
     keywords = ['가장 많이 검색된 키워드', 'Best 작품']
     best_kw_list = KeywordModel.objects.all().order_by('-input_num')[:10]
-    art_kw_img_list = []
-    art_kw_mus_list = []
+    art_kw_img_dict = {}
+    art_kw_mus_dict = {}
+    kw_imgs = []
+    kw_muss = []
     for best_kw in best_kw_list:
-        art_kw_img_list.extend(ArtKeywordModel.objects.filter(keyword=best_kw).filter(art__kind=1))
-        art_kw_mus_list.extend(ArtKeywordModel.objects.filter(keyword=best_kw).filter(art__kind=2))
-    print(art_kw_img_list, art_kw_mus_list)
-    images = set([artkey.art for artkey in art_kw_img_list])
-    musics = set([artkey.art for artkey in art_kw_mus_list])
-    return render(request, 'salon/home.html', {'keywords':keywords, 'arts':zip(images, musics)})
+        # art_kw_img_list.extend(ArtKeywordModel.objects.filter(art__kind=1, keyword=best_kw))
+        # art_kw_mus_list.extend(ArtKeywordModel.objects.filter(art__kind=2, keyword=best_kw))
+        kw_imgs.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=1, keyword=best_kw))
+        kw_muss.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=2, keyword=best_kw))
+    # images = list(set([artkey.art for artkey in art_kw_img_list]))[:10]
+    # musics = list(set([artkey.art for artkey in art_kw_mus_list]))[:10]
+    # print(images, musics)
+    # for keyword in keywords:
+    #     art_kw_img_dict[keyword] = kw_imgs
+    #     art_kw_mus_dict[keyword] = kw_muss
+    print('-------------->', kw_imgs )
+    print('-------------->', kw_muss )
+    return render(request, 'salon/home.html', {'images': kw_imgs, 'musics': kw_muss })
 
 def search(request):
     if request.method == 'POST':

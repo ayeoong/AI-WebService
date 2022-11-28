@@ -1,19 +1,11 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-<<<<<<< HEAD
-from salon.models import ArtUploadModel, KeywordModel, ArtKeywordModel
-from salon.utils import uuid_name_upload_to
-from googletrans import Translator
-import os
-from django.conf import settings
-=======
 from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel, AutoArtUploadModel
 from salon.utils import uuid_name_upload_to
 from googletrans import Translator
 from datetime import datetime, timedelta, timezone
 from django.conf import settings
 import os
->>>>>>> d1001629154b01ad838e02959abdcb608054a572
 
 
 # Create your tests here.
@@ -199,3 +191,12 @@ class YourTestClass(TestCase):
         os.remove(filepath) # 'test1.jpg'삭제
         print( filename in os.listdir(images_path) ) # 'test1.jpg'이 images_path에 존재? => False
         # print( os.listdir(images_path) ) images_path에 존재하는 파일을 프린트함
+
+    def test_get_art(self):
+        user = User.objects.get(username='testuser')
+        art = ArtUploadModel(kind=1, user=user, name='test', filename='test.jpg', thumbnail='test_tn.jpg', input_text='test')
+        # print(art.fileurl())
+        art.save()
+        images = ArtUploadModel.objects.filter(user=user, kind=1)
+        print( type(images[0]) )
+        print( images[0].fileurl() )

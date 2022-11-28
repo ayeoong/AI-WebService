@@ -25,6 +25,19 @@ class ArtUploadModel(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def fileurl(self):
+        if self.kind == 1:
+            return '/media/images/' + self.filename
+        else:
+            return '/media/musics/' + self.filename
+    
+    def thumbnailurl(self):
+        if self.kind == 1:
+            return '/media/images/' + self.thumbnail
+        else:
+            return '/media/musics/' + self.thumbnail
+        
 
 class ArtKeywordModel(models.Model):
     art = models.ForeignKey(ArtUploadModel, on_delete=models.CASCADE)
