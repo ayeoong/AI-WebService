@@ -154,6 +154,8 @@ def art_like(request):
             artlikes[0].delete()
 
         like_count = ArtLike.objects.filter(art=art).count()
+        art.like_count = like_count
+        art.save()
         print( like_count )
 
         data = {'result':'successful', 'like_count': like_count, 'is_like':is_like}
