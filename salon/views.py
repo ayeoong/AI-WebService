@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib import auth
 from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel, AutoArtUploadModel
@@ -138,41 +138,44 @@ def save_img(image, filename):
 
 # 출력창
 def result(request):
-    if request.session.get('auto_save'):
-        context = request.session['test_keyword']
+    try:
+        if request.session.get('auto_save'):
+            context = request.session['test_keyword']
+            return render(request, 'salon/result.html', context)
+        
+        text = request.POST.get('input_text')
+        mus_filename = request.POST.get('mus_file')
+        img_filename = request.POST.get('img_file')
+        img_tn_filename = request.POST.get('img_tn_file')
+
+        # 텍스트 -> 태그화 리스트
+        no_stops = get_taglist(text)
+
+        auto_save_art_id_list = []
+
+        art = AutoArtUploadModel(kind=1, name=text, filename=img_filename, thumbnail=img_tn_filename, input_text=text)
+        art.save()
+        auto_save_art_id_list.append(art.id)
+
+        art = AutoArtUploadModel(kind=2, name=text+"_music", filename=mus_filename, input_text=text)
+        art.save()
+        auto_save_art_id_list.append(art.id)
+        print( auto_save_art_id_list )
+
+        context = {'text': text, 
+                    'img_file':img_filename, 
+                    "music_file":mus_filename, 
+                    # 'img_url':image_url,
+                    'img_tn_file':img_tn_filename,
+                    "tags":no_stops,
+        }
+
+        request.session['test_keyword'] = context
+        request.session['auto_save'] = auto_save_art_id_list
+
         return render(request, 'salon/result.html', context)
-    
-    text = request.POST.get('input_text')
-    mus_filename = request.POST.get('mus_file')
-    img_filename = request.POST.get('img_file')
-    img_tn_filename = request.POST.get('img_tn_file')
-
-    # 텍스트 -> 태그화 리스트
-    no_stops = get_taglist(text)
-
-    auto_save_art_id_list = []
-
-    art = AutoArtUploadModel(kind=1, name=text, filename=img_filename, thumbnail=img_tn_filename, input_text=text)
-    art.save()
-    auto_save_art_id_list.append(art.id)
-
-    art = AutoArtUploadModel(kind=2, name=text+"_music", filename=mus_filename, input_text=text)
-    art.save()
-    auto_save_art_id_list.append(art.id)
-    print( auto_save_art_id_list )
-
-    context = {'text': text, 
-                'img_file':img_filename, 
-                "music_file":mus_filename, 
-                # 'img_url':image_url,
-                'img_tn_file':img_tn_filename,
-                "tags":no_stops,
-    }
-
-    request.session['test_keyword'] = context
-    request.session['auto_save'] = auto_save_art_id_list
-
-    return render(request, 'salon/result.html', context)
+    except Exception:
+        return HttpResponse("Created artwork not found.")
 
 def get_taglist(text):
     only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
@@ -270,7 +273,7 @@ def delete_autoart(self):
             # os.remove(images_tn_path)
 
         elif file[-3:] == 'mid':
-            musics_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'musics'), file) # /media/musics/MusenetComposition.mid
+            musics_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'musics'), file)
             print(musics_path)
             os.remove(musics_path)
     
