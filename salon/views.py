@@ -172,8 +172,8 @@ def save_img_and_thumbnail(content, img_filename):
     save_img(img_file, img_tn_filename)  # 섬네일저장
 
 
-    img_filename = img_path + img_filename
-    img_tn_filename = img_path + img_tn_filename
+    # img_filename = img_path + img_filename
+    # img_tn_filename = img_path + img_tn_filename
 
     return img_filename, img_tn_filename
 
@@ -197,7 +197,7 @@ def save_music(music_file, music_filename):
         with default_storage.open('/musics/' + music_filename, 'w') as f:
             f.write(music_file)
 
-    music_filename = music_path + music_filename
+    # music_filename = music_path + music_filename
 
 
 
