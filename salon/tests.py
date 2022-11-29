@@ -1,10 +1,11 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from salon.models import ArtUploadModel, KeywordModel, ArtKeywordModel
+from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel, AutoArtUploadModel
 from salon.utils import uuid_name_upload_to
 from googletrans import Translator
-import os
+from datetime import datetime, timedelta, timezone
 from django.conf import settings
+import os
 
 
 # Create your tests here.
@@ -148,3 +149,54 @@ class YourTestClass(TestCase):
 
     def test_del_storage(self):
         os.remove(os.path.join(settings.MEDIA_ROOT, 'images/banana.jpg'))
+
+    def test_auto_save(self):
+        today = datetime.now()
+        for i in range(5):
+            addday = today - timedelta(days=i)
+            a = AutoArtUploadModel.objects.create(name=str(i), uploaded_at=addday, filename=f'test{i}.jpg')
+            a.uploaded_at = addday
+            a.save()
+        
+        delete_result = self.delete_autoart()
+        print('delete art :', delete_result )
+  
+        queryset = AutoArtUploadModel.objects.all()
+        for q in queryset:
+            print(q.uploaded_at)
+
+    def delete_autoart(self, day=1): # DB의 임시저장파일 삭제 및 삭제할 실제파일 print
+        queryset = AutoArtUploadModel.objects.filter(uploaded_at__lte=(datetime.now() - timedelta(days=day)))
+        delete_filename = list(queryset.values_list('filename'))
+        queryset.delete()
+
+        print('delete art :', delete_filename ) # 튜플로 옴 ( (파일,), (파일,), ..., (파일,) )
+        delete_filename = [file for (file,) in delete_filename]
+        for file in delete_filename:
+            print(file)
+        
+        return {'delete_count':len(delete_filename), 'filenames':delete_filename}
+    
+    def test_delete_file(self): # 실제파일 삭제
+        filename = 'test1.jpg'
+        images_path = os.path.join(settings.MEDIA_ROOT, 'images') # /media + 'images'
+        filepath = os.path.join(images_path, filename) # /media/images + filename
+        print(filepath)
+
+        with open(filepath, 'w') as f: # 'test1.jpg'생성
+            f.write('abcdefg')
+        
+        print( filename in os.listdir(images_path) ) # 'test1.jpg'이 images_path에 존재? => True
+
+        os.remove(filepath) # 'test1.jpg'삭제
+        print( filename in os.listdir(images_path) ) # 'test1.jpg'이 images_path에 존재? => False
+        # print( os.listdir(images_path) ) images_path에 존재하는 파일을 프린트함
+
+    def test_get_art(self):
+        user = User.objects.get(username='testuser')
+        art = ArtUploadModel(kind=1, user=user, name='test', filename='test.jpg', thumbnail='test_tn.jpg', input_text='test')
+        # print(art.fileurl())
+        art.save()
+        images = ArtUploadModel.objects.filter(user=user, kind=1)
+        print( type(images[0]) )
+        print( images[0].fileurl() )

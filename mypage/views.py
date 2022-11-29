@@ -115,8 +115,8 @@ def delete_item(request, user_name):
             print(del_item)
 
             # media/images 폴더 안의 이미지 삭제
-            filename = "images/" + str(del_item.filename.split('/')[-1:][0])
-            thumbnail = "images/" + str(del_item.thumbnail.split('/')[-1:][0])
+            filename = "images/" + del_item.filename
+            thumbnail = "images/" + del_item.thumbnail
             print(filename, thumbnail)
             os.remove(os.path.join(settings.MEDIA_ROOT, filename))
             os.remove(os.path.join(settings.MEDIA_ROOT, thumbnail))

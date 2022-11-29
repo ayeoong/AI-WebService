@@ -7,30 +7,29 @@
     </div>
       
     <main class="grid-item main">
-      {% for keyword in keywords %}
-      <p class="keyword-area">{{ keyword }}</p>
+      <p class="keyword-area">{{ key }}</p>
       <div class="items">
-        {% for img in image %}
-        {% if img.kind == 1 %}
+        {% for img in images %}   
         <div class="btn-open-popup item item{{forloop.counter}}">
-          <img class="sample-img" src="{{img.thumbnail}}" alt="thumbnail">
-          <img class="test ori-img" src="{{img.filename}}" alt="filename" style="width: 500px; display: none;">
-          <p class="test input-text" style="display: none;">{{img.input_text}}</p>
-          <p class="test img-user" style="display: none;">created by... <a href="{% url 'mypage:mypage' img.user %}" style="display: inline;">@{{img.user}}</a></p>
+          <img class="sample-img" src="{{ img.thumbnailurl }}" alt="thumbnail">
+          <img class="test ori-img" src="{{ img.fileurl }}" alt="filename" style="width: 500px; display: none;">
+          <p class="test input-text" style="display: none;">{{ img.input_text }}</p>
+          <p class="test img-user" style="display: none;">created by... <a href="{% url 'mypage:mypage' img.user %}" style="display: inline;">@{{ img.user }}</a></p>
         </div>
-        {% endif %}
         {% endfor %}
       </div>
+
       <div class="items">
-        <audio id="myAudio" controls style="display: none">
-          <source src="/media/sample.mp3" type="audio.mpeg">
-        </audio>
-        <div class="item item-music" onclick="music_button('https://storage.cloud.google.com/dall-e-2-contents/musics/sample.mp3'); togglePlay();">Click to Listen!<br><strong>Music1</strong></div>
-        <div class="item item-music" onclick="music_button('https://storage.cloud.google.com/dall-e-2-contents/musics/sample2.mp3'); togglePlay();">Click to Listen!<br><strong>Music2</strong></div>
-        <div class="item item-music" onclick="music_button('https://storage.cloud.google.com/dall-e-2-contents/musics/sample3.mp3'); togglePlay();">Click to Listen!<br><strong>Music3</strong></div>
+        {% for mus in musics %}
+        <div class="item item-music">
+          <p class="mus-url" style="display: none;">{{ mus.fileurl }}</p>
+          <p>Click to Listen!<br><strong>{{ mus.input_text }}</strong></p>
+          <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font style="display: none;"/>
+        </div>
+        {% endfor %}
       </div>
       <hr>
-      {% endfor %}
+      
     </main> 
     <div class="modal">
       <div class="modal-body fade">
@@ -58,20 +57,25 @@
   
   <script src="{% static 'salon/js/modal.js' %}"></script>
   <script src="{% static 'salon/js/scroll.js' %}"></script>
-  <script src="{% static 'salon/js/index.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
   <script>
-    var myAudio = document.getElementById("myAudio");
-    var isPlaying = false;
+    
+    const musicItemList = document.querySelectorAll(".item-music");
+    let isPlaying = false;
 
-    function togglePlay() {
-      isPlaying ? myAudio.pause() : myAudio.play();
-    };
-
-    myAudio.onplaying = function() {
-      isPlaying = true;
-    };
-    myAudio.onpause = function() {
-      isPlaying = false;
-    };
+    musicItemList.forEach(musicItem =>
+      musicItem.addEventListener('click', (e) => {
+        var myAudio = e.currentTarget.querySelector('#myAudio')
+        console.log(myAudio);
+        if (isPlaying) {
+          myAudio.stop();
+          isPlaying = false;
+        } else {
+          myAudio.start();
+          isPlaying = true;
+        }
+      })
+    );
+    
   
   </script>

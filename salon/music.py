@@ -30,18 +30,10 @@ def generateMusic():
 	temperature = 1 #@param {type:"slider", min:0.1, max:2, step:0.1}
 	truncation = 0 #@param {type:"integer"}
 
-	INSTRUMENTS = ["piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano",
-					"piano", "piano", "piano", "piano", "piano",
-					"violin", "violin", "cello", "cello", "bass", "bass", "guitar", "guitar",
-					"flute", "flute", "clarinet", "clarinet", "trumpet", "trumpet", "harp", "harp",
-					'drum', 'drum']
-
-	TRACKS_OUT_INDEX = {"piano": 0, "violin": 3, "cello": 4, "bass": 2, "guitar": 1, "flute": 8,
-						"clarinet": 7, "trumpet": 6, "harp": 5, "drum": 9}
-
-	VOLUMES = [0, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 80, 0, 80, 0, 80, 0, 80, 0, 80,
-				0, 80, 0, 80, 0, 80, 0, 100, 0]
-
+	INSTRUMENTS = ["piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "violin", "violin", "cello", "cello", "bass", "bass", "guitar", "guitar", "flute", "flute", "clarinet", "clarinet", "trumpet", "trumpet", "harp", "harp", 'drum', 'drum']
+	TRACKS_OUT_INDEX = {"piano": 0, "violin": 3, "cello": 4, "bass": 2, "guitar": 1, "flute": 8, "clarinet": 7, "trumpet": 6, "harp": 5, "drum": 9}
+	VOLUMES = [0, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 80, 0, 80, 0, 80, 0, 80, 0, 80, 0, 80, 0, 80, 0, 80, 0, 100, 0]
+	
 	if use_loaded_custom_MIDI:
 		DELAY_MULTIPLIER = 10
 	else:
@@ -87,7 +79,7 @@ def generateMusic():
 	"nationalanthems","benjyshelton","ongcmu","crosbystillsnashyoung","smashingpumpkins","aaaaaaaaaaa","alanismorrisette","animenz","onedirection","nintendo","disneythemes","gunsnroses","rollingstones",
 	"juliancasablancas","abdelmoinealfa","berckmansdeoliveira","moviethemes","beachboys","davemathews","videogamethemes","moabberckmansdeoliveira","unknown","cameronleesimpson","johannsebastianbach",
 	"thecarpenters","elo","nightwish","blink182","emersonlakeandpalmer","tvthemes"]
-
+	
 	if genre == 'random':
 		pass
 		# genre = genreList[secrets.randbelow(len(genreList))]
@@ -184,6 +176,7 @@ def generateMusic():
 	number_of_ticks_per_quarter = 1000
 
 	list_of_MIDI_patches = [0, 24, 32, 40, 42, 46, 56, 71, 73, 0, 0, 0, 0, 0, 0, 0]
+	output_file_name = uuid_name_upload_to(None, FNAME + '.mid')
 	text_encoding='ISO-8859-1'
 
 	output_header = [number_of_ticks_per_quarter,
@@ -210,5 +203,5 @@ def generateMusic():
 	output = output_header + [patch_list + song]
 
 	midi_data = TMIDIX.opus2midi(output, text_encoding)
-
+	
 	return midi_data

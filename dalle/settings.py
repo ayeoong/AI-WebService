@@ -104,7 +104,6 @@ else:
 INSTALLED_APPS = [
     'salon',
     'mypage',
-    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -114,7 +113,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -202,7 +200,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -234,6 +232,7 @@ CSRF_COOKIE_NAME = 'XSRF-TOKEN'
 CSRF_HEADER_NAME = 'X-XSRF-TOKEN'
 CSRF_USE_SESSIONS=True
 LOGOUT_REDIRECT_URL = '/'
+
 
 
 # Email 전송
