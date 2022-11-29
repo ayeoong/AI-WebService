@@ -10,15 +10,15 @@
     <div>
       <h2>결과 페이지 입니다.</h2>
     </div>
-    <img src="/media/images/{{img_file}}" alt="image">
-    <img src="/media/images/{{img_tn_file}}" alt="thumbnail">
+    <img src="{{ img_file.fileurl }}" alt="image">
+    <img src="{{ img_file.thumbnailurl }}" alt="thumbnail">
     <div>
       <strong>텍스트 내용: </strong>
       <p>{{text}}</p>
       <p>{{tags}}</p>
       <p>{{music_file}}</p>
 
-      <midi-player src="/media/musics/{{music_file}}" sound-font/>
+      <midi-player src="{{ music_file.fileurl }}" sound-font/>
     </div>
 
     <div>
@@ -66,9 +66,9 @@
     <div>
     <form method="post" action="{% url 'salon:save_result' %}">
       <input type="hidden" id="favorite" name="favorite" value="0">
-      <input type="hidden" id="input_text" name="input_text" value="{{text}}">
-      <input type="checkbox" id="selected" name="selected" value="{{img_file}}" onclick="toggleVisibility(this)">그림</checkbox>
-      <input type="checkbox" id="selected" name="selected" value="{{music_file}}" onclick="toggleVisibility(this)">음악</checkbox>
+      <input type="hidden" id="input_text" name="input_text" value="{{ text }}">
+      <input type="checkbox" id="selected" name="selected" value="image" onclick="toggleVisibility(this)">그림</checkbox>
+      <input type="checkbox" id="selected" name="selected" value="music" onclick="toggleVisibility(this)">음악</checkbox>
     {% if user.is_authenticated %} 
       <p><button id="save_button" disabled=true>마이페이지에 저장하기</button></p>
     </form>

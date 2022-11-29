@@ -28,15 +28,15 @@ class ArtUploadModel(models.Model):
     
     def fileurl(self):
         if self.kind == 1:
-            return '/media/images/' + self.filename
+            return settings.IMG_PATH + self.filename
         else:
-            return '/media/musics/' + self.filename
+            return settings.MUSIC_PATH + self.filename
     
     def thumbnailurl(self):
         if self.kind == 1:
-            return '/media/images/' + self.thumbnail
+            return settings.IMG_PATH + self.thumbnail
         else:
-            return '/media/musics/' + self.thumbnail
+            return settings.MUSIC_PATH + self.thumbnail
         
 
 class ArtKeywordModel(models.Model):
@@ -57,6 +57,18 @@ class AutoArtUploadModel(models.Model):
 
     def __str__(self):
         return self.name
+
+    def fileurl(self):
+        if self.kind == 1:
+            return settings.IMG_PATH + self.filename
+        else:
+            return settings.MUSIC_PATH + self.filename
+    
+    def thumbnailurl(self):
+        if self.kind == 1:
+            return settings.IMG_PATH + self.thumbnail
+        else:
+            return settings.MUSIC_PATH + self.thumbnail
 
     # def delete(self, *args, **kargs):
     #     # if self.filename:

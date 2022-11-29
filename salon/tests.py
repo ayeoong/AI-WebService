@@ -200,3 +200,22 @@ class YourTestClass(TestCase):
         images = ArtUploadModel.objects.filter(user=user, kind=1)
         print( type(images[0]) )
         print( images[0].fileurl() )
+
+    def test_auto_save_query(self):
+        auto_save_art_id_list = []
+
+        art_img = AutoArtUploadModel(kind=1, name='testimg', filename='testimg.jpg', thumbnail='testimg_tn.jpg', input_text='testimg')
+        art_img.save()
+        auto_save_art_id_list.append(art_img.id)
+
+        art_mus = AutoArtUploadModel(kind=2, name='test_music', filename='test_music.mid', input_text='test_music')
+        art_mus.save()
+        auto_save_art_id_list.append(art_mus.id)
+        print( auto_save_art_id_list )
+
+        queryset = AutoArtUploadModel.objects.filter(kind=1, id__in=auto_save_art_id_list)
+        print( queryset[0] )
+    
+    def test_int_to_bool(self):
+        print( int(True), int(False) )
+
