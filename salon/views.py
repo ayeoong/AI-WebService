@@ -20,6 +20,12 @@ from salon.utils import uuid_name_upload_to
 from django.core.files.storage import default_storage
 from googletrans import Translator
 
+if settings.DEV_MODE or settings.TEST_MODE:
+    img_path = '/media/images/'
+    music_path = '/media/musics/'
+else:
+    img_path = 'https://storage.googleapis.com/dall-e-2-contents/images/'
+    music_path = 'https://storage.googleapis.com/dall-e-2-contents/musics/'
 
 def home(request):
     return render(request, 'salon/index.html', {})
@@ -38,13 +44,18 @@ def index(request):
     image = set([imgkey.art for imgkey in art_kw_list])
     return render(request, 'salon/home.html', {'keywords':keywords, 'image':image})
 
+
+
+
 def search(request):
+
     if request.method == 'POST':
         search_word = request.POST['search']
         search_token_list = search_word.split(' ')
         search_user_list=[]
         search_result_list=[]
         search_imagekeys_list=[ArtKeywordModel]
+
         for search_token in search_token_list:
             search_user_list.extend(User.objects.filter(username__contains=search_token))
             search_result_list.extend(KeywordModel.objects.filter(word__contains=search_token))
@@ -61,6 +72,9 @@ def search(request):
     else:
         return render(request, 'salon/search.html', {})
 
+
+
+
 def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
     if settings.REAL_LIVE_MODE:
         openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
@@ -75,12 +89,16 @@ def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
         image_url = 'https://ifh.cc/g/5qCAX2.jpg'        
     return image_url
 
-def music_generateMusic():
-    # if settings.REAL_LIVE_MODE:
-    #    music.generateMusic() #실제 배포용만 음악 생성
-    # else:
-    mus_filename = 'MuseNet-Composition.mid'
-    return mus_filename
+
+
+def music_generation():
+    if settings.REAL_LIVE_MODE:
+        music_file = music.generateMusic() #실제 배포용만 음악 생성
+    else:
+        music_file = 'media\musics\MuseNet-Composition.mid'
+    return music_file
+
+
 
 def translate(prompt):
     translator = Translator()
@@ -103,24 +121,27 @@ def result_model(request):
     text = translate(json_data['text'])
 
     image_url = image_generation(text) #image_generation(text) # https://~~~.jpg 형식
+    music_file = music_generation() #generateMusic() # '~~~.mid' 형식
+
+
+
+    img_uuid =  uuid_name_upload_to(None, image_url)
+    img_filename = img_uuid
     
+    music_filename= img_uuid + '_music.mid'
+
     if settings.REAL_LIVE_MODE:
-        img_filename = uuid_name_upload_to(None, image_url) + '.jpg'
-    else:
-        img_filename = uuid_name_upload_to(None, image_url)
+        img_filename = img_filename + '.jpg'
+
+
 
     res = requests.get(image_url)
-    _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
+    img_filename, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
 
+    save_music(music_file, music_filename)
+    
 
-
-    music_file = music_generateMusic() #generateMusic() # '~~~.mid' 형식
-    #mus_filename = uuid_name_upload_to(None, music_file)
-    mus_filename = music_file
-    img_filename = img_path + img_filename
-    img_tn_file = img_path + img_tn_file
-    mus_filename = mus_path + mus_filename
-    data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
+    data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'music_file':music_filename}
     return JsonResponse(data)
 
 
@@ -134,47 +155,50 @@ def save_img_and_thumbnail(content, img_filename):
     img_file.thumbnail((300, 300))
     save_img(img_file, img_tn_filename)  # 섬네일저장
 
+
+    img_filename = img_path + img_filename
+    img_tn_filename = img_path + img_tn_filename
+
     return img_filename, img_tn_filename
 
 
 def save_img(image_file, filename):
     if settings.DEV_MODE or settings.TEST_MODE:
-        img_storage_path = img_path #setting.media_images
-        img_filepath = img_storage_path + filename
-        image_file.save(img_filepath, 'PNG')
+        image_file.save(image_file, 'PNG')
     else:
         with BytesIO() as output:  
             image_file.save(output, 'PNG')
             with default_storage.open('/images/' + filename, 'w') as f:
                 f.write(output.getvalue())
+    
 
-#공사중
-def save_mus(music_file, filename):
+
+def save_music(music_file, music_filename):
     if settings.DEV_MODE or settings.TEST_MODE:
-        mus_filepath = mus_path + filename
-
+        with open('media/musics/'+ music_filename, 'wb') as f:
+            f.write(music_file)
     else:
-        with BytesIO() as output:  
-            music.save(output, 'WAV')
-            with default_storage.open('/musics/' + filename, 'w') as f:
-                f.write(output.getvalue())
-#midi파일이 오면 컨버젼해서 저장
+        with default_storage.open('/musics/' + music_filename, 'w') as f:
+            f.write(music_file)
+
+    music_filename = music_path + music_filename
+
+
 
 
 # 출력창
 def result(request):
     text = translate(request.POST.get('input_text'))
-    mus_filename = request.POST.get('mus_file')
-    img_filename = request.POST.get('img_file')
+    music_filename = request.POST.get('music_file')
+    img_filename  = request.POST.get('img_file') 
     img_tn_filename = request.POST.get('img_tn_file')
 
     # 텍스트 -> 태그화 리스트
     no_stops = get_taglist(text)
     
     context = {'text': text, 
-                'img_file': img_filename, 
-                "music_file":mus_filename, 
-                # 'img_url':image_url,
+                'img_file': img_filename,
+                "music_file":music_filename,
                 'img_tn_file':img_tn_filename,
                 "tags":no_stops,
     }
