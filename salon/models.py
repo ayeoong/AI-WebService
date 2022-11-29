@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 
-
 # keywords
 class KeywordModel(models.Model):
     word = models.CharField(max_length=255, blank=True, unique=True, default='')
@@ -27,15 +26,15 @@ class ArtUploadModel(models.Model):
     
     def fileurl(self):
         if self.kind == 1:
-            return '/media/images/' + self.filename
+            return settings.IMG_PATH + self.filename
         else:
-            return '/media/musics/' + self.filename
+            return settings.MUSIC_PATH + self.filename
     
     def thumbnailurl(self):
         if self.kind == 1:
-            return '/media/images/' + self.thumbnail
+            return settings.IMG_PATH + self.thumbnail
         else:
-            return '/media/musics/' + self.thumbnail
+            return settings.MUSIC_PATH + self.thumbnail
         
 
 class ArtKeywordModel(models.Model):
