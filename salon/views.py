@@ -109,7 +109,8 @@ def result_model(request):
     res = requests.get(image_url)
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
 
-    mus_filename = generateMusic()
+    tags = get_taglist(text)
+    mus_filename = generateMusic(tags)
     # music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
 
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
