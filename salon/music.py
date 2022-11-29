@@ -204,9 +204,9 @@ def generateMusic():
 
 	midi_data = TMIDIX.opus2midi(output, text_encoding)
 
-	with open('media/musics/'+ output_file_name, 'wb') as midi_file:
-		midi_file.write(midi_data)
-		midi_file.close()
+	# with open('media/musics/'+ output_file_name, 'wb') as midi_file:
+	# 	midi_file.write(midi_data)
+	# 	midi_file.close()
  
-	return output_file_name
+	return midi_data
 

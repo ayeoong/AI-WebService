@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from urllib.request import urlopen
 import json
 from django.http import JsonResponse
 from django.contrib.auth.models import User
@@ -8,10 +9,6 @@ import openai
 from PIL import Image
 import requests
 from io import BytesIO
-import re
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import time
@@ -20,6 +17,16 @@ from salon.music import generateMusic
 from googletrans import Translator
 from datetime import timedelta
 from django.utils import timezone
+
+
+
+
+if settings.DEV_MODE or settings.TEST_MODE:
+    img_path = '/media/images/'
+    music_path = '/media/musics/'
+else:
+    img_path = 'https://storage.googleapis.com/dall-e-2-contents/images/'
+    music_path = 'https://storage.googleapis.com/dall-e-2-contents/musics/'
 
 
 def home(request):
@@ -104,12 +111,15 @@ def result_model(request):
     text = translate(json_data['text'])
 
     image_url = image_generation_beta(text) #image_generation(text) # https://~~~.jpg 형식
+    music_file = generateMusic()
+    
     img_filename = uuid_name_upload_to(None, image_url)
+    mus_filename = img_filename.replace('.jpg','.mid')
 
     res = requests.get(image_url)
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
+    save_music(music_file, mus_filename)
 
-    mus_filename = generateMusic()
     # music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
 
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
@@ -133,6 +143,14 @@ def save_img(image, filename):
     img_storage_path = 'media/images/' #setting.media_images
     img_filepath = img_storage_path + filename
     image.save(img_filepath, 'PNG')
+
+
+def save_music(music_file, music_filename):
+    if settings.DEV_MODE or settings.TEST_MODE:
+        with open('media/musics/'+ music_filename, 'wb') as f:
+            f.write(music_file)
+    music_filename = music_path + music_filename
+
 
 
 # 출력창
@@ -171,25 +189,15 @@ def result(request):
     return render(request, 'salon/result.html', context)
 
 def get_taglist(text):
-    only_english = re.sub('[^a-zA-Z]', ' ', text)   # 영어만 남기기
-    only_english_lower = only_english.lower()       # 대문자 -> 소
-    word_tokens =  nltk.word_tokenize(only_english_lower)   # 토큰화
-    tokens_pos = nltk.pos_tag(word_tokens)          # 품사 분류
-    
-    # 명사만 뽑기
-    NN_words = [word for word, pos in tokens_pos if 'NN' in pos]
+    nltk_url = 'https://silken-oxygen-369215.de.r.appspot.com/'   # 배포 주소
+    text_spapce = text.replace(' ', '%20')
+    url_req = nltk_url + text_spapce
 
-    # 원형 추출
-    wlem = WordNetLemmatizer()
-    lemmatized_words = []
-    for word in NN_words:
-        new_word = wlem.lemmatize(word)
-        lemmatized_words.append(new_word)
+    f = urlopen(url_req)
+    with f as url:
+        data = json.loads(url.read().decode())['tokens']
+    return data
 
-    # 불용어 제거 - stopwords_list 에 따로 추가 가능
-    stopwords_list = set(stopwords.words('english'))
-    no_stops = [word for word in lemmatized_words if not word in stopwords_list]
-    return no_stops
 
 
 def save_result(request):
