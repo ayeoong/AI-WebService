@@ -12,7 +12,7 @@
     </div>
     <div>
       <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-      <!-- <script type="text/javascript" src="{% static 'salon/js/progressBar.js' %}"></script> -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
       <script>
         var onceTimer;
         var step = 5;
@@ -83,7 +83,7 @@
         {% csrf_token %}
         <label for="name">Enter 4 to 30 characters:</label>
         <input type="text" id="title" name="title" required
-         minlength="4" maxlength="30" size="40"><br>
+         minlength="4" maxlength="30" size="40" placeholder="텍스트를 입력해주세요."><br>
         <button disabled id="btn_create" onclick="progress_start()">생성하기</button>
           <progress id="progressBar" value="0" min="0" max="100"></progress>
       <!-- </form> -->
