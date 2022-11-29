@@ -38,7 +38,7 @@
 
       {% for img, islike in images %}
         <div class="btn-open-popup">
-          <img class="tn-img" src="{{img.thumbnail}}">
+          <img class="tn-img" src="{{ img.thumbnail }}">
           <img class="test ori-img" src="{{img.filename}}" alt="filename" style="width: 500px; display: none;">
           <p class="test input-text" style="display: none;">{{img.input_text}}</p>
         </div>
@@ -87,9 +87,14 @@
   const modalClose = document.querySelector('.modal-close');
   const btnOpenPopupList = document.querySelectorAll('.btn-open-popup');
   const modalItem = document.querySelector('.modal-items');
+  // const likebtn = document.getElementById('btn-like')
+  let btn_open_popup = btnOpenPopupList[0];
+  let testlike, testlikecount;
 
   btnOpenPopupList.forEach(btnOpenPopup =>
     btnOpenPopup.addEventListener('click', (e) => {
+      btn_open_popup = e.currentTarget;
+
       modal.classList.toggle('show');
 
       if (modal.classList.contains('show')) {
@@ -99,35 +104,44 @@
       var testImg = originImg.cloneNode(true)
       var inputText = e.currentTarget.querySelector('.input-text');
       var testText = inputText.cloneNode(true)
-      var btn_like = e.currentTarget.querySelector('.div-items') 
+      testlike = e.currentTarget.parentElement.querySelector('.btn-like') 
+      //var testlike = button_like.cloneNode(true)
+      testlikecount = e.currentTarget.parentElement.querySelector('#likecount') 
+      //var testlikecount = likecount.cloneNode(true)
 
       testImg.style.display = 'block'
       testText.style.display = 'block'
+      testlike.style.cssText = 'position:absolute; right:40px; bottom:20px;'
+
       modalItem.appendChild(testText)
       modalItem.appendChild(testImg)
+      modalItem.appendChild(testlike)
+      modalItem.appendChild(testlikecount)
 
-      btn_like.addEventListener('click', (event) => {
-        console.log(btn_like.id);
-        axios.post("mypage/{{userid}}/like_count/", {'btn_like':btn_like.id})
-                  .then( draw_like_count )
-                  .catch(function (error) { console.log(error) });
-      }
-      )
     })
   );
 
   modalClose.addEventListener('click', (event) => {
+    print('1---------> ' + btn_open_popup)
+    btn_open_popup.appendChild(testlike);
+    btn_open_popup.appendChild(testlikecount);
+    
     modal.classList.toggle('show');
     while (modalItem.firstChild) {
       modalItem.removeChild(modalItem.firstChild);
     } 
     if (!modal.classList.contains('show')) {
-        body.style.overflow = 'auto';
+      body.style.overflow = 'auto';
     }
   });
-
+  
   modal.addEventListener('click', (event) => {
+    print('2---------> ' + btn_open_popup)
+
     if (event.target === modal) {
+      btn_open_popup.appendChild(testlike);
+      btn_open_popup.appendChild(testlikecount);
+
       modal.classList.toggle('show');
       while (modalItem.firstChild) {
         modalItem.removeChild(modalItem.firstChild);
