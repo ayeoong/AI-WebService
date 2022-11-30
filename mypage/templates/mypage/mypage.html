@@ -20,7 +20,7 @@
       like_count = res.data['like_count']
       is_like = res.data['is_like']
 
-      document.getElementById('likecount').innerText = like_count
+      target.parentElement.querySelector('#likecount') .innerText = like_count
 
       if (is_like) {
         target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
@@ -43,15 +43,13 @@
           <p class="test input-text" style="display: none;">{{img.input_text}}</p>
           <div>
           <b id="likecount">{{img.like_count}}</b>
-          <p>
-            <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{img.id}}');">
-              {% if islike %}
-              <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
-              {% else %}
-              <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
-              {% endif %}
-            </button>
-          </p>
+          <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{img.id}}');">
+            {% if islike %}
+            <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
+            {% else %}
+            <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
+            {% endif %}
+          </button>
         </div>
         </div>
         
