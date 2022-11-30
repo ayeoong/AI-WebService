@@ -10,6 +10,9 @@ from salon.music import generateMusic
 from googletrans import Translator
 from google.cloud import storage
 
+import six
+from google.cloud import translate_v2 as translate
+
 
 
 def uuid_name_upload_to(instance, filename): # instance는 이미지, 음악 파일
@@ -52,16 +55,17 @@ def music_generation():
 
 
 
-def translate(prompt):
-    translator = Translator()
-    which_lang = translator.detect(prompt).lang
-    if which_lang != 'en':
-        return translator.translate(text=prompt, dest='en', src='auto').text
-    else:
-        return prompt
+def translate_text(text):
 
+    translate_client = translate.Client()
 
+    if isinstance(text, six.binary_type):
+        text = text.decode("utf-8")
 
+    # Text can also be a sequence of strings, in which case this method
+    # will return a sequence of results for each text.
+    result = translate_client.translate(text, target_language='en')
+    return result["translatedText"]
 
 
 

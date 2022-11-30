@@ -1,13 +1,12 @@
 from urllib.request import urlopen
 from django.shortcuts import render
-from urllib.request import urlopen
 import json
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel, AutoArtUploadModel
 import requests
 from django.conf import settings
-from salon.utils import uuid_name_upload_to, translate, image_generation,music_generation, save_img_and_thumbnail, save_music, delete_img, delete_mus 
+from salon.utils import uuid_name_upload_to, translate_text, image_generation,music_generation, save_img_and_thumbnail, save_music, delete_img, delete_mus 
 from datetime import timedelta
 from django.utils import timezone
 
@@ -71,7 +70,7 @@ def start(request):
 def result_model(request):
     json_data = json.loads( request.body )
 
-    text = translate(json_data['text'])
+    text = translate_text(json_data['text'])
 
     image_url = image_generation(text) #image_generation(text) # https://~~~.jpg 형식
     music_file = music_generation() #generateMusic() # '~~~.mid' 형식
@@ -107,7 +106,7 @@ def result(request):
     #     context = request.session['test_keyword']
     #     return render(request, 'salon/result.html', context)
     
-    text = translate(request.POST.get('input_text'))
+    text = translate_text(request.POST.get('input_text'))
     mus_filename = request.POST.get('mus_file')
     img_filename  = request.POST.get('img_file') 
     img_tn_filename = request.POST.get('img_tn_file')

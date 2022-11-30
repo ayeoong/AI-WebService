@@ -3,14 +3,12 @@ from django.core.files.storage import default_storage
 from PIL import Image
 from io import BytesIO
 # from .models import TestStorage
-from .utils import save_storage_img
 import requests
 from .music import generateMusic
-import os
 from django.conf import settings
 from google.cloud import storage
-
-import time
+import six
+from google.cloud import translate_v2 as translate
 
 
 from google.cloud import storage
@@ -106,11 +104,6 @@ class StorageTestClass(TestCase):
             with default_storage.open('/musics/' + filename, 'w') as f:
                 f.write(output.getvalue())
 
-    def test_midi_to_wave(self):
-        print( os.listdir(os.getcwd()) )
-        print( os.listdir(settings.MEDIA_ROOT + '/musics/') )
-        FluidSynth().midi_to_audio(str(settings.MEDIA_ROOT + '/musics/MuseNet-Composition.mid'), str(settings.MEDIA_ROOT + '/musics/melody.wav'))
-        #print( os.listdir('/media/musics/') )
 
 
     def test_storage_corf(self):
@@ -146,28 +139,7 @@ class StorageTestClass(TestCase):
 
     def test_del_contents(self):
 
-        music_file = 'media\musics\MuseNet-Composition.mid'
         mus_filename = 'test_mid.mid'
-
-        # with default_storage.open('/musics/' + mus_filename, 'w') as f:
-        #     f.write(music_file)
-        #     print('성공적으로 저장하였습니다')
-        #     time.sleep(5)
-
-        # with default_storage.open('/musics/' + mus_filename, 'r') as f:
-        #     f.read()
-        #     print('성공적으로 읽었습니다')
-        #     time.sleep(5)
-
-        # default_storage.delete(music_file)
-        # print('성공적으로 삭제하였습니다')
-
-        # with default_storage.open('/musics/' + mus_filename, 'r') as f:
-        #     f.read()
-        #     print('파일이 존재하지 않습니다')
-        #     time.sleep(5)
-
-
 
         """Deletes a blob from the bucket."""
         # bucket_name = "your-bucket-name"
@@ -182,15 +154,32 @@ class StorageTestClass(TestCase):
 
         print(f"Blob {mus_filename} deleted.")
 
-        def delete_blob(bucket_name, blob_name):
-            """Deletes a blob from the bucket."""
-            # bucket_name = "your-bucket-name"
-            # blob_name = "your-object-name"
+    def test_tag(self):
+        def get_taglist(text):
+            nltk_url = 'https://silken-oxygen-369215.de.r.appspot.com/'   # 배포 주소
+            text_spapce = text.replace(' ', '%20')
+            url_req = nltk_url + text_spapce
 
-            storage_client = storage.Client()
+            f = urlopen(url_req)
+            with f as url:
+                data = json.loads(url.read().decode())['tokens']
+            return data
 
-            bucket = storage_client.bucket(bucket_name)
-            blob = bucket.blob(blob_name)
-            blob.delete()
 
-            print(f"Blob {blob_name} deleted.")        
+    def test_translate(self):
+        def translate_text(text):
+
+            translate_client = translate.Client()
+
+            if isinstance(text, six.binary_type):
+                text = text.decode("utf-8")
+
+            # Text can also be a sequence of strings, in which case this method
+            # will return a sequence of results for each text.
+            result = translate_client.translate(text, target_language='en')
+
+            print(u"Text: {}".format(result["input"]))
+            print(u"Translation: {}".format(result["translatedText"]))
+            print(u"Detected source language: {}".format(result["detectedSourceLanguage"]))
+            print(result)
+        translate_text('수영하는 비행기')
