@@ -14,14 +14,26 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 import os, json
-import nltk
 
-# 먼저 실행되어야 할 것
-# nltk.download('punkt')
-# nltk.download('averaged_perceptron_tagger')
-# nltk.download('wordnet')
-# nltk.download('omw-1.4')
-# nltk.download('stopwords')
+#개발일때는 0번 테스트 할때는 1번 gcp배포는 2번
+PJ_MODE = 0        # 0:dev, 1:test, 2:live 3:real
+
+pj_mode = [False, False, False, False]
+pj_mode[PJ_MODE] = True
+
+DEV_MODE= pj_mode[0]
+TEST_MODE = pj_mode[1]
+TEST_LIVE_MODE = pj_mode[2]#gcp스토리지 및 sql 활성화  달리만 주석
+REAL_LIVE_MODE = pj_mode[3] #달리 음악 생성 모델 활성화
+
+if DEV_MODE or TEST_MODE:
+    IMG_PATH = '/media/images/'
+    MUSIC_PATH = '/media/musics/'
+
+else:
+    IMG_PATH = 'https://storage.googleapis.com/dall-e-2-contents/images/'
+    MUSIC_PATH = 'https://storage.googleapis.com/dall-e-2-contents/musics/'  
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

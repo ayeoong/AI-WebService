@@ -106,11 +106,11 @@ class YourTestClass(TestCase):
     #     search_token_list = search_word.split(' ')
     #     search_user_list=[]
     #     search_result_list=[]
-    #     search_imagekeys_list=[ImageKeywordModel]
+    #     search_imagekeys_list=[ArtKeywordModel]
     #     for search_token in search_token_list:
     #         search_user_list.extend(User.objects.filter(username__contains=search_token))
     #         search_result_list.extend(KeywordModel.objects.filter(word__contains=search_token))
-    #         search_imagekeys_list.extend(ImageKeywordModel.objects.filter(keyword__word__contains=search_token))
+    #         search_imagekeys_list.extend(ArtKeywordModel.objects.filter(keyword__word__contains=search_token))
     #     del search_imagekeys_list[0]
     #     search_img_list = [imgkey.image for imgkey in search_imagekeys_list]
     #     search_img_set = set(search_img_list)
@@ -126,10 +126,29 @@ class YourTestClass(TestCase):
         print("****")
         prompt = "안녕하세요"
 
-        # which_lang = translator.detect("안녕하세요")
-        # print(which_lang)
+        which_lang = translator.detect("안녕하세요").lang
+        print(which_lang)
 
         print("translate=>", translator.translate(text=prompt, dest='en', src='auto').text)
+    
+    def test_delete_art(self):
+        user = User.objects.get(username='testuser')
+        art = ArtUploadModel(kind=1, user=user, name='test', filename='test.png', input_text='test')
+        art.save()
+        keyword = KeywordModel.objects.get(word='tester')
+        ak = ArtKeywordModel(keyword=keyword, art=art)
+        ak.save()
+
+        self.assertEqual('testuser 1 tester 1', f'{user} {art.id} {keyword} {ak.id}')
+
+        # ArtKeywordModel.objects.filter(art=art).delete()
+        art.delete()
+        self.assertEqual('testuser None tester', f'{user} {art.id} {keyword}')
+
+        # print( ArtKeywordModel.objects.all() )
+
+    def test_del_storage(self):
+        os.remove(os.path.join(settings.MEDIA_ROOT, 'images/banana.jpg'))
 
     def test_auto_save(self):
         today = datetime.now()
@@ -172,3 +191,31 @@ class YourTestClass(TestCase):
         os.remove(filepath) # 'test1.jpg'삭제
         print( filename in os.listdir(images_path) ) # 'test1.jpg'이 images_path에 존재? => False
         # print( os.listdir(images_path) ) images_path에 존재하는 파일을 프린트함
+
+    def test_get_art(self):
+        user = User.objects.get(username='testuser')
+        art = ArtUploadModel(kind=1, user=user, name='test', filename='test.jpg', thumbnail='test_tn.jpg', input_text='test')
+        # print(art.fileurl())
+        art.save()
+        images = ArtUploadModel.objects.filter(user=user, kind=1)
+        print( type(images[0]) )
+        print( images[0].fileurl() )
+
+    def test_auto_save_query(self):
+        auto_save_art_id_list = []
+
+        art_img = AutoArtUploadModel(kind=1, name='testimg', filename='testimg.jpg', thumbnail='testimg_tn.jpg', input_text='testimg')
+        art_img.save()
+        auto_save_art_id_list.append(art_img.id)
+
+        art_mus = AutoArtUploadModel(kind=2, name='test_music', filename='test_music.mid', input_text='test_music')
+        art_mus.save()
+        auto_save_art_id_list.append(art_mus.id)
+        print( auto_save_art_id_list )
+
+        queryset = AutoArtUploadModel.objects.filter(kind=1, id__in=auto_save_art_id_list)
+        print( queryset[0] )
+    
+    def test_int_to_bool(self):
+        print( int(True), int(False) )
+

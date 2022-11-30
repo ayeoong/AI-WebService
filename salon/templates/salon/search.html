@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
     <head>
         <meta charset="UTF-8">
         <title>Gallery</title>
@@ -35,9 +35,11 @@
             <ul>
                 <h5>검색된 그림</h5>
                 {% for search_result in search_img_set %}
+                {% if search_result.kind == 1 %}
                 <li>
                 <p>{{search_result.input_text}}</p>
-                <img src="{{ search_result.thumbnail }}"> 
+                <img src="{{ search_result.thumbnailurl }}"> 
+                {% endif %}
                 </li>
                 {% endfor %} 
             </ul> 

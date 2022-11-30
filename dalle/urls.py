@@ -28,13 +28,14 @@ urlpatterns = [
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('signup/', views.signup, name='signup'),
     path('check_id/', views.check_id, name='check_id'),
+    path('check_email/', views.check_email, name='check_email'),
+    path('find_id/', views.find_id, name='find_id'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('setting/', views.setting, name='setting'),
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
 	path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
 	path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
-    path('send_email/', views.send_email, name='send_email'),  
 ]
 
 # urlpatterns += staticfiles_urlpatterns()

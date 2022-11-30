@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="icon" href="{% static 'salon/images/logo.png' %}" type="image/x-icon" sizes="16x16">
+        <title>Gallery</title>
+    </head>
+    <body>
+    <div>
+        <h2>아이디 찾기</h2>
+    </div>
+    <div>
+        {% if email_ok == False %}
+        <p>가입하신 이메일을 입력하세요.</p>
+        <p>보내진 이메일로 가입하신 아이디가 제공됩니다.</p>
+        <form method="post" class="send-mail" action="">
+            <input type="email" name="signed-email" id="signed-email" />
+            <input type="submit" value="이메일 보내기" />
+        </form>
+        {% if error_msg %}
+        <p>{{error_msg}}</p>
+        {% endif %}
+        {% else %}
+        <p>이메일이 성공적으로 보내졌습니다!</p>
+        {% endif %}
+
+        <br><br>
+        <a type='button' href="{% url 'salon:index' %}">홈으로 돌아가기</a>
+    </div>
+  </body>
+</html>

@@ -1,33 +1,140 @@
-img{
-  height: 300px;
-  border: 10px;
-  border-radius: 10px;
+h1 {
+  padding-top: 50px;
+}
 
+p {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.btn-open-popup {
+  z-index: 1;
+}
+
+.tn-img {
+  width: auto;
+  height: auto;
+  border: none;
+  border-radius: 1px;
+  padding: 0;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 50px;
+}
+.grid-container {
+  text-align: center;
+  height: 160px;
+}
+
+.div-item {
+  position: relative;
+  z-index: 3; 
+}
+
+.ori-img {
+  width: auto;
+  height: auto;
+  border: none;
+  border-radius: 1px;
+  padding: 0;
   margin-left: auto;
   margin-right: auto;
 }
 
-.container{
-  display: grid;
-  grid-template-rows: repeat(3, 100px);
-  grid-template-columns: 1fr 1fr 1fr;
+
+.grid-container {
+  text-align: center;
+  height: 160px;
 }
 
-.scale {
-  transform: scale(1);
-  -webkit-transform: scale(1);        /* 사파리, 크롬*/
-  -moz-transform: scale(1);           /* 파이어폭스 */
-  -ms-transform: scale(1);            /* ms */
-  -o-transform: scale(1);             /* 오페라 */
-  transition: all 0.3s ease-in-out;   /*확대시 부드럽게 */
-}
-.scale:hover {
-  transform: scale(1.2);
-  -webkit-transform: scale(1.2);
-  -moz-transform: scale(1.2);
-  -ms-transform: scale(1.2);
-  -o-transform: scale(1.2);
+.container{
+  display: grid;
+  place-items: center;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 .img {
    overflow:hidden 
+}
+
+.btn-like {
+  position: relative;
+  left: 10px;
+  bottom: 45px;
+  z-index: 5;
+  border: none;
+  background: none;
+}
+.btn-img {
+  display: block;
+  width: 32px;
+  height: 32px;
+  border: none;
+  z-index: 5;
+  padding: 0;
+  margin: 0;
+}
+
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: none;
+
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal.show {
+  display: block;
+}
+
+.modal-body {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+
+  width: 1000px;
+  height: 600px;
+
+  padding: 40px;
+
+  text-align: center;
+
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.modal-close {
+  position: absolute;
+  cursor: pointer;
+  right: 20px;
+  top: 20px;
+}
+
+.modal-delete {
+  position: absolute;
+  cursor: pointer;
+  right: 20px;
+  bottom: 20px;
+}
+
+.modal-items {
+  display: grid;
+  place-items: center;
+}
+
+.fade {
+  animation: fadein 1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadein {
+  from {opacity: 0}
+  to {opacity: 1}
 }
