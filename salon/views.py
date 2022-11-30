@@ -21,13 +21,6 @@ from salon.music import generateMusic
 
 
 
-if settings.DEV_MODE or settings.TEST_MODE:
-    img_path = '/media/images/'
-    music_path = '/media/musics/'
-else:
-    img_path = 'https://storage.googleapis.com/dall-e-2-contents/images/'
-    music_path = 'https://storage.googleapis.com/dall-e-2-contents/musics/'
-
 def home(request):
     return render(request, 'salon/index.html', {})
 
@@ -38,26 +31,14 @@ def main(request):
 def index(request):
     keywords = ['가장 많이 검색된 키워드', 'Best 작품']
     best_kw_list = KeywordModel.objects.all().order_by('-input_num')[:10]
-    art_kw_img_dict = {}
-    art_kw_mus_dict = {}
     kw_imgs = []
     kw_muss = []
     for best_kw in best_kw_list:
-        # art_kw_img_list.extend(ArtKeywordModel.objects.filter(art__kind=1, keyword=best_kw))
-        # art_kw_mus_list.extend(ArtKeywordModel.objects.filter(art__kind=2, keyword=best_kw))
         kw_imgs.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=1, keyword=best_kw))
         kw_muss.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=2, keyword=best_kw))
     # images = list(set([artkey.art for artkey in art_kw_img_list]))[:10]
     # musics = list(set([artkey.art for artkey in art_kw_mus_list]))[:10]
-    # print(images, musics)
-    # for keyword in keywords:
-    #     art_kw_img_dict[keyword] = kw_imgs
-    #     art_kw_mus_dict[keyword] = kw_muss
-    print('-------------->', kw_imgs )
-    print('-------------->', kw_muss )
     return render(request, 'salon/home.html', {'images': kw_imgs, 'musics': kw_muss })
-
-
 
 
 
@@ -109,10 +90,10 @@ def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
 
 def music_generation():
     if settings.REAL_LIVE_MODE:
-        music_file =  generateMusic()#실제 배포용만 음악 생성
+        mus_filename =  generateMusic()#실제 배포용만 음악 생성
     else:
-        music_file = 'media\musics\MuseNet-Composition.mid'
-    return music_file
+        mus_filename = 'MuseNet-Composition.mid'
+    return mus_filename
 
 
 
@@ -137,14 +118,14 @@ def result_model(request):
     text = translate(json_data['text'])
 
     image_url = image_generation(text) #image_generation(text) # https://~~~.jpg 형식
-    music_file = music_generation() #generateMusic() # '~~~.mid' 형식
+    mus_file = music_generation() #generateMusic() # '~~~.mid' 형식
 
 
 
     img_uuid =  uuid_name_upload_to(None, image_url)
     img_filename = img_uuid
     
-    music_filename= img_uuid + '_music.mid'
+    mus_filename= img_uuid + '_music.mid'
 
     if settings.REAL_LIVE_MODE:
         img_filename = img_filename + '.jpg'
@@ -154,10 +135,11 @@ def result_model(request):
     res = requests.get(image_url)
     img_filename, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
 
-    save_music(music_file, music_filename)
+    save_music(mus_file, mus_filename)
     
 
-    data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'music_file':music_filename}
+    data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
+    print('result_model:', data)
     return JsonResponse(data)
 
 
@@ -178,13 +160,13 @@ def save_img_and_thumbnail(content, img_filename):
     return img_filename, img_tn_filename
 
 
-def save_img(image_file, filename):
+def save_img(image_file, img_filename):
     if settings.DEV_MODE or settings.TEST_MODE:
         image_file.save(image_file, 'PNG')
     else:
         with BytesIO() as output:  
             image_file.save(output, 'PNG')
-            with default_storage.open('/images/' + filename, 'w') as f:
+            with default_storage.open('/images/' + img_filename, 'w') as f:
                 f.write(output.getvalue())
     
 
@@ -204,12 +186,12 @@ def save_music(music_file, music_filename):
 
 # 출력창
 def result(request):
-    if request.session.get('auto_save'):
-        context = request.session['test_keyword']
-        return render(request, 'salon/result.html', context)
+    # if request.session.get('auto_save'):
+    #     context = request.session['test_keyword']
+    #     return render(request, 'salon/result.html', context)
     
     text = translate(request.POST.get('input_text'))
-    music_filename = request.POST.get('music_file')
+    mus_filename = request.POST.get('music_file')
     img_filename  = request.POST.get('img_file') 
     img_tn_filename = request.POST.get('img_tn_file')
 
@@ -218,24 +200,22 @@ def result(request):
 
     auto_save_art_id_list = []
 
-    art = AutoArtUploadModel(kind=1, name=text, filename=img_filename, thumbnail=img_tn_filename, input_text=text)
-    art.save()
-    auto_save_art_id_list.append(art.id)
+    art_img = AutoArtUploadModel(kind=1, name=text, filename=img_filename, thumbnail=img_tn_filename, input_text=text)
+    art_img.save()
+    auto_save_art_id_list.append(art_img.id)
 
-    art = AutoArtUploadModel(kind=2, name=text+"_music", filename=music_filename, input_text=text)
-    art.save()
-    auto_save_art_id_list.append(art.id)
+    art_mus = AutoArtUploadModel(kind=2, name=text+"_music", filename=mus_filename, input_text=text)
+    art_mus.save()
+    auto_save_art_id_list.append(art_mus.id)
     print( auto_save_art_id_list )
 
-    context = {'text': text, 
-                'img_file':img_filename,
-                "music_file":music_filename,
-                'img_tn_file':img_tn_filename,
-                "tags":no_stops,
-    }
-
-    request.session['test_keyword'] = context
+    request.session['test_keyword'] = { "tags":no_stops }
     request.session['auto_save'] = auto_save_art_id_list
+
+    context = {'text': text, 
+                'img_file':art_img, 
+                "music_file":art_mus, 
+    }
 
     return render(request, 'salon/result.html', context)
 
@@ -254,7 +234,8 @@ def save_result(request):
     context = request.session['test_keyword']
     keywords = context['tags']
     keyword_list = []
-    art_dict = {'jpg':'1', 'mid':'2', 'both':'3'}
+    files = []
+
     for keyword in keywords:
         try:
             exist_word = KeywordModel.objects.get(word=keyword)
@@ -266,45 +247,36 @@ def save_result(request):
             word.input_num += 1
             word.save()
             keyword_list.append(word)
+
     if request.method == 'POST':
         user = request.user
         selected = request.POST.getlist("selected")
         text = request.POST.get("input_text")
         favorite = request.POST.get("favorite")
-        thumbnail = context['img_tn_file']
 
-        # fav_ind_img = {}
-        # fav_ind_img['1'] = "1"
-        # fav_ind_img['2'] = "0"
-        # fav_ind_img['3'] = "3"
+        auto_save_art_id_list = request.session['auto_save']
 
-        # fav_ind_mus = {}
-        # fav_ind_mus['1'] = "0"
-        # fav_ind_mus['2'] = "2"
-        # fav_ind_mus['3'] = "3"
- 
-        for filepath in selected:
-            art = ArtUploadModel(kind=art_dict[filepath[-3:]], user=user, name=text, filename=filepath, input_text=text)
-            art.save()
-            print(favorite)
-            if 'mid' == filepath[-3:]:
-                print("this1")
-                if favorite == 'mid' or favorite == 'both':
-                    print("this2")
-                    art.result_favorite = '1'
-                    art.save()
-            else:
-                print("this3")
-                art.thumbnail = thumbnail
+        favorite_dict = {}
+        favorite_dict['image'] = int( favorite == 'jpg' or favorite == 'both' )
+        favorite_dict['music'] = int( favorite == 'mid' or favorite == 'both' )
+
+        selected_value_kind = {'image':1, 'music':2}
+
+        for intype in selected:
+            art_kind = selected_value_kind[intype]
+            queryset = AutoArtUploadModel.objects.filter(kind=art_kind, id__in=auto_save_art_id_list)
+            if len(queryset) > 0:
+                auto_art = queryset[0]
+                art = ArtUploadModel(kind=art_kind, user=user, name=text, filename=auto_art.filename,
+                                        thumbnail=auto_art.thumbnail, input_text=text, result_favorite=favorite_dict[intype])
                 art.save()
-                if favorite == 'jpg' or favorite == 'both':
-                    print("this4")
-                    art.result_favorite = '1'
-                    art.save()
+                files.append(art)
 
             akms = [ArtKeywordModel(art=art, keyword=km) for km in keyword_list]
             ArtKeywordModel.objects.bulk_create(akms)
-        return render(request, 'salon/save_result.html', {'files':selected})
+        del request.session['auto_save']
+            
+        return render(request, 'salon/save_result.html', {'files':files})
     
     return render(request, 'salon/save_result.html', {})
 

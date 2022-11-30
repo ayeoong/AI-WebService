@@ -56,6 +56,18 @@ class AutoArtUploadModel(models.Model):
     def __str__(self):
         return self.name
 
+    def fileurl(self):
+        if self.kind == 1:
+            return settings.IMG_PATH + self.filename
+        else:
+            return settings.MUSIC_PATH + self.filename
+    
+    def thumbnailurl(self):
+        if self.kind == 1:
+            return settings.IMG_PATH + self.thumbnail
+        else:
+            return settings.MUSIC_PATH + self.thumbnail
+
     # def delete(self, *args, **kargs):
     #     # if self.filename:
     #     #     os.remove(os.path.join(settings.MEDIA_ROOT, self.filename.path)) # FileField일 때 사용가능
