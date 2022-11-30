@@ -38,6 +38,9 @@ def index(request):
         kw_muss.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=2, keyword=best_kw))
     # images = list(set([artkey.art for artkey in art_kw_img_list]))[:10]
     # musics = list(set([artkey.art for artkey in art_kw_mus_list]))[:10]
+    kw_imgs = list(set(kw_imgs))
+    kw_muss = list(set(kw_muss))
+
     return render(request, 'salon/home.html', {'images': kw_imgs, 'musics': kw_muss })
 
 
@@ -73,7 +76,7 @@ def search(request):
 
 
 def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
-    if settings.REAL_LIVE_MODE:
+    if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
         openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
         openai.api_key = "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"
 
@@ -89,10 +92,10 @@ def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
 
 
 def music_generation():
-    if settings.REAL_LIVE_MODE:
-        mus_filename =  generateMusic()#실제 배포용만 음악 생성
+    if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
+        mus_filename =  generateMusic()
     else:
-        mus_filename = 'MuseNet-Composition.mid'
+        mus_filename = '로컬주소'
     return mus_filename
 
 
@@ -118,24 +121,23 @@ def result_model(request):
     text = translate(json_data['text'])
 
     image_url = image_generation(text) #image_generation(text) # https://~~~.jpg 형식
-    mus_file = music_generation() #generateMusic() # '~~~.mid' 형식
+    music_file = music_generation() #generateMusic() # '~~~.mid' 형식
 
 
 
-    img_uuid =  uuid_name_upload_to(None, image_url)
-    img_filename = img_uuid
+    img_filename =  uuid_name_upload_to(None, image_url)
     
-    mus_filename= img_uuid + '_music.mid'
-
-    if settings.REAL_LIVE_MODE:
+    if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:##달리에서 넘어오는 url은 jpg 확장자가 안붙혀서 넘어옴
         img_filename = img_filename + '.jpg'
 
 
+    mus_filename = img_filename.replace('.jpg','.mid')
+
 
     res = requests.get(image_url)
-    img_filename, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
+    _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
 
-    save_music(mus_file, mus_filename)
+    save_music(music_file, mus_filename)
     
 
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
@@ -153,7 +155,6 @@ def save_img_and_thumbnail(content, img_filename):
     img_file.thumbnail((300, 300))
     save_img(img_file, img_tn_filename)  # 섬네일저장
 
-
     # img_filename = img_path + img_filename
     # img_tn_filename = img_path + img_tn_filename
 
@@ -165,21 +166,20 @@ def save_img(image_file, img_filename):
         image_file.save(image_file, 'PNG')
     else:
         with BytesIO() as output:  
-            image_file.save(output, 'PNG')
+            image_file.save(output, 'PNG') 
             with default_storage.open('/images/' + img_filename, 'w') as f:
                 f.write(output.getvalue())
-    
+        
 
 
-def save_music(music_file, music_filename):
+def save_music(music_file, mus_filename):
     if settings.DEV_MODE or settings.TEST_MODE:
-        with open('media/musics/'+ music_filename, 'wb') as f:
+        with open('media/musics/'+ mus_filename, 'wb') as f:
             f.write(music_file)
     else:
-        with default_storage.open('/musics/' + music_filename, 'w') as f:
+        with default_storage.open('/musics/' + mus_filename, 'w') as f:
             f.write(music_file)
 
-    # music_filename = music_path + music_filename
 
 
 
@@ -191,7 +191,7 @@ def result(request):
     #     return render(request, 'salon/result.html', context)
     
     text = translate(request.POST.get('input_text'))
-    mus_filename = request.POST.get('music_file')
+    mus_filename = request.POST.get('mus_file')
     img_filename  = request.POST.get('img_file') 
     img_tn_filename = request.POST.get('img_tn_file')
 
@@ -199,6 +199,7 @@ def result(request):
     no_stops = get_taglist(text)
 
     auto_save_art_id_list = []
+    print('-------------->', mus_filename, img_filename, img_tn_filename, text)
 
     art_img = AutoArtUploadModel(kind=1, name=text, filename=img_filename, thumbnail=img_tn_filename, input_text=text)
     art_img.save()
@@ -294,14 +295,22 @@ def delete_autoart(self):
     for file in delete_filename:
 
         if file[-3:] == 'jpg':
-            images_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'images'), file)
+            images_path = settings.IMG_PATH #os.path.join(os.path.join(settings.MEDIA_ROOT, 'images'), file)
             print(images_path)
-            os.remove(images_path) # 파일 삭제
+            
+            if settings.DEV_MODE or settings.TEST_MODE:
+                os.remove(images_path) # 파일 삭제
+            else :
+                default_storage.delete(images_path)
 
         elif file[-3:] == 'mid':
-            musics_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'musics'), file) # /media/musics/MusenetComposition.mid
+            musics_path = settings.MUSIC_PATH #os.path.join(os.path.join(settings.MEDIA_ROOT, 'musics'), file) # /media/musics/MusenetComposition.mid
             print(musics_path)
-            os.remove(musics_path)
+
+            if settings.DEV_MODE or settings.TEST_MODE:
+                os.remove(musics_path) # 파일 삭제
+            else :
+                default_storage.delete(musics_path)
     
     result = {'delete_count':len(delete_filename) + len(delete_thumbnail), 'filenames':delete_filename + delete_thumbnail}
     return JsonResponse(result, safe=False)

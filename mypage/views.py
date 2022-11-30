@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 from salon.models import ArtUploadModel, ArtKeywordModel, KeywordModel
 from django.core.mail.message import EmailMessage
+from django.core.files.storage import default_storage
 
 
 # Create your views here.
@@ -115,11 +116,21 @@ def delete_item(request, user_name):
             print(del_item)
 
             # media/images 폴더 안의 이미지 삭제
-            filename = "images/" + del_item.filename
-            thumbnail = "images/" + del_item.thumbnail
+            filename = settings.IMG_PATH + del_item.filename
+            thumbnail = settings.IMG_PATH + del_item.thumbnail
             print(filename, thumbnail)
-            os.remove(os.path.join(settings.MEDIA_ROOT, filename))
-            os.remove(os.path.join(settings.MEDIA_ROOT, thumbnail))
+
+
+            if settings.DEV_MODE or settings.TEST_MODE:
+                os.remove(os.path.join(settings.MEDIA_ROOT, filename))
+                os.remove(os.path.join(settings.MEDIA_ROOT, thumbnail))
+
+            else:
+                default_storage.delete(filename)
+                default_storage.delete(thumbnail)
+
+
+
             ArtKeywordModel.objects.filter(art=del_item).delete()
             del_item.delete()
             data = {'result':'successful'}

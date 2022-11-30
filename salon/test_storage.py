@@ -6,9 +6,12 @@ from io import BytesIO
 from .utils import save_storage_img
 import requests
 from .music import generateMusic
-from midi2audio import FluidSynth
 import os
 from django.conf import settings
+from google.cloud import storage
+
+import time
+
 
 from google.cloud import storage
 
@@ -139,3 +142,42 @@ class StorageTestClass(TestCase):
             print(f"Time Created: {bucket.time_created}")
             print(f"Versioning Enabled: {bucket.versioning_enabled}")
             print(f"Labels: {bucket.labels}")
+
+
+    def test_del_contents(self):
+
+        music_file = 'media\musics\MuseNet-Composition.mid'
+        mus_filename = 'test_mid.mid'
+
+        # with default_storage.open('/musics/' + mus_filename, 'w') as f:
+        #     f.write(music_file)
+        #     print('성공적으로 저장하였습니다')
+        #     time.sleep(5)
+
+        # with default_storage.open('/musics/' + mus_filename, 'r') as f:
+        #     f.read()
+        #     print('성공적으로 읽었습니다')
+        #     time.sleep(5)
+
+        # default_storage.delete(music_file)
+        # print('성공적으로 삭제하였습니다')
+
+        # with default_storage.open('/musics/' + mus_filename, 'r') as f:
+        #     f.read()
+        #     print('파일이 존재하지 않습니다')
+        #     time.sleep(5)
+
+
+
+        """Deletes a blob from the bucket."""
+        # bucket_name = "your-bucket-name"
+        # blob_name = "your-object-name"
+        bucket_name='dall-e-2-contents'
+        storage_client = storage.Client()
+
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob('musics/test_mid.mid')
+        print(blob)
+        blob.delete()
+
+        print(f"Blob {mus_filename} deleted.")
