@@ -1,7 +1,5 @@
-import os
 import json
 import requests
-from salon.utils import uuid_name_upload_to
 from importlib import import_module
 TMIDIX = import_module('tegridy-tools.tegridy-tools.TMIDIX')
 
@@ -121,8 +119,6 @@ def generateMusic():
 
 	print('Parsing data...')
 
-	FNAME = 'MuseNet-Composition'
-
 	encoding = [int(y) for y in res['completions'][0]['encoding'].split()]
 
 	song = []
@@ -176,7 +172,6 @@ def generateMusic():
 	number_of_ticks_per_quarter = 1000
 
 	list_of_MIDI_patches = [0, 24, 32, 40, 42, 46, 56, 71, 73, 0, 0, 0, 0, 0, 0, 0]
-	output_file_name = uuid_name_upload_to(None, FNAME + '.mid')
 	text_encoding='ISO-8859-1'
 
 	output_header = [number_of_ticks_per_quarter,

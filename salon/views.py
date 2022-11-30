@@ -5,19 +5,19 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel, AutoArtUploadModel
 import os
-import openai
-from PIL import Image
+# import openai
+# from PIL import Image
 import requests
-from io import BytesIO
-import re
+# from io import BytesIO
+# import re
 from django.conf import settings
-import time
-from salon.utils import uuid_name_upload_to
-from django.core.files.storage import default_storage
-from googletrans import Translator
+# import time
+from salon.utils import uuid_name_upload_to, translate, image_generation,music_generation, save_img_and_thumbnail, save_music, delete_img, delete_mus 
+# from django.core.files.storage import default_storage
+# from googletrans import Translator
 from datetime import timedelta
 from django.utils import timezone
-from salon.music import generateMusic
+# from salon.music import generateMusic
 
 
 
@@ -75,38 +75,38 @@ def search(request):
 
 
 
-def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
-    if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
-        openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
-        openai.api_key = "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"
+# def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
+#     if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
+#         openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
+#         openai.api_key = "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"
 
-        response = openai.Image.create( prompt=text,
-                                n=1,
-                                size="1024x1024")
-        image_url = response['data'][0]['url']
-    else:
-        time.sleep(5)
-        image_url = 'https://ifh.cc/g/5qCAX2.jpg'        
-    return image_url
-
-
-
-def music_generation():
-    if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
-        mus_filename =  generateMusic()
-    else:
-        mus_filename = '로컬주소'
-    return mus_filename
+#         response = openai.Image.create( prompt=text,
+#                                 n=1,
+#                                 size="1024x1024")
+#         image_url = response['data'][0]['url']
+#     else:
+#         time.sleep(5)
+#         image_url = 'https://ifh.cc/g/5qCAX2.jpg'        
+#     return image_url
 
 
 
-def translate(prompt):
-    translator = Translator()
-    which_lang = translator.detect(prompt).lang
-    if which_lang != 'en':
-        return translator.translate(text=prompt, dest='en', src='auto').text
-    else:
-        return prompt
+# def music_generation():
+#     if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
+#         mus_filename =  generateMusic()
+#     else:
+#         mus_filename = '로컬주소'
+#     return mus_filename
+
+
+
+# def translate(prompt):
+#     translator = Translator()
+#     which_lang = translator.detect(prompt).lang
+#     if which_lang != 'en':
+#         return translator.translate(text=prompt, dest='en', src='auto').text
+#     else:
+#         return prompt
 
 
 
@@ -145,40 +145,40 @@ def result_model(request):
     return JsonResponse(data)
 
 
-def save_img_and_thumbnail(content, img_filename):
-    img_tn_filename = "_tn.".join(img_filename.split('.')) # 섬네일명: 이미지파일명_tn.jpg 
+# def save_img_and_thumbnail(content, img_filename):
+#     img_tn_filename = "_tn.".join(img_filename.split('.')) # 섬네일명: 이미지파일명_tn.jpg 
 
-    img_file = Image.open(BytesIO(content))
-    save_img(img_file, img_filename)
+#     img_file = Image.open(BytesIO(content))
+#     save_img(img_file, img_filename)
 
-    img_file = Image.open(BytesIO(content))
-    img_file.thumbnail((300, 300))
-    save_img(img_file, img_tn_filename)  # 섬네일저장
+#     img_file = Image.open(BytesIO(content))
+#     img_file.thumbnail((300, 300))
+#     save_img(img_file, img_tn_filename)  # 섬네일저장
 
-    # img_filename = img_path + img_filename
-    # img_tn_filename = img_path + img_tn_filename
+#     # img_filename = img_path + img_filename
+#     # img_tn_filename = img_path + img_tn_filename
 
-    return img_filename, img_tn_filename
+#     return img_filename, img_tn_filename
 
 
-def save_img(image_file, img_filename):
-    if settings.DEV_MODE or settings.TEST_MODE:
-        image_file.save(image_file, 'PNG')
-    else:
-        with BytesIO() as output:  
-            image_file.save(output, 'PNG') 
-            with default_storage.open('/images/' + img_filename, 'w') as f:
-                f.write(output.getvalue())
+# def save_img(image_file, img_filename):
+#     if settings.DEV_MODE or settings.TEST_MODE:
+#         image_file.save(image_file, 'PNG')
+#     else:
+#         with BytesIO() as output:  
+#             image_file.save(output, 'PNG') 
+#             with default_storage.open('/images/' + img_filename, 'w') as f:
+#                 f.write(output.getvalue())
         
 
 
-def save_music(music_file, mus_filename):
-    if settings.DEV_MODE or settings.TEST_MODE:
-        with open('media/musics/'+ mus_filename, 'wb') as f:
-            f.write(music_file)
-    else:
-        with default_storage.open('/musics/' + mus_filename, 'w') as f:
-            f.write(music_file)
+# def save_music(music_file, mus_filename):
+#     if settings.DEV_MODE or settings.TEST_MODE:
+#         with open('media/musics/'+ mus_filename, 'wb') as f:
+#             f.write(music_file)
+#     else:
+#         with default_storage.open('/musics/' + mus_filename, 'w') as f:
+#             f.write(music_file)
 
 
 
@@ -297,20 +297,13 @@ def delete_autoart(self):
         if file[-3:] == 'jpg':
             images_path = settings.IMG_PATH #os.path.join(os.path.join(settings.MEDIA_ROOT, 'images'), file)
             print(images_path)
-            
-            if settings.DEV_MODE or settings.TEST_MODE:
-                os.remove(images_path) # 파일 삭제
-            else :
-                default_storage.delete(images_path)
+
+            delete_img(images_path)
 
         elif file[-3:] == 'mid':
             musics_path = settings.MUSIC_PATH #os.path.join(os.path.join(settings.MEDIA_ROOT, 'musics'), file) # /media/musics/MusenetComposition.mid
             print(musics_path)
-
-            if settings.DEV_MODE or settings.TEST_MODE:
-                os.remove(musics_path) # 파일 삭제
-            else :
-                default_storage.delete(musics_path)
+            delete_mus(musics_path)
     
     result = {'delete_count':len(delete_filename) + len(delete_thumbnail), 'filenames':delete_filename + delete_thumbnail}
     return JsonResponse(result, safe=False)
