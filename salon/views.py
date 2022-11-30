@@ -1,5 +1,6 @@
 from urllib.request import urlopen
 from django.shortcuts import render
+from urllib.request import urlopen
 import json
 from django.http import JsonResponse
 from django.contrib.auth.models import User
@@ -27,11 +28,8 @@ def index(request):
     for best_kw in best_kw_list:
         kw_imgs.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=1, keyword=best_kw))
         kw_muss.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=2, keyword=best_kw))
-    # images = list(set([artkey.art for artkey in art_kw_img_list]))[:10]
-    # musics = list(set([artkey.art for artkey in art_kw_mus_list]))[:10]
     kw_imgs = list(set(kw_imgs))
     kw_muss = list(set(kw_muss))
-
     return render(request, 'salon/home.html', {'images': kw_imgs, 'musics': kw_muss })
 
 
@@ -91,6 +89,7 @@ def result_model(request):
 
     res = requests.get(image_url)
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
+    save_music(music_file, mus_filename)
 
     save_music(music_file, mus_filename)
     
@@ -98,6 +97,7 @@ def result_model(request):
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
     print('result_model:', data)
     return JsonResponse(data)
+
 
 
 
@@ -146,6 +146,7 @@ def get_taglist(text):
     with f as url:
         data = json.loads(url.read().decode())['tokens']
     return data
+
 
 
 def save_result(request):

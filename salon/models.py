@@ -20,6 +20,7 @@ class ArtUploadModel(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     result_favorite = models.CharField(max_length=255, blank=True, default='')
     kind = models.IntegerField(default=0)    # 0:None, 1:image, 2:music, 
+    like_count = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
         return self.name
