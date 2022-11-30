@@ -2,49 +2,61 @@
 {% load static %}
 <html lang="ko">
 <head>
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="stylesheet" href="{% static 'mypage/css/style.css' %}">
     <style>
-      .sidenav {
-        height: 100%;
-        width: 200px;
-        position: fixed;
-        top: 0;
-        left: 0;
-        background-color: skyblue;
-        overflow-x: hidden;
-        padding-top: 20px;
-      }
+        .btn-open-popup {
+            margin: 10px;
+            border: #818181 2px solid;
+            border-radius: 5%;
+        }
+        .btn-like {
+            position: relative;
+            float: right;
+            bottom: 50px;
+            left: 0;
+        }
+        .sidenav {
+            height: 100%;
+            width: 200px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: skyblue;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
 
-      .sidenav a:first-child {
-        margin-top: 100px;
-      }
-      
-      .sidenav a {
-        padding: 6px 6px 6px 32px;
-        text-decoration: none;
-        font-size: 25px;
-        color: #818181;
-        display: block;
-      }
-      
-      .sidenav a:hover {
-        color: #f1f1f1;
-      }
-      
-      .main {
-        margin-left: 200px; /* Same as the width of the sidenav */
-      }
-      
-      @media screen and (max-height: 450px) {
-        .sidenav {padding-top: 15px;}
-        .sidenav a {font-size: 18px;}
-      }
-      </style>
+        .sidenav a:first-child {
+            margin-top: 100px;
+        }
+        
+        .sidenav a {
+            padding: 6px 6px 6px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+        }
+        
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+        
+        .main {
+            margin-left: 200px; /* Same as the width of the sidenav */
+        }
+        
+        @media screen and (max-height: 450px) {
+            .sidenav {padding-top: 15px;}
+            .sidenav a {font-size: 18px;}
+        }
+    </style>
 </head>
 
 <div class="sidenav">
-  <a href="{% url 'mypage:mypage' user.username 'image' %}" style="color:#f1f1f1;">그림 보기</a>
-  <a href="{% url 'mypage:mypage' user.username 'music' %}">음악 보기</a>
+  <a href="{% url 'mypage:mypage' user.username 'image' %}">그림 보기</a>
+  <a href="{% url 'mypage:mypage' user.username 'music' %}" style="color:#f1f1f1;">음악 보기</a>
 </div>
 {% include 'shared/_hp.html' %}
 <body>
@@ -61,7 +73,7 @@
       like_count = res.data['like_count']
       is_like = res.data['is_like']
 
-      target.parentElement.querySelector('#likecount') .innerText = like_count
+      document.getElementById('likecount').innerText = like_count
 
       if (is_like) {
         target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
@@ -76,31 +88,32 @@
     <h1> {{userid}}'s page </h1>
   </div>
 
-    <div class="img">
-      <div class="container">
+    <div class="mus">
+        <div class="container">
 
-      {% for img, islike in images %}
+        {% for mus, islike in images %}
         <div class="btn-open-popup">
-          <img class="tn_img" src="{{ img.thumbnailurl }}" alt="thumbnail" id="{{img.id}}">
-          <img class="test ori-img" src="{{img.fileurl}}" alt="filename" style="width: 500px; display: none;">
-          <p class="test input-text" style="display: none;">{{img.input_text}}</p>
-          <div>
-          <b id="likecount">{{img.like_count}}</b>
-          <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{img.id}}');">
-            {% if islike %}
-            <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
-            {% else %}
-            <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
-            {% endif %}
-          </button>
-        </div>
+            <div>
+                <p><strong>{{ mus.input_text }}</strong></p>
+                <b id="likecount">{{mus.like_count}}</b>
+                <p>
+                    <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{mus.id}}');">
+                        {% if islike %}
+                        <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
+                        {% else %}
+                        <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
+                        {% endif %}
+                    </button>
+                </p>
+            </div>
+            <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font/>
         </div>
         
         {% endfor %}
-      </div>
+        </div>
     </div>
     
-    <div class="modal">
+    <!-- <div class="modal">
       <div class="modal-body fade">
         <div class="modal-close">
           <svg
@@ -133,9 +146,10 @@
         <div class="modal-items">
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </body>
+<script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
@@ -169,7 +183,6 @@
 
       testImg.style.display = 'block';
       testText.style.display = 'block';
-      testlike.style.cssText = 'position:absolute; right:50px; bottom:20px;'
       modalItem.appendChild(testText);
       modalItem.appendChild(testImg);
       modalItem.appendChild(testlike)
