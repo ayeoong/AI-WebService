@@ -44,8 +44,8 @@ def index(request):
     for best_kw in best_kw_list:
         kw_imgs.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=1, keyword=best_kw))
         kw_muss.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=2, keyword=best_kw))
-    # images = list(set([artkey.art for artkey in art_kw_img_list]))[:10]
-    # musics = list(set([artkey.art for artkey in art_kw_mus_list]))[:10]
+    kw_imgs = list(set(kw_imgs))
+    kw_muss = list(set(kw_muss))
     return render(request, 'salon/home.html', {'images': kw_imgs, 'musics': kw_muss })
 
 def search(request):
