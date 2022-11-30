@@ -55,8 +55,8 @@
 </head>
 
 <div class="sidenav">
-  <a href="{% url 'mypage:mypage' user.username 'image' %}">그림 보기</a>
-  <a href="{% url 'mypage:mypage' user.username 'music' %}" style="color:#f1f1f1;">음악 보기</a>
+  <a href="{% url 'mypage:mypage' userid 'image' %}">그림 보기</a>
+  <a href="{% url 'mypage:mypage' userid 'music' %}" style="color:#f1f1f1;">음악 보기</a>
 </div>
 {% include 'shared/_hp.html' %}
 <body>
