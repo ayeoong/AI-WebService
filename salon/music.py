@@ -24,14 +24,16 @@ def generateMusic(tags):
 	genre_data = [x for x in tags if x in genre_list]
 	genre_kind = [x for x in tags if x in genre_dict.keys()]
 	if genre_data != []:
-		genre = random.shuffle(genre_data)[0]	
+		random.shuffle(genre_data)
+		genre = genre_data[0]
 	elif genre_kind != []:
 		genre_keys = [genre_key for tokens in tags for genre_key in genre_dict.keys() if tokens in genre_key]
 		random.shuffle(genre_keys)
 		genre = genre_dict[genre_keys[0]][0]
 	else:
-		genre = random.shuffle(genre_list)[0]
-		
+		random.shuffle(genre_list)
+		genre = genre_list[0]
+
 	random_num = random.randrange(4, 8)
 	instruments_tf = [False, False, False, False, False, False, False]
 	for i in range(random_num):
