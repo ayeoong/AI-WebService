@@ -163,7 +163,6 @@ def result(request):
         art_img = AutoArtUploadModel.objects.filter(kind=1, id__in=auto_save_art_id_list)[0]
         art_mus = AutoArtUploadModel.objects.filter(kind=2, id__in=auto_save_art_id_list)[0]
         context = {'text': text, 'img_file':art_img, "music_file":art_mus }
-        print('========> ', context)
         return render(request, 'salon/result.html', context)
 
     text = translate(request.POST.get('input_text'))
@@ -192,8 +191,6 @@ def result(request):
                 'img_file':art_img, 
                 "music_file":art_mus, 
     }
-    # request.session['context'] = context  세션 하나에 여러 개의 item이 들어갈 수 있나?
-    print("======----->", type(context), context)
 
     return render(request, 'salon/result.html', context)
 
