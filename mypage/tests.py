@@ -15,7 +15,7 @@ class MypageTestClass(TestCase):
         user2 = User.objects.create(username='tester2')
         user2.set_password('1234')
         user2.save()
-        ArtUploadModel(user=user, name='test_photo', filename='test.jpg').save()
+        ArtUploadModel(user=user, name='test_photo', filename='test.jpg', kind=1).save()
 
     def setUp(self):
         print("================setUp: Run once for every test method to setup clean data.")
@@ -50,11 +50,11 @@ class MypageTestClass(TestCase):
         art = ArtUploadModel.objects.get(id=1)
 
         self.save_toggle_like(like_user, art)
-        self.save_toggle_like(like_user, art)
+        #self.save_toggle_like(like_user, art)
 
         images = ArtUploadModel.objects.filter(user=owner_user)
 
-        likeset = ArtLike.objects.filter(art__user=owner_user).filter(user=like_user)
+        likeset = ArtLike.objects.filter(art__user=owner_user, art__kind=1).filter(user=like_user)
         likeset = [like.art for like in likeset]
         print( likeset ) 
 
@@ -64,7 +64,7 @@ class MypageTestClass(TestCase):
             else:
                 print('not like img')
 
-        print( str(ArtLike.objects.filter(art__user=owner_user).filter(user=like_user).query) )
+        print( str(ArtLike.objects.filter(art__user=owner_user, art__kind=1).filter(user=like_user).query) )
 
 
 

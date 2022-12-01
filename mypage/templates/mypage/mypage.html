@@ -3,49 +3,8 @@
 <html lang="ko">
 <head>
     <link rel="stylesheet" href="{% static 'mypage/css/style.css' %}">
-    <style>
-      .sidenav {
-        height: 100%;
-        width: 200px;
-        position: fixed;
-        top: 0;
-        left: 0;
-        background-color: skyblue;
-        overflow-x: hidden;
-        padding-top: 20px;
-      }
-
-      .sidenav a:first-child {
-        margin-top: 100px;
-      }
-      
-      .sidenav a {
-        padding: 6px 6px 6px 32px;
-        text-decoration: none;
-        font-size: 25px;
-        color: #818181;
-        display: block;
-      }
-      
-      .sidenav a:hover {
-        color: #f1f1f1;
-      }
-      
-      .main {
-        margin-left: 200px; /* Same as the width of the sidenav */
-      }
-      
-      @media screen and (max-height: 450px) {
-        .sidenav {padding-top: 15px;}
-        .sidenav a {font-size: 18px;}
-      }
-      </style>
 </head>
 
-<div class="sidenav">
-  <a href="{% url 'mypage:mypage' user.username 'image' %}" style="color:#f1f1f1;">그림 보기</a>
-  <a href="{% url 'mypage:mypage' user.username 'music' %}">음악 보기</a>
-</div>
 {% include 'shared/_hp.html' %}
 <body>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -70,8 +29,6 @@
       }
     }
   </script>
-  
-  <div class="main">
   <div class="grid-container">
     <h1> {{userid}}'s page </h1>
   </div>
@@ -134,7 +91,7 @@
         </div>
       </div>
     </div>
-  </div>
+    
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
