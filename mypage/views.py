@@ -98,14 +98,14 @@ def send_email(request):
 # 타인 접속 or 로그인 하지 않았을 때, opage.html 화면 보여줌
 # current_user 현재 로그인한 유저, exist_user = 존재하는 유저 네임
 def mypage(request, user_name, kind):
-    # current_user = request.user
+    current_user = request.user
     print(user_name)
     try:
         exist_user = User.objects.get(username=user_name)
 
         if kind == 'image':
             images = ArtUploadModel.objects.filter(user=exist_user, kind=1)
-            likeset = ArtLike.objects.filter(art__user=exist_user, kind=1)
+            likeset = ArtLike.objects.filter(art__user=exist_user, art__kind=1).filter(user=current_user)
             likeset = [like.art for like in likeset]
             print( '==========likeset :', likeset ) 
 
@@ -122,7 +122,7 @@ def mypage(request, user_name, kind):
             # return render(request, 'mypage/mypage.html', context)
         elif kind == 'music':
             musics = ArtUploadModel.objects.filter(user=exist_user, kind=2)
-            likeset = ArtLike.objects.filter(art__user=exist_user, kind=2)
+            likeset = ArtLike.objects.filter(art__user=exist_user, art__kind=2).filter(user=current_user)
             likeset = [like.art for like in likeset]
             print( '==========likeset :', likeset ) 
 

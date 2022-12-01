@@ -60,8 +60,9 @@
     function draw_like_count(res) { 
       like_count = res.data['like_count']
       is_like = res.data['is_like']
-
-      document.getElementById('likecount').innerText = like_count
+      
+      console.log(target.parentElement.querySelector('#likecount'));
+      target.parentElement.querySelector('#likecount').innerText = like_count
 
       if (is_like) {
         target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
@@ -84,9 +85,8 @@
           <img class="tn_img" src="{{ img.thumbnailurl }}" alt="thumbnail" id="{{ img.id }}">
           <img class="test ori-img" src="{{ img.fileurl }}" alt="filename" style="width: 500px; display: none;">
           <p class="test input-text" style="display: none;">{{img.input_text}}</p>
-          <div>
-          <b id="likecount">{{img.like_count}}</b>
-          <p>
+          <div class="like-count-btn">
+            <b id="likecount">{{img.like_count}}</b>
             <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{img.id}}');">
               {% if islike %}
               <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
@@ -94,8 +94,7 @@
               <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
               {% endif %}
             </button>
-          </p>
-        </div>
+          </div>
         </div>
         
         {% endfor %}
@@ -162,11 +161,11 @@
   const modalItem = document.querySelector('.modal-items');
   // const likebtn = document.getElementById('btn-like')
   // let btn_open_popup = btnOpenPopupList[0];
-  // let testlike, testlikecount;
+  var btn_open_popup, testlike, testlikecount;
 
   btnOpenPopupList.forEach(btnOpenPopup =>
     btnOpenPopup.addEventListener('click', (e) => {
-      btn_open_popup = e.currentTarget;
+      btn_open_popup = e.currentTarget.querySelector('.like-count-btn');
       console.log(btn_open_popup);
       modal.classList.toggle('show');
 
@@ -178,10 +177,10 @@
       var testImg = originImg.cloneNode(true);
       var inputText = e.currentTarget.querySelector('.input-text');
       var testText = inputText.cloneNode(true);
-      var button_like = e.currentTarget.parentElement.querySelector('.btn-like') 
-      var testlike = button_like.cloneNode(true)
-      var likecount = e.currentTarget.parentElement.querySelector('#likecount') 
-      var testlikecount = likecount.cloneNode(true)
+      testlike = e.currentTarget.parentElement.querySelector('.btn-like') 
+      // var testlike = button_like.cloneNode(true)
+      testlikecount = e.currentTarget.parentElement.querySelector('#likecount') 
+      // var testlikecount = likecount.cloneNode(true)
 
       testImg.style.display = 'block';
       testText.style.display = 'block';
@@ -206,6 +205,9 @@
   }));
 
   modalClose.addEventListener('click', (event) => {
+    btn_open_popup.appendChild(testlike)
+    btn_open_popup.appendChild(testlikecount)
+
     modal.classList.toggle('show');
     while (modalItem.firstChild) {
       modalItem.removeChild(modalItem.firstChild);
@@ -218,6 +220,9 @@
   
   modal.addEventListener('click', (event) => {
     if (event.target === modal) {
+      btn_open_popup.appendChild(testlike)
+      btn_open_popup.appendChild(testlikecount)
+
       modal.classList.toggle('show');
       while (modalItem.firstChild) {
         modalItem.removeChild(modalItem.firstChild);

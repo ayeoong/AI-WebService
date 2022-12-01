@@ -38,14 +38,15 @@ def main(request):
 
 def index(request):
     keywords = ['가장 많이 검색된 키워드', 'Best 작품']
-    best_kw_list = KeywordModel.objects.all().order_by('-input_num')[:10]
+    best_kw_list = KeywordModel.objects.all().order_by('-input_num')
+    print('best_kw_list:', best_kw_list)
     kw_imgs = []
     kw_muss = []
     for best_kw in best_kw_list:
         kw_imgs.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=1, keyword=best_kw))
         kw_muss.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=2, keyword=best_kw))
-    kw_imgs = list(set(kw_imgs))
-    kw_muss = list(set(kw_muss))
+    kw_imgs = list(set(kw_imgs))[:10]
+    kw_muss = list(set(kw_muss))[:10]
     return render(request, 'salon/home.html', {'images': kw_imgs, 'musics': kw_muss })
 
 def search(request):
