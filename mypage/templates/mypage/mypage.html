@@ -60,8 +60,6 @@
     function draw_like_count(res) { 
       like_count = res.data['like_count']
       is_like = res.data['is_like']
-      
-      console.log(target.parentElement.querySelector('#likecount'));
       target.parentElement.querySelector('#likecount').innerText = like_count
 
       if (is_like) {
@@ -159,8 +157,6 @@
   const itemDownload = document.querySelector('.modal-download');
   const btnOpenPopupList = document.querySelectorAll('.btn-open-popup');
   const modalItem = document.querySelector('.modal-items');
-  // const likebtn = document.getElementById('btn-like')
-  // let btn_open_popup = btnOpenPopupList[0];
   var btn_open_popup, testlike, testlikecount;
 
   btnOpenPopupList.forEach(btnOpenPopup =>
@@ -177,10 +173,8 @@
       var testImg = originImg.cloneNode(true);
       var inputText = e.currentTarget.querySelector('.input-text');
       var testText = inputText.cloneNode(true);
-      testlike = e.currentTarget.parentElement.querySelector('.btn-like') 
-      // var testlike = button_like.cloneNode(true)
-      testlikecount = e.currentTarget.parentElement.querySelector('#likecount') 
-      // var testlikecount = likecount.cloneNode(true)
+      testlike = btn_open_popup.querySelector('.btn-like') 
+      testlikecount = btn_open_popup.querySelector('#likecount') 
 
       testImg.style.display = 'block';
       testText.style.display = 'block';
