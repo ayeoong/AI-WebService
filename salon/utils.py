@@ -7,7 +7,6 @@ from django.conf import settings
 import openai
 import time
 from salon.music import generateMusic
-from googletrans import Translator
 from google.cloud import storage
 
 import six
