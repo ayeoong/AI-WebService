@@ -1,6 +1,22 @@
 from os import path
 from uuid import uuid4
+<<<<<<< HEAD
 from django.utils import timezone
+=======
+from django.core.files.storage import default_storage
+from io import BytesIO
+from PIL import Image
+from django.conf import settings
+import openai
+import time
+from salon.music import generateMusic
+from google.cloud import storage
+
+import six
+from google.cloud import translate_v2 as translate
+
+
+>>>>>>> 9507045 (구버전 구글트랜스 삭제)
 
 def uuid_name_upload_to(instance, filename): # instance는 이미지, 음악 파일
     # app_label = instance.__class__._meta.app_label # 앱 별로
