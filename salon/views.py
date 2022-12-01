@@ -102,6 +102,8 @@ def translate(prompt):
 
 # 입력창
 def start(request):
+    if request.session.get('auto_save'):
+        del request.session['auto_save']
     return render(request, 'salon/start.html', {})
 
 # 모델 호출 함수
@@ -156,9 +158,14 @@ def save_music(music_file, music_filename):
 # 출력창
 def result(request):
     if request.session.get('auto_save'):
-        context = request.session['test_keyword']
+        text = request.session['test_keyword']['text']
+        auto_save_art_id_list = request.session['auto_save']
+        art_img = AutoArtUploadModel.objects.filter(kind=1, id__in=auto_save_art_id_list)[0]
+        art_mus = AutoArtUploadModel.objects.filter(kind=2, id__in=auto_save_art_id_list)[0]
+        context = {'text': text, 'img_file':art_img, "music_file":art_mus }
+        print('========> ', context)
         return render(request, 'salon/result.html', context)
-    
+
     text = translate(request.POST.get('input_text'))
     mus_filename = request.POST.get('mus_file')
     img_filename = request.POST.get('img_file')
@@ -178,13 +185,15 @@ def result(request):
     auto_save_art_id_list.append(art_mus.id)
     print( auto_save_art_id_list )
 
-    request.session['test_keyword'] = { "tags":no_stops }
+    request.session['test_keyword'] = {'text': text, "tags":no_stops }
     request.session['auto_save'] = auto_save_art_id_list
 
     context = {'text': text, 
                 'img_file':art_img, 
                 "music_file":art_mus, 
     }
+    # request.session['context'] = context  세션 하나에 여러 개의 item이 들어갈 수 있나?
+    print("======----->", type(context), context)
 
     return render(request, 'salon/result.html', context)
 
