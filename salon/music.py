@@ -61,7 +61,7 @@ def generateMusic(tags):
 	#@markdown Generation settings
 	number_of_tokens_to_generate = 800 #@param {type:"slider", min:64, max:1024, step:8}
 	temperature = 1 #@param {type:"slider", min:0.1, max:2, step:0.1}
-	truncation = 0 #@param {type:"integer"}
+	truncation = 20 #@param {type:"integer"}
 
 	INSTRUMENTS = ["piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "piano", "violin", "violin", "cello", "cello", "bass", "bass", "guitar", "guitar", "flute", "flute", "clarinet", "clarinet", "trumpet", "trumpet", "harp", "harp", 'drum', 'drum']
 	TRACKS_OUT_INDEX = {"piano": 0, "violin": 3, "cello": 4, "bass": 2, "guitar": 1, "flute": 8, "clarinet": 7, "trumpet": 6, "harp": 5, "drum": 9}
