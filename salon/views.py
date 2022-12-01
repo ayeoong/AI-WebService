@@ -22,6 +22,7 @@ def main(request):
 def index(request):
     keywords = ['가장 많이 검색된 키워드', 'Best 작품']
     best_kw_list = KeywordModel.objects.all().order_by('-input_num')
+    print('best_kw_list:', best_kw_list)
     kw_imgs = []
     kw_muss = []
     for best_kw in best_kw_list:
@@ -64,6 +65,9 @@ def search(request):
 
 # 입력창
 def start(request):
+    if request.session.get('auto_save'):
+        del request.session['auto_save']
+
     return render(request, 'salon/start.html', {})
 
 # 모델 호출 함수
@@ -71,14 +75,13 @@ def result_model(request):
     json_data = json.loads( request.body )
 
     text = translate_text(json_data['text'])
+    tags = get_taglist(text)
 
     image_url = image_generation(text) #image_generation(text) # https://~~~.jpg 형식
-    music_file = music_generation() #generateMusic() # '~~~.mid' 형식
-
-
-
-    img_filename =  uuid_name_upload_to(None, image_url)
+    music_file = music_generation(tags)
     
+    img_filename =  uuid_name_upload_to(None, image_url)
+
     if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:##달리에서 넘어오는 url은 jpg 확장자가 안붙혀서 넘어옴
         img_filename = img_filename + '.jpg'
 
@@ -101,9 +104,13 @@ def result_model(request):
 
 # 출력창
 def result(request):
-    # if request.session.get('auto_save'):
-    #     context = request.session['test_keyword']
-    #     return render(request, 'salon/result.html', context)
+    if request.session.get('auto_save'):
+        text = request.session['test_keyword']['text']
+        auto_save_art_id_list = request.session['auto_save']
+        art_img = AutoArtUploadModel.objects.filter(kind=1, id__in=auto_save_art_id_list)[0]
+        art_mus = AutoArtUploadModel.objects.filter(kind=2, id__in=auto_save_art_id_list)[0]
+        context = {'text': text, 'img_file':art_img, "music_file":art_mus }
+        return render(request, 'salon/result.html', context)
     
     text = translate_text(request.POST.get('input_text'))
     mus_filename = request.POST.get('mus_file')
@@ -125,7 +132,7 @@ def result(request):
     auto_save_art_id_list.append(art_mus.id)
     print( auto_save_art_id_list )
 
-    request.session['test_keyword'] = { "tags":no_stops }
+    request.session['test_keyword'] = {'text': text, "tags":no_stops }
     request.session['auto_save'] = auto_save_art_id_list
 
     context = {'text': text, 

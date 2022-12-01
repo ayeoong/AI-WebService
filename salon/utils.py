@@ -46,9 +46,9 @@ def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
 
 
 
-def music_generation():
+def music_generation(tags):
     if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
-        mus_filename =  generateMusic()
+        mus_filename =  generateMusic(tags)
     else:
         mus_filename = '로컬주소'
     return mus_filename

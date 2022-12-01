@@ -2,9 +2,21 @@
 {% include 'shared/_hp.html' %}
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="stylesheet" href="{% static 'salon/css/style.css' %}">
-    <div class="grid-container">
-      <p class="start-area"><a href="{% url 'salon:start' %}">작품 생성하러 가기</a></p>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <div class="p-5 text-center bg-image rounded-3" style="
+    background-image: url('https://i.pinimg.com/564x/ab/3c/16/ab3c1629b2a97a664cac49b803989e21.jpg');
+    height: 400px;
+  ">
+    <div class="grid-container" style="height:200px;">
+      <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+          <h1 class="mb-3" >Gallery</h1>
+          <h4 class="mp-5" style="padding-top: 20%;">원하는 작품을 만들어 보세요</h4>
+          <a class="btn btn-outline-light btn-lg" href="{% url 'salon:start' %}" role="button">작품 생성하러 가기</a>
+        </div>
+      </div>
     </div>
+  </div>
     
     <main class="grid-item main">
       <p class="keyword-area">{{ key }}</p>
