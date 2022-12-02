@@ -23,7 +23,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            background-color: skyblue;
+            background-color: #FFBDBF;
             overflow-x: hidden;
             padding-top: 20px;
         }
@@ -55,9 +55,9 @@
     </style>
 </head>
 
-<div class="sidenav">
+<div class="sidenav" style="font-family: 'NanumSquareNeo-Variable';color: #FFBDBF;">
   <a href="{% url 'mypage:mypage' userid 'image' %}">그림 보기</a>
-  <a href="{% url 'mypage:mypage' userid 'music' %}" style="color:#f1f1f1;">음악 보기</a>
+  <a href="{% url 'mypage:mypage' userid 'music' %}" style="color:#f1f1f1;">음악 듣기</a>
 </div>
 {% include 'shared/_hp.html' %}
 <body>
@@ -85,7 +85,7 @@
   
   <div class="main">
   <div class="grid-container">
-    <h1> {{userid}}'s page </h1>
+    <h1 style="font-family: 'Roboto Slab', serif;"> {{userid}}'s page </h1>
   </div>
 
     <div class="mus">
