@@ -19,7 +19,7 @@
   </div>
     
     <main class="grid-item main">
-      <p class="keyword-area">{{ key }}</p>
+      <p class="keyword-area">둘러보기</p>
       <div class="items">
         {% for img in images %}   
         <div class="btn-open-popup item item{{forloop.counter}}">
@@ -35,7 +35,7 @@
         {% for mus in musics %}
         <div class="item item-music">
           <p class="mus-url" style="display: none;">{{ mus.fileurl }}</p>
-          <p>Click to Listen!<br><strong>{{ mus.input_text }}</strong></p>
+          <p  class="mus-text">Click to Listen!<br>{{ mus.input_text }}</p>
           <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font style="display: none;"/>
         </div>
         {% endfor %}

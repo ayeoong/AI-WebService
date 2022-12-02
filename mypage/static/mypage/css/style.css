@@ -56,6 +56,11 @@ p {
    overflow:hidden 
 }
 
+.tn_img {
+  border-radius: 2%;
+  margin: 1rem;
+}
+
 .btn-like {
   position: relative;
   left: 20px;

@@ -2,11 +2,12 @@
 {% load static %}
 <html lang="ko">
 <head>
+    <link rel="icon" href="{% static 'salon/images/logo.png' %}" type="image/x-icon" sizes="16x16">
     <link rel="stylesheet" href="{% static 'mypage/css/style.css' %}">
     <style>
       .sidenav {
         height: 100%;
-        width: 200px;
+        width: 10%;
         position: fixed;
         top: 0;
         left: 0;
@@ -32,7 +33,7 @@
       }
       
       .main {
-        margin-left: 200px; /* Same as the width of the sidenav */
+        margin-left: 10%; /* Same as the width of the sidenav */
       }
       
       @media screen and (max-height: 450px) {
