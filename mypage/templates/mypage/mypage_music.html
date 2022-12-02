@@ -73,7 +73,7 @@
       .catch(function (error) { console.log(error) });
     }
     function draw_like_count(res) { 
-      like_count = res.data['like_count' + ' 명이 좋아합니다']
+      like_count = res.data['like_count'] + ' 명이 좋아합니다'
       is_like = res.data['is_like']
       target.parentElement.querySelector('#likecount').innerText = like_count
 
@@ -96,8 +96,8 @@
         {% for mus, islike in musics %}
         <div class="btn-open-popup">
           <div>
-            <p style="font-family: 'Roboto Mono', monospace;"><strong>{{ mus.input_text }}</strong></p>
-            <id="likecount" style="font-family: 'NanumSquareNeo-Variable'">{{mus.like_count}} 명이 좋아합니다</id>        
+            <p><strong>{{ mus.input_text }}</strong></p>
+            <b id="likecount">{{mus.like_count}} 명이 좋아합니다</b>        
             <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{mus.id}}');">
               {% if islike %}
               <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">

@@ -85,9 +85,9 @@
         <div class="btn-open-popup">
           <img class="tn_img" src="{{ img.thumbnailurl }}" alt="thumbnail" id="{{ img.id }}">
           <img class="test ori-img" src="{{ img.fileurl }}" alt="filename" style="width: 500px; display: none;">
-          <p class="test input-text" style="display: none; font-family: 'Roboto Mono', monospace;">{{img.input_text}}</p>
+          <p class="test input-text">{{img.input_text}}</p>
           <div class="like-count-btn">
-            <id="likecount" style="font-family: 'NanumSquareNeo-Variable'">{{img.like_count}} 명이 좋아합니다</id>
+            <b id="likecount">{{img.like_count}} 명이 좋아합니다</b>
             <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{img.id}}');">
               {% if islike %}
               <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
