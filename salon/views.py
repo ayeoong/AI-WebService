@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from urllib.request import urlopen
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel, AutoArtUploadModel
 import os
@@ -124,8 +124,6 @@ def result_model(request):
     res = requests.get(image_url)
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
     save_music(music_file, mus_filename)
-
-    # music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
 
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
     print('result_model:', data)
@@ -278,7 +276,7 @@ def delete_autoart(self):
             os.remove(images_path) # 파일 삭제
 
         elif file[-3:] == 'mid':
-            musics_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'musics'), file) # /media/musics/MusenetComposition.mid
+            musics_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'musics'), file)
             print(musics_path)
             os.remove(musics_path)
     

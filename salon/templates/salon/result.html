@@ -3,28 +3,63 @@
 {% include 'shared/_hp.html' %}
 <html lang="ko">
   <head>
+    <link rel="stylesheet" href="{% static 'salon/css/font.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&family=Roboto+Mono&family=Roboto+Slab&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <meta charset="UTF-8">
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>Gallery</title>
   </head>
   <body>
-    <div>
-      <h2>결과 페이지 입니다.</h2>
+    <div class="text-center">
+      <div class="d-flex justify-content-center mt-3">
+      <h2><p class="mb-3" style="line-height: 100px;font-family: 'Noto Serif KR', serif;">작품이 완성되었습니다!</p></h2>
+      </div>
     </div>
-    <img src="{{ img_file.fileurl }}" alt="image" style="width: 600px;">
-    <div>
-      <strong>텍스트 내용: </strong>
-      <p>{{text}}</p>
-      <p>{{tags}}</p>
-      <p>{{music_file}}</p>
-
+    <div class="text-center">
+      <div class="d-flex justify-content-center mt-3" style="line-height: 100px;font-family: 'NanumSquareNeo-Variable';">
+        <p>{{text}}</p>
+        <p>{{tags}}</p>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center" style="line-height: 100%;font-family: 'InfinitySans-RegularA1';">
+      <img src="{{ img_file.thumbnailurl }}" alt="thumbnail">
+    </div>
+    <div class="d-flex justify-content-center mt-3" style="margin-bottom: 100px; ">
       <midi-player src="{{ music_file.fileurl }}" sound-font/>
     </div>
 
     <div>
-      <h2>어떤 결과가 마음에 드시나요?</h2>
-        <p><button id="result_favorite" value="jpg">그림이 마음에 들어요</button></p>
-        <p><button id="result_favorite" value="mid">음악이 마음에 들어요</button></p>
+      <span class="material-symbols-outlined md-36 d-flex justify-content-center"
+        >
+        <style>
+          .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 500,
+            'GRAD' 0,
+            'opsz' 48
+          }
+          .material-symbols-outlined.md-36 { font-size: 36px; }
+          </style>
+        arrow_downward
+        </span>
+    </div>
+
+    <div class="grid-container align-items-center" style="margin-top: 180px; ">
+      <div class="d-flex justify-content-center" style="background-color: #F0F8FF;">
+        <h4><p class="mb-3" style="line-height: 100px;font-family: 'Noto Serif KR', serif;">1. 어떤 작품이 마음에 드시나요?</p></h4>
+      </div>
+      <div class="d-flex justify-content-center" style="background-color: #F0F8FF;font-family: 'NanumSquareNeo-Variable';">
+        <div style="padding-right: 30px; padding-bottom: 40px;">
+          <p><button class="btn btn-primary" id="result_favorite" value="jpg">그림</button></p>
+        </div>
+        <div>
+          <p><button class="btn btn-primary" id="result_favorite" value="mid">음악</button></p>
+        </div>
+      </div>
+    </div>
+
         <br>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
@@ -62,21 +97,22 @@
         }
 
       }
+
     </script>
     <style>
       .divpop {
           position: absolute; z-index:999; top:50px; left:50px;
           width:350px; height:300px; border:1px solid black;background-color:rgba(255, 255, 255, 0.877);display:none;
       }
-      .title_area {font-weight:bold;text-align:center;width:100%}
-      .content_area {padding: 30px 50px 20px;margin: 0 auto;line-break: normal;line-height: 150%;text-align: center;width: 100%}
-      .button_area {position:absolute;bottom:0;right:10px;font-size: 14px;} 
+      .title_area {font-weight:bold;text-align:center;width:100%;font-family: 'Roboto Mono', monospace;}
+      .content_area {padding: 40px 65px 20px;margin: auto;line-break: normal;line-height: 150%;text-align: center;width: 100%;font-family: 'NanumSquareNeo-Variable';}
+      .button_area {position:absolute;bottom:0;right:10px;font-family: 'NanumSquareNeo-Variable';font-size: 14px;} 
     </style>
     <body>
       <form name="notice_form">
           <div id="divpop1" class="divpop">    
               <div class="title_area">Notice</div>
-              <div class="content_area">마이페이지에 저장하지 않을 시, 해당 작품이 사라질 수 있습니다.</div>
+              <div class="content_area">마이페이지에 저장하지 않을 시 해당 작품이 사라질 수 있습니다.</div>
                <div class="button_area">
                    <input type='checkbox' name='chkbox' id='todaycloseyn' value='Y'>오늘 하루 이 창을 열지 않음    
                    <a href='#' onclick="javascript:closeWin(1);"><B>[닫기]</B></a>
@@ -85,20 +121,27 @@
       </form>
     </body>
 
-    <div>
+
+    <div class="grid-container align-items-center d-flex justify-content-center" style="margin-top: 70px;background-color: #F0F8FF;">
+      <h4><p class="mb-3" style="line-height: 100px;font-family: 'Noto Serif KR', serif;">2. 마이페이지에 저장할 작품을 고르세요.</p></h4>
+    </div>
+    <div class="d-flex justify-content-center" style="padding-bottom: 40px;background-color: #F0F8FF;font-family: 'NanumSquareNeo-Variable';">
     <form method="post" action="{% url 'salon:save_result' %}">
       <input type="hidden" id="favorite" name="favorite" value="0">
       <input type="hidden" id="input_text" name="input_text" value="{{ text }}">
       <input type="checkbox" id="selected" name="selected" value="image" onclick="toggleVisibility(this)">그림</checkbox>
       <input type="checkbox" id="selected" name="selected" value="music" onclick="toggleVisibility(this)">음악</checkbox>
-    {% if user.is_authenticated %} 
-      <p><button id="save_button" disabled=true>마이페이지에 저장하기</button></p>
+    {% if user.is_authenticated %}
+      <div style="padding-top: 10px;">
+        <p><button class="btn btn-primary" id="save_button" disabled=true>저장하기</button></p>
+      </div>
     </form>
     {% else %}
     </form>
-      <p><button id="save_button" onclick="goto_login()" disabled=true>마이페이지에 저장하기</button></p>
+    <div>
+      <p><button class="btn btn-primary" id="save_button" onclick="goto_login()" disabled=true>저장하기</button></p>
     {% endif %}
-      <br>
+    </div>
     </div>
 
   <script type="text/javascript" src="{% static 'salon/js/checkbox.js' %}"></script>
