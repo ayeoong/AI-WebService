@@ -12,7 +12,11 @@
 }
 
 .grid-container a:hover {
-  text-shadow: 0 0 1em rgb(255, 255, 255);
+  text-shadow: 0 0 1em rgb(255, 255, 255) ;
+}
+
+.grid-item {
+  margin-top: 10rem;
 }
 
 #btn_create {
@@ -65,16 +69,18 @@
   min-height: 300px;
   min-width: 300px;
   margin: 2em 1em;
+  border-radius: 2%;
 }
 @media screen and (max-width: 500px) {
   .item {
-    max-height: 300px;
-    max-width: 300px;
+    max-height: 150px;
+    max-width: 150px;
   }
 }
 .sample-img {
   max-height: 300px;
   max-width: 300px;
+  border-radius: 2%;
 }
 
 a {
@@ -99,6 +105,14 @@ p.test {
 i {
   color: skyblue;
 }/*# sourceMappingURL=style.css.map */
+
+.mus-text {
+  width: 300px;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  white-space: normal;
+}
 
 .modal {
   position: absolute;
