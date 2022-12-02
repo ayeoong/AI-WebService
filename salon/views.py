@@ -1,7 +1,7 @@
 from urllib.request import urlopen
 from django.shortcuts import render
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel, AutoArtUploadModel
 import requests
@@ -93,7 +93,6 @@ def result_model(request):
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
 
     save_music(music_file, mus_filename)
-    
 
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
     print('result_model:', data)
@@ -221,7 +220,9 @@ def delete_autoart(self):
             delete_img(delete_filename)
 
         elif file[-3:] == 'mid':
-            delete_mus(delete_filename)
+            musics_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'musics'), file)
+            print(musics_path)
+            os.remove(musics_path)
     
     result = {'delete_count':len(delete_filename) + len(delete_thumbnail), 'filenames':delete_filename + delete_thumbnail}
     return JsonResponse(result, safe=False)

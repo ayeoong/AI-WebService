@@ -1,0 +1,28 @@
+/* Gmarket Sans */
+@font-face {
+    font-family: 'GmarketSansMedium';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+    font-weight: 300;
+    font-style:normal;
+  }
+
+/* 인피니티산스 */
+@font-face {
+    font-family: 'InfinitySans-RegularA1';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/InfinitySans-RegularA1.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+/* Roboto Mono */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR&family=Roboto+Mono&display=swap');
+
+/* Roboto Slab */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR&family=Roboto+Mono&family=Roboto+Slab&display=swap');
+
+@font-face {
+  font-family: 'NanumSquareNeo-Variable';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/NanumSquareNeo-Variable.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
