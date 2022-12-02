@@ -107,35 +107,44 @@ def mypage(request, user_name, kind):
 
         if kind == 'image':
             images = ArtUploadModel.objects.filter(user=exist_user, kind=1)
-            likeset = ArtLike.objects.filter(art__user=exist_user, art__kind=1).filter(user=current_user)
-            likeset = [like.art for like in likeset]
-            print( '==========likeset :', likeset ) 
+            if current_user.is_authenticated:
+                likeset = ArtLike.objects.filter(art__user=exist_user, art__kind=1).filter(user=current_user)
+                likeset = [like.art for like in likeset]
+                print( '==========likeset :', likeset ) 
 
-            image_likes = []
-            for img in images:
-                if img in likeset:
-                    image_likes.append(True)  # find like
-                else:
-                    image_likes.append(False) # not like img
-
+                image_likes = []
+                for img in images:
+                    if img in likeset:
+                        image_likes.append(True)  # find like
+                    else:
+                        image_likes.append(False) # not like img
+            else:
+                image_likes = []
+                for img in images:
+                    image_likes.append(False)
             context = {'userid':exist_user.username, 'images':zip(images, image_likes)}
             print(context)
             return render(request, 'mypage/mypage.html', context)
-            # return render(request, 'mypage/mypage.html', context)
+
         elif kind == 'music':
             musics = ArtUploadModel.objects.filter(user=exist_user, kind=2)
-            likeset = ArtLike.objects.filter(art__user=exist_user, art__kind=2).filter(user=current_user)
-            likeset = [like.art for like in likeset]
-            print( '==========likeset :', likeset ) 
+            if current_user.is_authenticated:
+                likeset = ArtLike.objects.filter(art__user=exist_user, art__kind=2).filter(user=current_user)
+                likeset = [like.art for like in likeset]
+                print( '==========likeset :', likeset ) 
 
-            music_likes = []
-            for mus in musics:
-                if mus in likeset:
-                    music_likes.append(True)  # find like
-                else:
-                    music_likes.append(False) # not like img
+                music_likes = []
+                for mus in musics:
+                    if mus in likeset:
+                        music_likes.append(True)  # find like
+                    else:
+                        music_likes.append(False) # not like img
+            else:
+                music_likes = []
+                for mus in musics:
+                    music_likes.append(False)
 
-            context = {'userid':exist_user.username, 'images':zip(musics, music_likes)}
+            context = {'userid':exist_user.username, 'musics':zip(musics, music_likes)}
             print(context)
             return render(request, 'mypage/mypage_music.html', context)
         else:

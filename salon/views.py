@@ -20,7 +20,7 @@ def main(request):
 
 
 def index(request):
-    keywords = ['가장 많이 검색된 키워드', 'Best 작품']
+    keywords = ['가장 많이 검색된 키워드', '좋아요가 높은 작품']
     best_kw_list = KeywordModel.objects.all().order_by('-input_num')
     print('best_kw_list:', best_kw_list)
     kw_imgs = []

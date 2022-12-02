@@ -59,3 +59,10 @@
     background: linear-gradient(to right, #93F9B9, #1D976C);
 
 }
+
+.gif-img {
+	position: absolute;
+	top: 28em;
+	right: 65em;
+
+}
