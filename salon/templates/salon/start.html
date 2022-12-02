@@ -6,15 +6,16 @@
     <link rel="icon" href="{% static 'salon/images/logo.png' %}" type="image/x-icon" sizes="16x16">
     <title>Gallery</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&family=Roboto+Mono&family=Roboto+Slab&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'salon/css/progressBar.css' %}">
+    <link rel="stylesheet" href="{% static 'salon/css/font.css' %}">
   </head>
   <body>
     <div class="text-center">
       <div class="d-flex justify-content-center mt-3">
-        <h2><p class="mb-3" style="font-family: 'Noto Serif KR', serif;">입력한 텍스트와 맞는 작품을 생성합니다.</p></h2>
+        <h2><p class="mb-3" style="line-height: 100px;font-family: 'Noto Serif KR', serif;">입력한 텍스트와 맞는 작품을 생성합니다.</p></h2>
+      </dc:\Users\PC\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\code\electron-sandbox\workbench\workbench.htmliv>
       </div>
-    </div>
     <div class="grid-container">
       <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
@@ -86,23 +87,23 @@
       </script>
       <!-- <form action="{% url 'salon:result' %}" method='POST' enctype="multipart/form-data"> -->
         {% csrf_token %}
-        <div class="border d-flex align-items-center justify-content-center gap-1" style="height: 350px;">
+        <div class="border d-flex align-items-center justify-content-center gap-1" style="height: 350px;background-color: #F0F8FF;font-family: 'NanumSquareNeo-Variable';">
           <label for="name"></label>
           <input type="text" id="title" name="title" required
-          minlength="4" maxlength="100" size="60" placeholder="3자 이상 100자 이하의 한글, 영어, 숫자만 입력하세요."><br>
+          minlength="4" maxlength="100" size="50" placeholder="3자 이상 100자 이하의 한글, 영어, 숫자만 입력하세요."><br>
           <p>
             <button disabled id="btn_create" class="btn btn-primary mt-3" onclick="progress_start()" >생성하기
             </button>
           </p>
           <!-- </form> -->
         </div>
-        <div class="d-flex align-items-center justify-content-center mt-5" style="height: 50px;">
-          예상 소요 시간... 약 1분
+        <div class="d-flex align-items-center justify-content-center">
+          <progress id="progressBar" value="0" min="0" max="100" style="position: relative;top: -151px;right: 201px;"></progress>
         </div>
-      <div class="d-flex align-items-center justify-content-center" >
-        <progress id="progressBar" value="0" min="0" max="100"></progress>
+        <div class="text-center">
+          <p style="position: relative;top: -168px;right: 48px;font-family: 'NanumSquareNeo-Variable';font-size: 72%;">예상 소요 시간 약 1분…</p>
+        </div>
       </div>
-    </div>
     <br/>
   <script type="text/javascript" src="{% static 'salon/js/createBtn.js' %}"></script>
   </body>

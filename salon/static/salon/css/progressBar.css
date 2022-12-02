@@ -1,5 +1,8 @@
 #progressBar {
     appearance: none;
+    position: relative;
+    top: 34px;
+    right: 575px;
 }
 #progressBar::-webkit-progress-bar {
     background:#f0f0f0;
@@ -8,8 +11,9 @@
 }
 #progressBar::-webkit-progress-value {
     border-radius:10px;
-    background: #1D976C;
-    background: -webkit-linear-gradient(to right, #93F9B9, #1D976C);
-    background: linear-gradient(to right, #93F9B9, #1D976C);
+    background: #1d6a97;
+    background: -webkit-linear-gradient(to right, #93cbf9, #1d6a97);
+    background: linear-gradient(to right, #93c2f9, #1d6697);
+    
 
 }
