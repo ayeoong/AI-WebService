@@ -16,7 +16,7 @@
 }
 
 .grid-item {
-  margin-top: 10rem;
+  margin-top: 7rem;
 }
 
 #btn_create {
@@ -83,6 +83,34 @@
   border-radius: 2%;
 }
 
+.ori-img {
+  position: relative;
+  display: block;
+  margin: 20px;
+  margin-top: 35px;
+}
+
+figcaption{
+  height: 300px;
+  width: 300px;
+  border-radius: 2%;
+  margin-left: -300px;
+  background-color: rgba(0,0,0,0.7);
+  display: inline-block;
+  position: absolute; /* 이미지와 겹치게 처리 */
+
+  color: #fff; text-align: center;
+  line-height: 200px;
+
+  opacity: 0; /* 처음엔 안보이고 */
+
+  transition: 0.3s;
+}
+
+.item:hover figcaption {
+  opacity: 1;
+}
+
 a {
   display: block;
   text-decoration: none;
@@ -99,7 +127,7 @@ p {
 }
 
 p.test {
-  text-indent: 20px;
+  margin: 1.7rem;
 }
 
 i {
