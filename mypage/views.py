@@ -119,6 +119,7 @@ def mypage(request, user_name, kind):
             context = {'userid':exist_user.username, 'images':zip(images, image_likes)}
             print(context)
             return render(request, 'mypage/mypage.html', context)
+            # return render(request, 'mypage/mypage.html', context)
         elif kind == 'music':
             musics = ArtUploadModel.objects.filter(user=exist_user, kind=2)
             likeset = ArtLike.objects.filter(art__user=exist_user, art__kind=2).filter(user=current_user)
@@ -136,9 +137,9 @@ def mypage(request, user_name, kind):
             print(context)
             return render(request, 'mypage/mypage_music.html', context)
         else:
-            return HttpResponse("error 404")
+            return HttpResponse("error 405")
     except Exception as e:
-        exist_user = None
+        # exist_user = None
         print(e)
         return HttpResponse("error 404")
     

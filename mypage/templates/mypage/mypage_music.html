@@ -55,8 +55,8 @@
 </head>
 
 <div class="sidenav">
-  <a href="{% url 'mypage:mypage' user.username 'image' %}">그림 보기</a>
-  <a href="{% url 'mypage:mypage' user.username 'music' %}" style="color:#f1f1f1;">음악 보기</a>
+  <a href="{% url 'mypage:mypage' userid 'image' %}">그림 보기</a>
+  <a href="{% url 'mypage:mypage' userid 'music' %}" style="color:#f1f1f1;">음악 보기</a>
 </div>
 {% include 'shared/_hp.html' %}
 <body>
@@ -72,8 +72,7 @@
     function draw_like_count(res) { 
       like_count = res.data['like_count']
       is_like = res.data['is_like']
-
-      document.getElementById('likecount').innerText = like_count
+      target.parentElement.querySelector('#likecount').innerText = like_count
 
       if (is_like) {
         target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
@@ -93,134 +92,25 @@
 
         {% for mus, islike in images %}
         <div class="btn-open-popup">
-            <div>
-                <p><strong>{{ mus.input_text }}</strong></p>
-                <b id="likecount">{{mus.like_count}}</b>
-                <p>
-                    <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{mus.id}}');">
-                        {% if islike %}
-                        <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
-                        {% else %}
-                        <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
-                        {% endif %}
-                    </button>
-                </p>
-            </div>
-            <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font/>
+          <div>
+            <p><strong>{{ mus.input_text }}</strong></p>
+            <b id="likecount">{{mus.like_count}}</b>        
+            <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{mus.id}}');">
+              {% if islike %}
+              <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
+              {% else %}
+              <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
+              {% endif %}
+            </button>
+          </div>
+          <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font/>
         </div>
         
         {% endfor %}
         </div>
     </div>
-    
-    <!-- <div class="modal">
-      <div class="modal-body fade">
-        <div class="modal-close">
-          <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="black"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </div>
-        {% if user.username == userid %}
-        <diV class="modal-delete">
-          <svg 
-          width="24" 
-          height="24"
-          viewBox="0 0 512 512"
-          xml:space="preserve" 
-          xmlns="http://www.w3.org/2000/svg" 
-          xmlns:xlink="http://www.w3.org/1999/xlink"> 
-            <path d="M436,40h-81.716c-5.304,0-10.391-2.107-14.142-5.858L311.858,5.858C308.107,2.107,303.02,0,297.716,0h-83.432  c-5.304,0-10.391,2.107-14.142,5.858l-28.284,28.284C168.107,37.893,163.02,40,157.716,40H76c-22.091,0-40,17.909-40,40  s17.909,40,40,40h0v332c0,33.137,26.863,60,60,60h240c33.137,0,60-26.863,60-60V120c22.091,0,40-17.909,40-40S458.091,40,436,40z   M216,402c0,16.569-13.431,30-30,30s-30-13.431-30-30V190c0-16.569,13.431-30,30-30s30,13.431,30,30V402z M356,402  c0,16.569-13.431,30-30,30s-30-13.431-30-30V190c0-16.569,13.431-30,30-30s30,13.431,30,30V402z"/>
-          </svg>
-        </diV>
-        {% endif %}
-        <div class="modal-items">
-        </div>
-      </div>
-    </div> -->
   </div>
 </body>
 <script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script>
-  const body = document.querySelector('body');
-  const modal = document.querySelector('.modal');
-  const modalClose = document.querySelector('.modal-close');
-  const btnOpenPopupList = document.querySelectorAll('.btn-open-popup');
-  const modalItem = document.querySelector('.modal-items');
-  // const likebtn = document.getElementById('btn-like')
-  let btn_open_popup = btnOpenPopupList[0];
-  let testlike, testlikecount;
 
-  btnOpenPopupList.forEach(btnOpenPopup =>
-    btnOpenPopup.addEventListener('click', (e) => {
-      btn_open_popup = e.currentTarget;
-      console.log(btn_open_popup);
-      modal.classList.toggle('show');
-
-      if (modal.classList.contains('show')) {
-        body.style.overflow = 'hidden';
-      };
-      var del_item = e.currentTarget.querySelector('.div-item');
-      var originImg = e.currentTarget.querySelector('.ori-img');
-      var testImg = originImg.cloneNode(true);
-      var inputText = e.currentTarget.querySelector('.input-text');
-      var testText = inputText.cloneNode(true);
-      var button_like = e.currentTarget.parentElement.querySelector('.btn-like') 
-      var testlike = button_like.cloneNode(true)
-      var likecount = e.currentTarget.parentElement.querySelector('#likecount') 
-      var testlikecount = likecount.cloneNode(true)
-
-      testImg.style.display = 'block';
-      testText.style.display = 'block';
-      modalItem.appendChild(testText);
-      modalItem.appendChild(testImg);
-      modalItem.appendChild(testlike)
-      modalItem.appendChild(testlikecount)
-      
-      itemDelete.addEventListener('click', (event) => {
-        console.log(del_item.id);
-        del_conf = confirm("정말 삭제하시겠습니까?");
-        axios.post("/mypage/{{userid}}/delete_item/", {'del_item':del_item.id, 'del_conf':del_conf})
-              .then(location.reload())
-              .catch(function (error) {console.log(error)} ) 
-        })
-      })
-  );
-
-  modalClose.addEventListener('click', (event) => {
-    modal.classList.toggle('show');
-    while (modalItem.firstChild) {
-      modalItem.removeChild(modalItem.firstChild);
-    } 
-    if (!modal.classList.contains('show')) {
-      body.style.overflow = 'auto';
-      location.reload();
-    }
-  });
-  
-  modal.addEventListener('click', (event) => {
-    if (event.target === modal) {
-      modal.classList.toggle('show');
-      while (modalItem.firstChild) {
-        modalItem.removeChild(modalItem.firstChild);
-      } 
-      if (!modal.classList.contains('show')) {
-          body.style.overflow = 'auto';
-          location.reload();
-      }
-    }
-  });
-
-</script>
 </html>
