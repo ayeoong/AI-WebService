@@ -52,8 +52,8 @@
             
             <form method="post" class="d-flex" role="search" action="{% url 'salon:search' %}">
                 {% csrf_token %}
-                <input class="form-control me-2" type="search" id="search" name="search" placeholder="Search" aria-label="Search" style="font-family: 'Roboto Slab', serif;">
-                <button class="btn btn-primary" type="submit" style="font-family: 'Roboto Slab', serif;">Search</button>
+                <input class="form-control me-2" type="search" id="search" name="search" placeholder="아이디/작품키워드" aria-label="Search"  required minlength="1">
+                <button class="btn btn-primary" type="submit">Search</button>
             </form>
        
         </div>

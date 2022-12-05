@@ -104,7 +104,7 @@ def mypage(request, user_name, kind):
         exist_user = User.objects.get(username=user_name)
 
         if kind == 'image':
-            images = ArtUploadModel.objects.filter(user=exist_user, kind=1)
+            images = ArtUploadModel.objects.filter(user=exist_user, kind=1).order_by('-uploaded_at')
             if current_user.is_authenticated:
                 likeset = ArtLike.objects.filter(art__user=exist_user, art__kind=1).filter(user=current_user)
                 likeset = [like.art for like in likeset]
@@ -125,7 +125,7 @@ def mypage(request, user_name, kind):
             return render(request, 'mypage/mypage.html', context)
 
         elif kind == 'music':
-            musics = ArtUploadModel.objects.filter(user=exist_user, kind=2)
+            musics = ArtUploadModel.objects.filter(user=exist_user, kind=2).order_by('-uploaded_at')
             if current_user.is_authenticated:
                 likeset = ArtLike.objects.filter(art__user=exist_user, art__kind=2).filter(user=current_user)
                 likeset = [like.art for like in likeset]
