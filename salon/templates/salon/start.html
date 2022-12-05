@@ -34,7 +34,6 @@
           axios.post("/result_model/", {'text':title}) //post로 인풋데이터넣기
           .then( finish_model )
           .then(function () { alert("작품 생성이 완료되었습니다.")} )
-          // .then(() => {location.href = "/result/"} )
           .catch(function (error) {console.log(error)} ) 
   
           onceTimer = setInterval(progress_step, 1000);
@@ -101,13 +100,13 @@
             <button disabled id="btn_create" class="btn btn-primary mt-3" onclick="progress_start()" >생성하기
             </button>
           </p>
-          <!-- </form> -->
         </div>
         <div class="d-flex align-items-center justify-content-center">
           <progress id="progressBar" value="0" min="0" max="100" style="position: relative;top: -151px;right: 201px;"></progress>
         </div>
         <div class="text-center">
           <p style="position: relative;top: -168px;right: 48px;font-family: 'NanumSquareNeo-Variable';font-size: 72%;">예상 소요 시간 약 1분…</p>
+          <img class="gif-img" src="https://i.giphy.com/media/3owyoXMzSPGjbsQ5uE/giphy.webp" onerror="this.onerror=null;this.src='https://i.giphy.com/3owyoXMzSPGjbsQ5uE.gif';" alt="">
         </div>
       </div>
     <br/>

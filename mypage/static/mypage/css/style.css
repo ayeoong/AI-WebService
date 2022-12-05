@@ -56,18 +56,23 @@ p {
    overflow:hidden 
 }
 
+.tn_img {
+  border-radius: 2%;
+  margin: 1rem;
+}
+
 .btn-like {
   position: relative;
-  left: 10px;
-  bottom: 45px;
+  left: 20px;
+  bottom: 70px;
   z-index: 5;
   border: none;
   background: none;
 }
 .btn-img {
   display: block;
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   border: none;
   z-index: 5;
   padding: 0;
@@ -121,6 +126,13 @@ p {
   position: absolute;
   cursor: pointer;
   right: 20px;
+  bottom: 20px;
+}
+
+.modal-download {
+  position: absolute;
+  cursor: pointer;
+  right: 55px;
   bottom: 20px;
 }
 

@@ -12,7 +12,11 @@
 }
 
 .grid-container a:hover {
-  text-shadow: 0 0 1em rgb(255, 255, 255);
+  text-shadow: 0 0 1em rgb(255, 255, 255) ;
+}
+
+.grid-item {
+  margin-top: 7rem;
 }
 
 #btn_create {
@@ -65,16 +69,46 @@
   min-height: 300px;
   min-width: 300px;
   margin: 2em 1em;
+  border-radius: 2%;
 }
 @media screen and (max-width: 500px) {
   .item {
-    max-height: 300px;
-    max-width: 300px;
+    max-height: 150px;
+    max-width: 150px;
   }
 }
 .sample-img {
   max-height: 300px;
   max-width: 300px;
+  border-radius: 2%;
+}
+
+.ori-img {
+  position: relative;
+  display: block;
+  margin: 20px;
+  margin-top: 35px;
+}
+
+figcaption{
+  height: 300px;
+  width: 300px;
+  border-radius: 2%;
+  margin-left: -300px;
+  background-color: rgba(0,0,0,0.7);
+  display: inline-block;
+  position: absolute; /* 이미지와 겹치게 처리 */
+
+  color: #fff; text-align: center;
+  line-height: 200px;
+
+  opacity: 0; /* 처음엔 안보이고 */
+
+  transition: 0.3s;
+}
+
+.item:hover figcaption {
+  opacity: 1;
 }
 
 a {
@@ -93,12 +127,20 @@ p {
 }
 
 p.test {
-  text-indent: 20px;
+  margin: 1.7rem;
 }
 
 i {
   color: skyblue;
 }/*# sourceMappingURL=style.css.map */
+
+.mus-text {
+  width: 300px;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  white-space: normal;
+}
 
 .modal {
   position: absolute;

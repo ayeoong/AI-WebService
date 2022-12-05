@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ko">
+<head>
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="icon" href="{% static 'salon/images/logo.png' %}" type="image/x-icon" sizes="16x16">
+    <link rel="stylesheet" href="{% static 'mypage/css/style.css' %}">
+    <style>
+        .btn-open-popup {
+            margin: 10px;
+            border: #818181 2px solid;
+            border-radius: 5%;
+        }
+        .btn-like {
+            position: relative;
+            float: right;
+            bottom: 50px;
+            left: 0;
+        }
+        .sidenav {
+            height: 100%;
+            width: 10%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: skyblue;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .sidenav a:first-child {
+            margin-top: 100px;
+        }
+        
+        .sidenav a {
+            padding: 6px 6px 6px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+        }
+        
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+        
+        .main {
+            margin-left: 10%; /* Same as the width of the sidenav */
+        }
+        
+        @media screen and (max-height: 450px) {
+            .sidenav {padding-top: 15px;}
+            .sidenav a {font-size: 18px;}
+        }
+    </style>
+</head>
+
+<div class="sidenav">
+  <a href="{% url 'mypage:mypage' userid 'image' %}">그림 보기</a>
+  <a href="{% url 'mypage:mypage' userid 'music' %}" style="color:#f1f1f1;">음악 보기</a>
+</div>
+{% include 'shared/_hp.html' %}
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    var target
+    function like_count_on(e, artid) {
+      target = e
+      axios.post('/mypage/art_like/', {'artid':artid})
+      .then( draw_like_count )
+      .catch(function (error) { console.log(error) });
+    }
+    function draw_like_count(res) { 
+      like_count = res.data['like_count']
+      is_like = res.data['is_like']
+      target.parentElement.querySelector('#likecount').innerText = like_count
+
+      if (is_like) {
+        target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
+      } else {
+        target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138406.png'
+      }
+    }
+  </script>
+  
+  <div class="main">
+  <div class="grid-container">
+    <h1> {{userid}}'s page </h1>
+  </div>
+
+    <div class="mus">
+        <div class="container">
+
+        {% for mus, islike in musics %}
+        <div class="btn-open-popup">
+          <div>
+            <p><strong>{{ mus.input_text }}</strong></p>
+            <b id="likecount">{{mus.like_count}}</b>        
+            <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{mus.id}}');">
+              {% if islike %}
+              <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
+              {% else %}
+              <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
+              {% endif %}
+            </button>
+          </div>
+          <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font/>
+        </div>
+        
+        {% endfor %}
+        </div>
+    </div>
+  </div>
+</body>
+<script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
+
+</html>

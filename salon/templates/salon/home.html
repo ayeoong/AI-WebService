@@ -1,31 +1,33 @@
 {% load static %}
 {% include 'shared/_hp.html' %}
+<meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="stylesheet" href="{% static 'salon/css/style.css' %}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <div class="p-5 text-center bg-image rounded-3" style="
-        background-image: url('https://i.pinimg.com/564x/ab/3c/16/ab3c1629b2a97a664cac49b803989e21.jpg');
-        height: 400px;
-      ">
-      <div class="grid-container" style="height:200px;">
-        <div class="d-flex justify-content-center align-items-center h-100">
-          <div class="text-white">
-            <h1 class="mb-3" >Gallery</h1>
-            <h4 class="mp-5" style="padding-top: 20%;">원하는 작품을 만들어 보세요</h4>
-            <a class="btn btn-outline-light btn-lg" href="{% url 'salon:start' %}" role="button">작품 생성하러 가기</a>
-          </div>
+  <div class="p-5 text-center bg-image rounded-3" style="
+    background-image: url('https://i.pinimg.com/564x/ab/3c/16/ab3c1629b2a97a664cac49b803989e21.jpg');
+    height: 400px;
+  ">
+    <div class="grid-container" style="height:200px;">
+      <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+          <h1 class="mb-3" >Gallery</h1>
+          <h4 class="mp-5" style="padding-top: 20%;">원하는 작품을 만들어 보세요</h4>
+          <a class="btn btn-outline-light btn-lg" href="{% url 'salon:start' %}" role="button">작품 생성하러 가기</a>
         </div>
       </div>
     </div>
-      
+  </div>
+    
     <main class="grid-item main">
-      <p class="keyword-area">{{ key }}</p>
+      <p class="keyword-area">둘러보기</p>
       <div class="items">
         {% for img in images %}   
         <div class="btn-open-popup item item{{forloop.counter}}">
           <img class="sample-img" src="{{ img.thumbnailurl }}" alt="thumbnail">
+          <figcaption>자세히 보려면 클릭하세요!</figcaption>
           <img class="test ori-img" src="{{ img.fileurl }}" alt="filename" style="width: 500px; display: none;">
           <p class="test input-text" style="display: none;">{{ img.input_text }}</p>
-          <p class="test img-user" style="display: none;">created by... <a href="{% url 'mypage:mypage' img.user %}" style="display: inline;">@{{ img.user }}</a></p>
+          <p class="test img-user" style="display: none;">created by... <a href="{% url 'mypage:mypage' img.user.username 'image' %}" style="display: inline;">@{{ img.user }}</a></p>
         </div>
         {% endfor %}
       </div>
@@ -33,13 +35,15 @@
       <div class="items">
         {% for mus in musics %}
         <div class="item item-music">
+          <figcaption style="margin-left: 0;">음악을 들으시려면 클릭하세요!</figcaption>
           <p class="mus-url" style="display: none;">{{ mus.fileurl }}</p>
-          <p>Click to Listen!<br><strong>{{ mus.input_text }}</strong></p>
+          <p  class="mus-text">{{ mus.input_text }}</p>
           <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font style="display: none;"/>
         </div>
         {% endfor %}
       </div>
       <hr>
+      <p style="text-align:center; font-size: small;">이 사이트는 PC 환경에 최적화되어 있습니다.</p>
       
     </main> 
     <div class="modal">

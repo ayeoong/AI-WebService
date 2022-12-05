@@ -3,10 +3,11 @@
 {% include 'shared/_hp.html' %}
 <html lang="ko">
   <head>
-    <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'salon/css/font.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&family=Roboto+Mono&family=Roboto+Slab&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <meta charset="UTF-8">
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>Gallery</title>
   </head>
   <body>
@@ -20,10 +21,8 @@
         <p>{{text}}</p>
         <p>{{tags}}</p>
       </div>
-      <!-- <p>{{music_file}}</p> "text_music"를 굳이 더 넣을 이유가 없음. 이미 위에 "text"가 출력되기 때문 -->
     </div>
     <div class="d-flex justify-content-center" style="line-height: 100%;font-family: 'InfinitySans-RegularA1';">
-      <!-- <img src="{{ img_file.fileurl }}" alt="image"> 썸네일만 출력되도록 원본사이즈의 이미지는 안 보이게 주석 -->
       <img src="{{ img_file.thumbnailurl }}" alt="thumbnail">
     </div>
     <div class="d-flex justify-content-center mt-3" style="margin-bottom: 100px; ">

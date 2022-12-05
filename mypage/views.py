@@ -97,31 +97,58 @@ def send_email(request):
 ### user name으로 구현
 # 타인 접속 or 로그인 하지 않았을 때, opage.html 화면 보여줌
 # current_user 현재 로그인한 유저, exist_user = 존재하는 유저 네임
-def mypage(request, user_name):
-    # current_user = request.user
+def mypage(request, user_name, kind):
+    current_user = request.user
     print(user_name)
     try:
         exist_user = User.objects.get(username=user_name)
-        images = ArtUploadModel.objects.filter(user=exist_user, kind=1)
-        # context = {'userid':exist_user.username, 'images':images}
 
-        likeset = ArtLike.objects.filter(art__user=exist_user)
-        likeset = [like.art for like in likeset]
-        print( '==========likeset :', likeset ) 
+        if kind == 'image':
+            images = ArtUploadModel.objects.filter(user=exist_user, kind=1).order_by('-uploaded_at')
+            if current_user.is_authenticated:
+                likeset = ArtLike.objects.filter(art__user=exist_user, art__kind=1).filter(user=current_user)
+                likeset = [like.art for like in likeset]
+                print( '==========likeset :', likeset ) 
 
-        image_likes = []
-        for img in images:
-            if img in likeset:
-                image_likes.append(True)  # find like
+                image_likes = []
+                for img in images:
+                    if img in likeset:
+                        image_likes.append(True)  # find like
+                    else:
+                        image_likes.append(False) # not like img
             else:
-                image_likes.append(False) # not like img
+                image_likes = []
+                for img in images:
+                    image_likes.append(False)
+            context = {'userid':exist_user.username, 'images':zip(images, image_likes)}
+            print(context)
+            return render(request, 'mypage/mypage.html', context)
 
-        context = {'userid':exist_user.username, 'images':zip(images, image_likes)}
-        print(context)
-        return render(request, 'mypage/mypage.html', context)
-    
+        elif kind == 'music':
+            musics = ArtUploadModel.objects.filter(user=exist_user, kind=2).order_by('-uploaded_at')
+            if current_user.is_authenticated:
+                likeset = ArtLike.objects.filter(art__user=exist_user, art__kind=2).filter(user=current_user)
+                likeset = [like.art for like in likeset]
+                print( '==========likeset :', likeset ) 
+
+                music_likes = []
+                for mus in musics:
+                    if mus in likeset:
+                        music_likes.append(True)  # find like
+                    else:
+                        music_likes.append(False) # not like img
+            else:
+                music_likes = []
+                for mus in musics:
+                    music_likes.append(False)
+
+            context = {'userid':exist_user.username, 'musics':zip(musics, music_likes)}
+            print(context)
+            return render(request, 'mypage/mypage_music.html', context)
+        else:
+            return HttpResponse("error 405")
     except Exception as e:
-        exist_user = None
+        # exist_user = None
         print(e)
         return HttpResponse("error 404")
     

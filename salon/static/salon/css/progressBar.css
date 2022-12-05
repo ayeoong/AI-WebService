@@ -17,3 +17,9 @@
     
 
 }
+
+.gif-img {
+	position: relative;
+	margin: -50px 0 0 20%;
+    z-index: -1;
+}

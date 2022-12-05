@@ -13,8 +13,8 @@
             <ul>
                 <h5>검색된 아이디</h5>
                 {% for search_user in search_user_list %}
-                <li>
-                <p>{{ search_user.username }}</p>
+                <li>            
+                <p><a href="{% url 'mypage:mypage' search_user.username 'image' %}">{{ search_user.username }}</a></p>
                 </li>
                 {% endfor %}
             </ul>

@@ -20,15 +20,16 @@ def main(request):
 
 
 def index(request):
-    keywords = ['가장 많이 검색된 키워드', 'Best 작품']
-    best_kw_list = KeywordModel.objects.all().order_by('-input_num')[:10]
+    keywords = ['가장 많이 검색된 키워드', '좋아요가 높은 작품']
+    best_kw_list = KeywordModel.objects.all().order_by('-input_num')
+    print('best_kw_list:', best_kw_list)
     kw_imgs = []
     kw_muss = []
     for best_kw in best_kw_list:
         kw_imgs.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=1, keyword=best_kw))
         kw_muss.extend( artkey.art for artkey in ArtKeywordModel.objects.filter(art__kind=2, keyword=best_kw))
-    # images = list(set([artkey.art for artkey in art_kw_img_list]))[:10]
-    # musics = list(set([artkey.art for artkey in art_kw_mus_list]))[:10]
+    kw_imgs = list(set(kw_imgs))[:10]
+    kw_muss = list(set(kw_muss))[:10]
     return render(request, 'salon/home.html', {'images': kw_imgs, 'musics': kw_muss })
 
 
@@ -60,6 +61,7 @@ def search(request):
 def start(request):
     if request.session.get('auto_save'):
         del request.session['auto_save']
+
     return render(request, 'salon/start.html', {})
 
 # 모델 호출 함수
@@ -85,8 +87,6 @@ def result_model(request):
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
 
     save_music(music_file, mus_filename)
-
-    # music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
 
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
     print('result_model:', data)

@@ -27,7 +27,7 @@
                 </li>
                 {% if user.is_authenticated %} 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'mypage:mypage' user.username %}">MyPage</a>
+                    <a class="nav-link" href="{% url 'mypage:mypage' user.username 'image' %}">마이페이지</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link disabled">{{ user.username }}님</a>
@@ -50,8 +50,8 @@
             
             <form method="post" class="d-flex" role="search" action="{% url 'salon:search' %}">
                 {% csrf_token %}
-                <input class="form-control me-2" type="search" id="search" name="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+                <input class="form-control me-2" type="search" id="search" name="search" placeholder="아이디/작품키워드" aria-label="Search"  required minlength="1">
+                <button class="btn btn-primary" type="submit">Search</button>
             </form>
        
         </div>
