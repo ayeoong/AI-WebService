@@ -45,7 +45,7 @@
         display: flex;
     }
     .est-time {
-        top: -168px;
+        top: -208px;
         right: 48px;
     }
 }
@@ -78,8 +78,11 @@
         margin-left: 15rem;
     }
     .est-time {
-        top: -11rem;
+        top: -13rem;
         margin-right: 13rem;
+        font-size: x-small;
+    }
+    .signup-drive-text {
         font-size: x-small;
     }
 }
