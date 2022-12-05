@@ -19,7 +19,7 @@
     <div class="grid-container">
       <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
-      <script>
+      <script>     
         var onceTimer;
         var step = 2;
         function progress_step() {
@@ -83,8 +83,14 @@
           document.body.appendChild(form);
           form.submit();
         }
+
     
       </script>
+      <style>
+        #btn_create:hover {color: #0d6efd;background-color: #F0F8FF;transition: 0.3s;}
+        #btn_create:active {color:#0d6efd;background-color: #F0F8FF;box-shadow: 0 5px #0d6efd;transform: translateY(4px);}
+
+      </style>
       <!-- <form action="{% url 'salon:result' %}" method='POST' enctype="multipart/form-data"> -->
         {% csrf_token %}
         <div class="border d-flex align-items-center justify-content-center gap-1" style="height: 350px;background-color: #F0F8FF;font-family: 'NanumSquareNeo-Variable';">
