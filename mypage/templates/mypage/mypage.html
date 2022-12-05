@@ -65,10 +65,13 @@
       is_like = res.data['is_like']
       target.parentElement.querySelector('#likecount').innerText = like_count
 
+      toggle_likebtn(is_like, target.children[0]);
+    }
+    function toggle_likebtn(is_like, imgtag) {
       if (is_like) {
-        target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
+        imgtag.src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
       } else {
-        target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138406.png'
+        imgtag.src = 'https://cdn-icons-png.flaticon.com/512/138/138406.png'
       }
     }
   </script>
@@ -161,6 +164,7 @@
   const btnOpenPopupList = document.querySelectorAll('.btn-open-popup');
   const modalItem = document.querySelector('.modal-items');
   var btn_open_popup, testlike, testlikecount;
+  var btn_like, likecount;
 
   btnOpenPopupList.forEach(btnOpenPopup =>
     btnOpenPopup.addEventListener('click', (e) => {
@@ -176,8 +180,10 @@
       var testImg = originImg.cloneNode(true);
       var inputText = e.currentTarget.querySelector('.input-text');
       var testText = inputText.cloneNode(true);
-      testlike = btn_open_popup.querySelector('.btn-like') 
-      testlikecount = btn_open_popup.querySelector('#likecount') 
+      btn_like = btn_open_popup.querySelector('.btn-like');
+      likecount = btn_open_popup.querySelector('#likecount');
+      testlike = btn_like.cloneNode(true);
+      testlikecount = likecount.cloneNode(true);
 
       testImg.style.display = 'block';
       testText.style.display = 'block';
@@ -202,8 +208,8 @@
   }));
 
   modalClose.addEventListener('click', (event) => {
-    btn_open_popup.appendChild(testlike)
-    btn_open_popup.appendChild(testlikecount)
+    btn_like.src = testlike.src;
+    likecount.innerText = testlikecount.innerText;
     
     modal.classList.toggle('show');
     while (modalItem.firstChild) {
@@ -217,6 +223,9 @@
   
   modal.addEventListener('click', (event) => {
     if (event.target === modal) {
+      btn_like.src = testlike.src;
+      likecount.innerText = testlikecount.innerText;
+
       modal.classList.toggle('show');
       while (modalItem.firstChild) {
         modalItem.removeChild(modalItem.firstChild);
