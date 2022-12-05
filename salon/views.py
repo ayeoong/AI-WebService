@@ -1,32 +1,15 @@
-from django.shortcuts import render
 from urllib.request import urlopen
+from django.shortcuts import render
 import json
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from salon.models import KeywordModel, ArtKeywordModel, ArtUploadModel, AutoArtUploadModel
-import os
-import openai
-from PIL import Image
 import requests
-from io import BytesIO
 from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-import time
-from salon.utils import uuid_name_upload_to
-from salon.music import generateMusic
-from googletrans import Translator
+from salon.utils import uuid_name_upload_to, translate_text, image_generation,music_generation, save_img_and_thumbnail, save_music, delete_img, delete_mus 
 from datetime import timedelta
 from django.utils import timezone
-
-
-
-
-if settings.DEV_MODE or settings.TEST_MODE:
-    img_path = '/media/images/'
-    music_path = '/media/musics/'
-else:
-    img_path = 'https://storage.googleapis.com/dall-e-2-contents/images/'
-    music_path = 'https://storage.googleapis.com/dall-e-2-contents/musics/'
+import os
 
 
 def home(request):
@@ -47,6 +30,7 @@ def index(request):
     # images = list(set([artkey.art for artkey in art_kw_img_list]))[:10]
     # musics = list(set([artkey.art for artkey in art_kw_mus_list]))[:10]
     return render(request, 'salon/home.html', {'images': kw_imgs, 'musics': kw_muss })
+
 
 def search(request):
     if request.method == 'POST':
@@ -71,34 +55,6 @@ def search(request):
     else:
         return render(request, 'salon/search.html', {})
 
-def image_generation(text):
-    openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
-    openai.api_key = "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"
-
-    response = openai.Image.create( prompt=text,
-                            n=1,
-                            size="1024x1024")
-    image_url = response['data'][0]['url']
-    return image_url
-
-def image_generation_beta(text):
-    time.sleep(5)
-    image_url = 'https://ifh.cc/g/5qCAX2.jpg'
-    return image_url
-
-def music_generateMusic_beta():
-    mus_filename = 'MuseNet-Composition.mid'
-    return mus_filename
-
-def translate(prompt):
-    translator = Translator()
-    which_lang = translator.detect(prompt).lang
-    if which_lang != 'en':
-        return translator.translate(text=prompt, dest='en', src='auto').text
-    else:
-        return prompt
-
-
 
 # 입력창
 def start(request):
@@ -110,16 +66,24 @@ def start(request):
 def result_model(request):
     json_data = json.loads( request.body )
 
-    text = translate(json_data['text'])
+    text = translate_text(json_data['text'])
+    tags = get_taglist(text)
 
-    image_url = image_generation_beta(text) #image_generation(text) # https://~~~.jpg 형식
-    music_file = generateMusic()
+    image_url = image_generation(text) #image_generation(text) # https://~~~.jpg 형식
+    music_file = music_generation(tags)
     
-    img_filename = uuid_name_upload_to(None, image_url)
+    img_filename =  uuid_name_upload_to(None, image_url)
+
+    if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:##달리에서 넘어오는 url은 jpg 확장자가 안붙혀서 넘어옴
+        img_filename = img_filename + '.jpg'
+
+
     mus_filename = img_filename.replace('.jpg','.mid')
+
 
     res = requests.get(image_url)
     _, img_tn_file = save_img_and_thumbnail(res.content, img_filename)
+
     save_music(music_file, mus_filename)
 
     # music_file = music_generateMusic_beta() #generateMusic() # '~~~.mid' 형식
@@ -127,32 +91,6 @@ def result_model(request):
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
     print('result_model:', data)
     return JsonResponse(data)
-
-
-def save_img_and_thumbnail(content, img_filename):
-    img_tn_filename = "_tn.".join(img_filename.split('.')) # 섬네일명: 이미지파일명_tn.jpg 
-
-    img_file = Image.open(BytesIO(content))
-    save_img(img_file, img_filename)
-
-    img_file.thumbnail((300, 300))
-    save_img(img_file, img_tn_filename)  # 섬네일저장
-
-    return img_filename, img_tn_filename
-
-
-def save_img(image, filename):
-    img_storage_path = 'media/images/' #setting.media_images
-    img_filepath = img_storage_path + filename
-    image.save(img_filepath, 'PNG')
-
-
-def save_music(music_file, music_filename):
-    if settings.DEV_MODE or settings.TEST_MODE:
-        with open('media/musics/'+ music_filename, 'wb') as f:
-            f.write(music_file)
-    music_filename = music_path + music_filename
-
 
 
 # 출력창
@@ -164,8 +102,8 @@ def result(request):
         art_mus = AutoArtUploadModel.objects.filter(kind=2, id__in=auto_save_art_id_list)[0]
         context = {'text': text, 'img_file':art_img, "music_file":art_mus }
         return render(request, 'salon/result.html', context)
-
-    text = translate(request.POST.get('input_text'))
+    
+    text = translate_text(request.POST.get('input_text'))
     mus_filename = request.POST.get('mus_file')
     img_filename = request.POST.get('img_file')
     img_tn_filename = request.POST.get('img_tn_file')
