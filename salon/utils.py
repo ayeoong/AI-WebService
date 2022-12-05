@@ -27,8 +27,6 @@ def uuid_name_upload_to(instance, filename): # instance는 이미지, 음악 파
         uuid_name + extension,
     ])
 
-
-
 def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
     if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
         openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
@@ -134,3 +132,4 @@ def delete_mus(mus_filename):
         blob.delete()
 
         print(f"Blob {mus_filename} deleted.")
+  

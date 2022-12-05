@@ -33,9 +33,6 @@ def index(request):
     return render(request, 'salon/home.html', {'images': kw_imgs, 'musics': kw_muss })
 
 
-
-
-
 def search(request):
 
     if request.method == 'POST':
@@ -60,7 +57,6 @@ def search(request):
         return render(request, 'salon/search.html', context)
     else:
         return render(request, 'salon/search.html', {})
-
 
 
 # 입력창
@@ -97,8 +93,6 @@ def result_model(request):
     data = {'result':'successful', 'result_code': '1', 'img_file':img_filename, 'img_tn_file':img_tn_file, 'mus_file':mus_filename}
     print('result_model:', data)
     return JsonResponse(data)
-
-
 
 
 # 출력창
