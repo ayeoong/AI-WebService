@@ -3,6 +3,7 @@ h1 {
 }
 
 p {
+  font-family: 'Roboto Mono', monospace;
   font-size: 20px;
   font-weight: 700;
 }
