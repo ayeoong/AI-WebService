@@ -1,4 +1,4 @@
-import os
+from os import path
 from uuid import uuid4
 from django.core.files.storage import default_storage
 from io import BytesIO
@@ -8,7 +8,7 @@ import openai
 import time
 from salon.music import generateMusic
 from google.cloud import storage
-
+import google
 import six
 from google.cloud import translate_v2 as translate
 
