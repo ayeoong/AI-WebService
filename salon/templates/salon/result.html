@@ -107,6 +107,12 @@
       .title_area {font-weight:bold;text-align:center;width:100%;font-family: 'Roboto Mono', monospace;}
       .content_area {padding: 40px 65px 20px;margin: auto;line-break: normal;line-height: 150%;text-align: center;width: 100%;font-family: 'NanumSquareNeo-Variable';}
       .button_area {position:absolute;bottom:0;right:10px;font-family: 'NanumSquareNeo-Variable';font-size: 14px;} 
+
+      @media (max-width: 500px) {
+        p.mb-3 {
+          font-size: medium !important;
+        }
+      }
     </style>
     <body>
       <form name="notice_form">
@@ -125,7 +131,7 @@
     <div class="grid-container align-items-center d-flex justify-content-center" style="margin-top: 70px;background-color: #F0F8FF;">
       <h4><p class="mb-3" style="line-height: 100px;font-family: 'Noto Serif KR', serif;">2. 마이페이지에 작품을 저장하세요.</p></h4>
     </div>
-    <div class="d-flex justify-content-center" style="padding-bottom: 40px;background-color: #F0F8FF;font-family: 'NanumSquareNeo-Variable';">
+    <div class="d-flex justify-content-center" style="padding-bottom: 60px;background-color: #F0F8FF;font-family: 'NanumSquareNeo-Variable';">
     <form method="post" action="{% url 'salon:save_result' %}">
       <input type="hidden" id="favorite" name="favorite" value="0">
       <input type="hidden" id="input_text" name="input_text" value="{{ text }}">
@@ -138,7 +144,7 @@
     </form>
     {% else %}
     </form>
-    <div>
+    <div style="position: absolute; padding-top: 30px;">
       <p><button class="btn btn-primary" id="save_button" onclick="goto_login()" disabled=true>저장하기</button></p>
     {% endif %}
     </div>

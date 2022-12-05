@@ -4,9 +4,10 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{% static 'salon/css/font.css' %}">
     <link rel="icon" href="{% static 'salon/images/logo.png' %}" type="image/x-icon" sizes="16x16">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="{% static 'salon/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'salon/css/font.css' %}">
     <title>Gallery</title>
   </head>
   {% include 'shared/_hp.html' %}
@@ -19,7 +20,9 @@
           <il><a href="/media/{{music_file}}" download="">음악 파일 다운로드하기</a></il><br>
         </ul> -->
         {% for art in files %}
+        <div class="mx-1">
         <button value="download"><a type='button' href="{{art.fileurl}}" class='download' download>{{art.filename}}</a></button>
+        </div>
         {% endfor %}
       </div>
   </body>

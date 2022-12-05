@@ -13,6 +13,25 @@ from django.contrib.auth import login, authenticate
 from salon.models import ArtUploadModel, ArtKeywordModel, KeywordModel
 from django.core.mail.message import EmailMessage
 from .models import ArtLike
+from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, PasswordResetDoneView
+from django.contrib.auth.forms import (
+    AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm,
+)
+
+class UserPasswordResetView(PasswordResetView):
+    template_name = 'mypage/password_reset.html' #템플릿을 변경하려면 이와같은 형식으로 입력
+    success_url = reverse_lazy('password_reset_done')
+    form_class = PasswordResetForm
+    
+    def form_valid(self, form):
+        if User.objects.filter(email=self.request.POST.get("email")).exists():
+            return super().form_valid(form)
+        else:
+            return render(self.request, 'mypage/password_reset_done_fail.html')
+            
+class UserPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'mypage/password_reset_done.html' #템플릿을 변경하려면 이와같은 형식으로 입력
 
 # Create your views here.
 def signup(request):
@@ -198,6 +217,7 @@ def find_id(request):
             error_msg = ["이메일이 바르게 입력되지 않았거나 가입된 정보가 없습니다."]
 
     return render(request, 'mypage/find_id.html', {'error_msg':error_msg, 'email_ok':email_ok})
+
 
 
 @csrf_exempt
