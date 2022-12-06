@@ -9,7 +9,7 @@ from django.conf import settings
 from salon.utils import uuid_name_upload_to, translate_text, image_generation,music_generation, save_img_and_thumbnail, save_music, delete_img, delete_mus 
 from datetime import timedelta
 from django.utils import timezone
-
+import os
 
 
 def home(request):
@@ -214,9 +214,7 @@ def delete_autoart(self):
             delete_img(delete_filename)
 
         elif file[-3:] == 'mid':
-            musics_path = os.path.join(os.path.join(settings.MEDIA_ROOT, 'musics'), file)
-            print(musics_path)
-            os.remove(musics_path)
+            delete_mus(delete_filename)
     
     result = {'delete_count':len(delete_filename) + len(delete_thumbnail), 'filenames':delete_filename + delete_thumbnail}
     return JsonResponse(result, safe=False)
