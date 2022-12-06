@@ -3,6 +3,7 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{% static 'salon/images/logo.png' %}" type="image/x-icon" sizes="16x16">
     <title>Gallery</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,7 +14,7 @@
   <body>
     <div class="text-center">
       <div class="d-flex justify-content-center mt-3">
-        <h2><p class="mb-3" style="line-height: 100px;font-family: 'Noto Serif KR', serif;">입력한 텍스트와 맞는 작품을 생성합니다.</p></h2>
+        <h2><p class="mb-3 guide-text">입력한 텍스트와 맞는 작품을 생성합니다.</p></h2>
       </dc:\Users\PC\AppData\Local\Programs\Microsoft VS Code\resources\app\out\vs\code\electron-sandbox\workbench\workbench.htmliv>
       </div>
     <div class="grid-container">
@@ -84,7 +85,7 @@
         }
     
       </script>
-        <div class="border d-flex align-items-center justify-content-center gap-1" style="height: 350px;background-color: #F0F8FF;font-family: 'NanumSquareNeo-Variable';">
+        <div class="border align-items-center justify-content-center gap-1" style="height: 350px;background-color: #F0F8FF;font-family: 'NanumSquareNeo-Variable';">
           <label for="name"></label>
           <input type="text" id="title" name="title" required
           minlength="4" maxlength="100" size="50" placeholder="3자 이상 100자 이하의 한글, 영어, 숫자만 입력하세요."><br>
@@ -94,10 +95,13 @@
           </p>
         </div>
         <div class="d-flex align-items-center justify-content-center">
-          <progress id="progressBar" value="0" min="0" max="100" style="position: relative;top: -151px;right: 201px;"></progress>
+          <progress id="progressBar" value="0" min="0" max="100"></progress>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+          <p class="signup-drive-text">※ 회원가입을 하시면 생성된 작품을 저장하실 수 있습니다 ※</p>
         </div>
         <div class="text-center">
-          <p style="position: relative;top: -168px;right: 48px;font-family: 'NanumSquareNeo-Variable';font-size: 72%;">예상 소요 시간 약 1분…</p>
+          <p class="est-time">예상 소요 시간 약 1분…</p>
           <img class="gif-img" src="https://i.giphy.com/media/3owyoXMzSPGjbsQ5uE/giphy.webp" onerror="this.onerror=null;this.src='https://i.giphy.com/3owyoXMzSPGjbsQ5uE.gif';" alt="">
         </div>
       </div>
