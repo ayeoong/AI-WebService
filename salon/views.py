@@ -104,7 +104,7 @@ def result(request):
         context = {'text': text, 'img_file':art_img, "music_file":art_mus }
         return render(request, 'salon/result.html', context)
     
-    text = translate(request.POST.get('input_text'))
+    text = translate_text(request.POST.get('input_text'))
     mus_filename = request.POST.get('mus_file')
     img_filename  = request.POST.get('img_file') 
     img_tn_filename = request.POST.get('img_tn_file')
