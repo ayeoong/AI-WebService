@@ -173,15 +173,11 @@ def mypage(request, user_name, kind):
     
 
 def delete_item(request, user_name):
-    print("0")
     json_data = json.loads( request.body )
     art_id = json_data['del_item']
     del_conf = json_data['del_conf']
-    print("1")
-    if (del_conf):
-        print("2")
+    if del_conf:
         try:
-            print("3")
             del_item = ArtUploadModel.objects.get(pk=art_id)
             print(del_item)
 
@@ -197,6 +193,7 @@ def delete_item(request, user_name):
             # os.remove(os.path.join(settings.MEDIA_ROOT, filename))
             ArtLike.objects.filter(art=del_item).delete()
             ArtKeywordModel.objects.filter(art=del_item).delete()
+
             del_item.delete()
             print("deleted")
             data = {'result':'successful'}

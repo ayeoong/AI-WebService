@@ -16,9 +16,11 @@
         <!-- <ul>
           <il><a href="/media/{{music_file}}" download="">음악 파일 다운로드하기</a></il><br>
         </ul> -->
+        <p>다운로드 하기</p>
         {% for art in files %}
         <button value="download"><a type='button' href="{{art.fileurl}}" class='download' download>{{art.filename}}</a></button>
         {% endfor %}
+        <p><a class="nav-link" href="{% url 'mypage:mypage' user.username 'image' %}">마이페이지로 이동</a></p>
       </div>
   </body>
 </html>

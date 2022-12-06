@@ -56,13 +56,13 @@
 
         {% for mus, islike in musics %}
         <div class="btn-open-popup btn-open-popup-music justify-content-center align-items-center">
-          <div>
+          <div style="height: 150px;">
             <p><strong>{{ mus.input_text }}</strong></p>
           </div>
-          <div style="margin-bottom: 40px">
+          <div style="margin-bottom: 30px">
             <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font/>
           </div>
-          {% if user.is_authenticated %}
+          {% if user.username == userid %}
           <diV class="btn-delete">
             <a type="button" onclick="delete_item('{{mus.id}}');">
               <svg 
