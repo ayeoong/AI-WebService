@@ -23,14 +23,17 @@
       .catch(function (error) { console.log(error) });
     }
     function draw_like_count(res) { 
-      like_count = res.data['like_count']
+      like_count = res.data['like_count'] + ' 명이 좋아합니다'
       is_like = res.data['is_like']
       target.parentElement.querySelector('#likecount').innerText = like_count
 
+      toggle_likebtn(is_like, target.children[0]);
+    }
+    function toggle_likebtn(is_like, imgtag) {
       if (is_like) {
-        target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
+        imgtag.src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
       } else {
-        target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138406.png'
+        imgtag.src = 'https://cdn-icons-png.flaticon.com/512/138/138406.png'
       }
     }
   </script>
@@ -47,16 +50,8 @@
         <div class="btn-open-popup btn-open-popup-music justify-content-center align-items-center">
           <div>
             <p><strong>{{ mus.input_text }}</strong></p>
-            <b id="likecount">{{mus.like_count}}</b>        
-            <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{mus.id}}');">
-              {% if islike %}
-              <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
-              {% else %}
-              <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
-              {% endif %}
-            </button>
           </div>
-          <div>
+          <div style="margin-bottom: 40px">
             <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font/>
           </div>
           {% if user.is_authenticated %} 
@@ -73,6 +68,16 @@
             </a>
           </div>
           {% endif %}
+          <div class="like-count-btn d-flex" style="margin-top: 0; margin-right: 0;">
+            <b id="likecount" style="font-family: 'NanumSquareNeo-Variable';">{{mus.like_count}} 명이 좋아합니다</b>
+            <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{img.id}}');">
+              {% if islike %}
+              <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
+              {% else %}
+              <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138406.png">
+              {% endif %}
+            </button>
+          </div>
         </div>
         
         {% endfor %}

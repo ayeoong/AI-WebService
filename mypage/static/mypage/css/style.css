@@ -9,6 +9,7 @@ p {
 
 .btn-open-popup {
   z-index: 1;
+  margin-bottom: 20px;
 }
 
 .grid-container {
@@ -39,21 +40,25 @@ p {
 .img {
    overflow: hidden ;
 }
+.like-count-btn {
+  float: right;
+  margin-right: 10px;
+  margin-top: -10px;
+}
 
 .btn-like {
   position: relative;
-  left: 20px;
-  bottom: 70px;
-  z-index: 5;
+  left: 0;
+  bottom: 0;
   border: none;
   background: none;
 }
 .btn-img {
   display: block;
-  width: 26px;
-  height: 26px;
+  float: right;
+  width: 1.5rem;
+  height: 1.5rem;
   border: none;
-  z-index: 5;
   padding: 0;
   margin: 0;
 }
@@ -100,6 +105,7 @@ p {
 
 .btn-open-popup-music {
   margin: 10px;
+  margin-bottom: 30px;
   height: 300px;
   padding: 10px;
   width: 300px;
@@ -107,12 +113,7 @@ p {
   border: #d4d4d4 2px solid;
   border-radius: 10px;
 }
-.btn-like {
-  position: relative;
-  float: right;
-  bottom: 50px;
-  left: 0;
-}
+
 #myAudio {
   display: block;
   width: 250px;
@@ -297,15 +298,23 @@ p {
     grid-template-columns: 1fr !important;
   }
   .btn-open-popup-music {
-    margin: 10px;
+    margin: 5%;
     padding: 10px;
     height: 200px;
-    width: 95%;
+    width: 85%;
     background-color: #FFFDBD;
     border: #d4d4d4 2px solid;
     border-radius: 10px;
   }
+  .like-count-btn{
+    margin-top: 0;
+  }
+
   #myAudio {
+    width: 90%;
     margin-top: 30px
+  }
+  #likecount {
+    font-size: small;
   }
 }
