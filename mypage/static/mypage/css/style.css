@@ -5,6 +5,7 @@ h1 {
 p {
   font-size: 20px;
   font-weight: 700;
+  font-family:'Roboto Slab', serif;
 }
 
 .btn-open-popup {
@@ -12,8 +13,11 @@ p {
 }
 
 .grid-container {
-  text-align: center;
-  height: 160px;
+    text-align: center;
+    height: 10rem;
+    background-color: #F0F8FF;
+    margin: 1.5rem;
+
 }
 
 .div-item {
@@ -49,6 +53,7 @@ p {
   background: none;
 }
 .btn-img {
+  float: left;
   display: block;
   width: 1.5rem;
   height: 1.5rem;
@@ -109,8 +114,8 @@ p {
 }
 .btn-like {
   position: relative;
-  float: right;
-  bottom: 50px;
+  float: left;
+  bottom: 0;
   left: 0;
 }
 #myAudio {
