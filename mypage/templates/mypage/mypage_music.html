@@ -47,7 +47,7 @@
         <div class="btn-open-popup btn-open-popup-music justify-content-center align-items-center">
           <div>
             <p><strong>{{ mus.input_text }}</strong></p>
-            <b id="likecount">{{mus.like_count}} 명이 좋아합니다</b>        
+            <b id="likecount" style="font-family: 'NanumSquareNeo-Variable';">{{mus.like_count}} 명이 좋아합니다</b>        
             <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{mus.id}}');">
               {% if islike %}
               <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
