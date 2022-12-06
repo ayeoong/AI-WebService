@@ -5,61 +5,13 @@
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="icon" href="{% static 'salon/images/logo.png' %}" type="image/x-icon" sizes="16x16">
     <link rel="stylesheet" href="{% static 'mypage/css/style.css' %}">
-    <style>
-        .btn-open-popup {
-            margin: 10px;
-            border: #818181 2px solid;
-            border-radius: 5%;
-        }
-        .btn-like {
-            position: relative;
-            float: right;
-            bottom: 50px;
-            left: 0;
-        }
-        .sidenav {
-            height: 100%;
-            width: 10%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background-color: skyblue;
-            overflow-x: hidden;
-            padding-top: 20px;
-        }
-
-        .sidenav a:first-child {
-            margin-top: 100px;
-        }
-        
-        .sidenav a {
-            padding: 6px 6px 6px 32px;
-            text-decoration: none;
-            font-size: 25px;
-            color: #818181;
-            display: block;
-        }
-        
-        .sidenav a:hover {
-            color: #f1f1f1;
-        }
-        
-        .main {
-            margin-left: 10%; /* Same as the width of the sidenav */
-        }
-        
-        @media screen and (max-height: 450px) {
-            .sidenav {padding-top: 15px;}
-            .sidenav a {font-size: 18px;}
-        }
-    </style>
 </head>
 
+{% include 'shared/_hp.html' %}
 <div class="sidenav">
   <a href="{% url 'mypage:mypage' userid 'image' %}">그림 보기</a>
   <a href="{% url 'mypage:mypage' userid 'music' %}" style="color:#f1f1f1;">음악 보기</a>
 </div>
-{% include 'shared/_hp.html' %}
 <body>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
@@ -71,14 +23,17 @@
       .catch(function (error) { console.log(error) });
     }
     function draw_like_count(res) { 
-      like_count = res.data['like_count']
+      like_count = res.data['like_count'] + ' 명이 좋아합니다'
       is_like = res.data['is_like']
       target.parentElement.querySelector('#likecount').innerText = like_count
 
+      toggle_likebtn(is_like, target.children[0]);
+    }
+    function toggle_likebtn(is_like, imgtag) {
       if (is_like) {
-        target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
+        imgtag.src = 'https://cdn-icons-png.flaticon.com/512/138/138533.png'
       } else {
-        target.children[0].src = 'https://cdn-icons-png.flaticon.com/512/138/138406.png'
+        imgtag.src = 'https://cdn-icons-png.flaticon.com/512/138/138406.png'
       }
     }
   </script>
@@ -89,14 +44,33 @@
   </div>
 
     <div class="mus">
-        <div class="container">
+        <div class="container mus-container">
 
         {% for mus, islike in musics %}
-        <div class="btn-open-popup">
+        <div class="btn-open-popup btn-open-popup-music justify-content-center align-items-center">
           <div>
             <p><strong>{{ mus.input_text }}</strong></p>
-            <b id="likecount">{{mus.like_count}}</b>        
-            <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{mus.id}}');">
+          </div>
+          <div style="margin-bottom: 40px">
+            <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font/>
+          </div>
+          {% if user.is_authenticated %} 
+          <div class="btn-download">
+            <a type='button' href="" class='download' download>
+              <svg version="1.1" id="Capa_1" width="24" height="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 49.827 49.827" style="enable-background:new 0 0 49.827 49.827;" xml:space="preserve">
+                <path style="fill:#010002;" d="M44.939,41.327c0,4.687-3.813,8.5-8.5,8.5H13.388c-4.687,0-8.5-3.813-8.5-8.5
+                c0-1.933,1.567-3.5,3.5-3.5s3.5,1.567,3.5,3.5c0,0.827,0.673,1.5,1.5,1.5h23.051c0.827,0,1.5-0.673,1.5-1.5
+                c0-1.933,1.567-3.5,3.5-3.5S44.939,39.394,44.939,41.327z M22.439,34.302c0.657,0.656,1.547,1.025,2.475,1.025
+                s1.818-0.369,2.475-1.025l10.333-10.334c1.367-1.367,1.367-3.583,0-4.95c-1.367-1.366-3.584-1.367-4.949,0l-4.358,4.358V3.5
+                c0-1.933-1.567-3.5-3.5-3.5s-3.5,1.567-3.5,3.5v19.877l-4.359-4.359c-1.367-1.366-3.583-1.366-4.95,0
+                c-1.367,1.367-1.367,3.583,0,4.95L22.439,34.302z"/>
+              </svg>
+            </a>
+          </div>
+          {% endif %}
+          <div class="like-count-btn d-flex" style="margin-top: 0; margin-right: 0;">
+            <b id="likecount" style="font-family: 'NanumSquareNeo-Variable';">{{mus.like_count}} 명이 좋아합니다</b>
+            <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{img.id}}');">
               {% if islike %}
               <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
               {% else %}
@@ -104,7 +78,6 @@
               {% endif %}
             </button>
           </div>
-          <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font/>
         </div>
         
         {% endfor %}
