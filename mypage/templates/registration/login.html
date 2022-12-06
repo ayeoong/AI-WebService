@@ -3,6 +3,7 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{% static 'salon/images/logo.png' %}" type="image/x-icon" sizes="16x16">
     <title>Gallery</title>
   </head>
@@ -22,7 +23,7 @@
       <br>
       <a type='button' href="{% url 'signup' %}" class='signup' style="text-decoration: none; font-size: small;">회원가입</a>
       <a type='button' href="{% url 'find_id' %}" class='find_id' style="text-decoration: none; font-size: small;">아이디 찾기</a>
-      <a type='button' href="/password_reset" class='find_pw' style="text-decoration: none; font-size: small;">비밀번호 찾기</a>
+      <a type='button' href="{% url 'password_reset' %}" class='find_pw' style="text-decoration: none; font-size: small;">비밀번호 찾기</a>
     </div>
   </body>
 </html>

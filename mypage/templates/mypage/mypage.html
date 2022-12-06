@@ -2,6 +2,7 @@
 {% load static %}
 <html lang="ko">
 <head>
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="icon" href="{% static 'salon/images/logo.png' %}" type="image/x-icon" sizes="16x16">
     <link rel="stylesheet" href="{% static 'mypage/css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR&family=Roboto+Mono&family=Roboto+Slab&display=swap" rel="stylesheet">
@@ -16,6 +17,7 @@
         background-color: #FFBDBF;
         overflow-x: hidden;
         padding-top: 20px;
+        font-family: 'NanumSquareNeo-Variable';
       }
 
       .sidenav a:first-child {
@@ -45,12 +47,12 @@
       </style>
 </head>
 
-<div class="sidenav" style="font-family: 'NanumSquareNeo-Variable';color: #FFBDBF;">
+<div class="sidenav" color: #FFBDBF;">
   <a href="{% url 'mypage:mypage' userid 'image' %}" style="color:#f1f1f1;">그림 보기</a>
   <a href="{% url 'mypage:mypage' userid 'music' %}">음악 듣기</a>
 </div>
 {% include 'shared/_hp.html' %}
-<body>
+<body style="overflow-x:scroll; white-space: nowrap;">
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
     var target

@@ -29,10 +29,6 @@
   border-radius: 5px;
 }
 
-.keyword-area {
-  text-indent: 32px;
-}
-
 .items {
   position: relative;
   width: 100%;
@@ -65,51 +61,216 @@
 }
 .item {
   display: inline-block;
-  background: skyblue;
-  min-height: 300px;
-  min-width: 300px;
-  margin: 2em 1em;
-  border-radius: 2%;
+  background: #F1F2ED;
 }
-@media screen and (max-width: 500px) {
-  .item {
-    max-height: 150px;
-    max-width: 150px;
+
+@media (min-width: 1000px) {
+  .keyword-area {
+    text-indent: 32px;
   }
+
+  .item {
+    min-height: 300px;
+    min-width: 300px;
+    margin: 2em 1em;
+    border-radius: 2%;
+  }
+  .sample-img {
+    max-height: 300px;
+    max-width: 300px;
+    border-radius: 2%;
+  }
+  figcaption{
+    height: 300px;
+    width: 300px;
+    border-radius: 2%;
+    margin-left: -300px;
+    background-color: rgba(0,0,0,0.7);
+    display: inline-block;
+    position: absolute; /* 이미지와 겹치게 처리 */
+  
+    color: #fff; text-align: center;
+    line-height: 200px;
+  
+    opacity: 0; /* 처음엔 안보이고 */
+  
+    transition: 0.3s;
+  }
+  .mus-text {
+    width: 300px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+  
+  .modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+  
+    width: 100%;
+    height: 100%;
+  
+    display: none;
+  
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  
+  .modal.show {
+    display: block;
+  }
+  
+  .modal-body {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+  
+    width: 1000px;
+    height: 600px;
+  
+    padding: 40px;
+  
+    text-align: center;
+  
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+  
+    transform: translateX(-50%) translateY(-50%);
+  }
+  
+  .modal-close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+  }
+
+  .modal-items {
+    display: flex;
+  }
+
+  .ori-img {
+    position: relative;
+    display: block;
+    width: 500px;
+    height: 500px;
+    margin: 20px;
+    margin-top: 35px;
+  }
+
+  p.test {
+    margin: 1.7rem;
+  }
+  
 }
-.sample-img {
-  max-height: 300px;
-  max-width: 300px;
-  border-radius: 2%;
-}
 
-.ori-img {
-  position: relative;
-  display: block;
-  margin: 20px;
-  margin-top: 35px;
-}
+@media (max-width: 500px) {
+  .keyword-area {
+    text-indent: 15px;
+  }
 
-figcaption{
-  height: 300px;
-  width: 300px;
-  border-radius: 2%;
-  margin-left: -300px;
-  background-color: rgba(0,0,0,0.7);
-  display: inline-block;
-  position: absolute; /* 이미지와 겹치게 처리 */
+  .item {
+    height: 200px;
+    width: 200px;
+    margin: 1rem 0.5rem;
+    border-radius: 5%;
+  }
+  .sample-img {
+    max-height: 200px;
+    max-width: 200px;
+    border-radius: 5%;
+  }
+  figcaption{
+    height: 200px;
+    width: 200px;
+    border-radius: 5%;
+    margin-left: -200px;
+    font-size: small;
+    background-color: rgba(0,0,0,0.7);
+    display: inline-block;
+    position: absolute; /* 이미지와 겹치게 처리 */
+  
+    color: #fff; text-align: center;
+    line-height: 200px;
+  
+    opacity: 0; /* 처음엔 안보이고 */
+  
+    transition: 0.3s;
+  }
+  .mus-text {
+    width: 300px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+  
+  .modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+  
+    width: 100%;
+    height: 100%;
+  
+    display: none;
+  
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  
+  .modal.show {
+    display: block;
+  }
+  
+  .modal-body {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+  
+    width: 300px;
+    height: 500px;
+  
+    padding: 40px;
+  
+    text-align: center;
+  
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+  
+    transform: translateX(-50%) translateY(-50%);
+  }
+  
+  .modal-close {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+  }
 
-  color: #fff; text-align: center;
-  line-height: 200px;
+  .modal-items {
+    display: block;
+  }
 
-  opacity: 0; /* 처음엔 안보이고 */
+  .ori-img {
+    position: relative;
+    display: block;
+    width: 250px;
+    height: 250px;
+    margin: auto;
+    margin-top: 40px;
+  }
 
-  transition: 0.3s;
+  p.test {
+    margin: 1rem;
+  }
+  
 }
 
 .item:hover figcaption {
   opacity: 1;
 }
+
 
 a {
   display: block;
@@ -126,66 +287,8 @@ p {
   font-weight: 700;
 }
 
-p.test {
-  margin: 1.7rem;
-}
-
 i {
   color: skyblue;
-}/*# sourceMappingURL=style.css.map */
-
-.mus-text {
-  width: 300px;
-  padding: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  white-space: normal;
-}
-
-.modal {
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 100%;
-
-  display: none;
-
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal.show {
-  display: block;
-}
-
-.modal-body {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-
-  width: 1000px;
-  height: 600px;
-
-  padding: 40px;
-
-  text-align: center;
-
-  background-color: rgb(255, 255, 255);
-  border-radius: 10px;
-  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-
-  transform: translateX(-50%) translateY(-50%);
-}
-
-.modal-close {
-  position: absolute;
-  right: 20px;
-  top: 20px;
-}
-
-.modal-items {
-  display: flex;
 }
 
 .fade {

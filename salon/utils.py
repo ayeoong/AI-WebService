@@ -1,4 +1,6 @@
-from os import path
+import os
+import json
+from urllib.request import urlopen
 from uuid import uuid4
 from django.core.files.storage import default_storage
 from io import BytesIO
@@ -8,7 +10,7 @@ import openai
 import time
 from salon.music import generateMusic
 from google.cloud import storage
-import google
+from googletrans import Translator
 import six
 from google.cloud import translate_v2 as translate
 
@@ -19,7 +21,7 @@ def uuid_name_upload_to(instance, filename): # instance는 이미지, 음악 파
     # cls_name = instance.__class__.__name__.lower() # 모델 별로
     # ymd_path = timezone.now().strftime('%Y/%m/%d')
     uuid_name = uuid4().hex # 32 characters <-> uuid4 = 36 characters
-    extension = path.splitext(filename)[-1].lower() # 확장자 추출 뒤 소문자로 변환
+    extension = os.path.splitext(filename)[-1].lower() # 확장자 추출 뒤 소문자로 변환
     return '/'.join([
         # app_label,
         # cls_name,
@@ -28,28 +30,49 @@ def uuid_name_upload_to(instance, filename): # instance는 이미지, 음악 파
     ])
 
 def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
-    if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
-        openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
-        openai.api_key = "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"
+    try:
+        if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
+            openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
+            openai.api_key = "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"
 
-        response = openai.Image.create( prompt=text,
-                                n=1,
-                                size="1024x1024")
-        image_url = response['data'][0]['url']
-    else:
-        time.sleep(5)
-        image_url = 'https://ifh.cc/g/5qCAX2.jpg'        
-    return image_url
+            response = openai.Image.create( prompt=text,
+                                    n=1,
+                                    size="1024x1024")
+            image_url = response['data'][0]['url']
+        else:
+            time.sleep(5)
+            image_url = 'https://ifh.cc/g/5qCAX2.jpg'        
+        return image_url
+    except openai.error.OpenAIError as e:
+        print(e.http_status)
+        print(e.error)
 
 
 
 def music_generation(tags):
-    if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
-        mus_filename =  generateMusic(tags)
-    else:
-        mus_filename = '로컬주소'
-    return mus_filename
+    try:
+        if settings.TEST_MODE or settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
+            mus_filename =  generateMusic(tags)
+        else:
+            mus_filename = '로컬주소'
+        return mus_filename
+    except Exception as e:
+        print("error_music", e)
 
+
+def get_taglist(text):
+    nltk_url = 'https://silken-oxygen-369215.de.r.appspot.com/'   # 배포 주소
+    text_spapce = text.replace(' ', '%20')
+    url_req = nltk_url + text_spapce
+
+    try:
+        f = urlopen(url_req)
+        with f as url:
+            data = json.loads(url.read().decode())['tokens']
+    except Exception as e:
+        print("error_tag", e)
+        data = []
+    return data
 
 
 def translate_text(text):
@@ -65,6 +88,13 @@ def translate_text(text):
     return result["translatedText"]
 
 
+def translate(prompt):
+    translator = Translator()
+    which_lang = translator.detect(prompt).lang
+    if which_lang != 'en':
+        return translator.translate(text=prompt, dest='en', src='auto').text
+    else:
+        return prompt
 
 
 def save_img_and_thumbnail(content, img_filename):
@@ -85,7 +115,9 @@ def save_img_and_thumbnail(content, img_filename):
 
 def save_img(image_file, img_filename):
     if settings.DEV_MODE or settings.TEST_MODE:
-        image_file.save(image_file, 'PNG')
+        img_storage_path = 'media/images/' #setting.media_images
+        img_filepath = img_storage_path + img_filename
+        image_file.save(img_filepath, 'PNG')
     else:
         with BytesIO() as output:  
             image_file.save(output, 'PNG') 
