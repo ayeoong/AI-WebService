@@ -118,6 +118,7 @@
   .mus-text {
     width: 300px;
     padding: 10px;
+    padding-right: 60px;
     display: flex;
     flex-wrap: wrap;
     white-space: normal;
@@ -239,7 +240,7 @@
   .mus-text {
     width: 200px;
     padding: 10px;
-    padding-right: 5rem;
+    padding-right: 50pxgit;
     display: flex;
     flex-wrap: wrap;
     white-space: normal;
