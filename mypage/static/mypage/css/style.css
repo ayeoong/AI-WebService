@@ -1,10 +1,8 @@
 h1 {
   padding-top: 50px;
-  
 }
 
 p {
-  font-family: 'Roboto Mono', monospace;
   font-size: 20px;
   font-weight: 700;
 }
@@ -13,16 +11,6 @@ p {
   z-index: 1;
 }
 
-.tn-img {
-  width: auto;
-  height: auto;
-  border: none;
-  border-radius: 1px;
-  padding: 0;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 50px;
-}
 .grid-container {
   text-align: center;
   height: 160px;
@@ -43,77 +31,31 @@ p {
   margin-right: auto;
 }
 
-
-.grid-container {
-  text-align: center;
-  height: 160px;
-}
-
 .container{
   display: grid;
   place-items: center;
   grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 .img {
-   overflow:hidden 
-}
-
-.tn_img {
-  border-radius: 2%;
-  margin: 1rem;
+   overflow: hidden ;
 }
 
 .btn-like {
   position: relative;
-  left: 0;
-  bottom: 0;
+  left: 20px;
+  bottom: 70px;
+  z-index: 5;
   border: none;
   background: none;
 }
 .btn-img {
-  float: left;
   display: block;
   width: 1.5rem;
   height: 1.5rem;
   border: none;
+  z-index: 5;
   padding: 0;
   margin: 0;
-}
-
-.modal {
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 100%;
-
-  display: none;
-
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal.show {
-  display: block;
-}
-
-.modal-body {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-
-  width: 1000px;
-  height: 600px;
-
-  padding: 40px;
-
-  text-align: center;
-
-  background-color: rgb(255, 255, 255);
-  border-radius: 10px;
-  box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-
-  transform: translateX(-50%) translateY(-50%);
 }
 
 .modal-close {
@@ -150,4 +92,221 @@ p {
 @keyframes fadein {
   from {opacity: 0}
   to {opacity: 1}
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.btn-open-popup-music {
+  margin: 10px;
+  height: 300px;
+  padding: 10px;
+  width: 300px;
+  background-color: #FFFDBD;
+  border: #d4d4d4 2px solid;
+  border-radius: 10px;
+}
+.btn-like {
+  position: relative;
+  float: right;
+  bottom: 50px;
+  left: 0;
+}
+#myAudio {
+  display: block;
+  width: 250px;
+  margin: 120px 0 0 13px;
+}
+.btn-download {
+  position: relative;
+  float: right;
+}
+
+@media (min-width: 1000px) {
+  .tn-img {
+    width: auto;
+    height: auto;
+    border: none;
+    border-radius: 1px;
+    padding: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
+  }
+  .tn_img {
+    border-radius: 2%;
+    margin: 1rem;
+  }
+  
+  .main {
+    margin-left: 10%; /* Same as the width of the sidenav */
+  }
+  .sidenav {
+    height: 100%;
+    width: 10%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #FFBDBF;
+    overflow-x: hidden;
+    padding-top: 20px;
+    font-family:'NanumSquareNeo-Variable'; 
+  }
+  
+  .sidenav a:first-child {
+    margin-top: 100px;
+  }
+  
+  .sidenav a {
+    padding: 6px 6px 6px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+  }
+  .modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+  
+    width: 100%;
+    height: 100%;
+  
+    display: none;
+  
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  
+  .modal.show {
+    display: block;
+  }
+  
+  .modal-body {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+  
+    width: 1000px;
+    height: 600px;
+  
+    padding: 40px;
+  
+    text-align: center;
+  
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+  
+    transform: translateX(-50%) translateY(-50%);
+  }
+  .ori-img {
+    position: relative;
+    display: block;
+    width: 500px;
+    height: 500px;
+  }
+  
+}
+
+@media (max-width: 500px) {
+  .sidenav {
+    height: 200px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #FFBDBF;
+    overflow-x: hidden;
+    padding-top: 15px;
+  }
+  
+  .sidenav a:first-child {
+    margin-top: 70px;
+  }
+  
+  .sidenav a {
+    padding: 6px 6px 6px 32px;
+    text-decoration: none;
+    color: #818181;
+    display: block;
+    font-size: 18px;
+  }
+  .main {
+    margin-top: 180px; /* Same as the width of the sidenav */
+  }
+  .modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+  
+    width: 100%;
+    height: 100%;
+  
+    display: none;
+  
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  
+  .modal.show {
+    display: block;
+  }
+  
+  .modal-body {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+  
+    width: 300px;
+    height: 500px;
+  
+    padding: 40px;
+  
+    text-align: center;
+  
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+  
+    transform: translateX(-50%) translateY(-50%);
+  }
+
+  .tn_img {
+    position: relative;
+    display: block;
+    width: 90%;
+    height: 90%;
+    margin: auto;
+    margin-top: 20px;
+    border-radius: 5%;
+  }
+
+  .ori-img {
+    position: relative;
+    display: block;
+    width: 250px;
+    height: 250px;
+    margin: auto;
+    margin-top: 40px;
+  }
+  .container{
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr 1fr;
+  }
+  .mus-container {
+    grid-template-columns: 1fr !important;
+  }
+  .btn-open-popup-music {
+    margin: 10px;
+    padding: 10px;
+    height: 200px;
+    width: 95%;
+    background-color: #FFFDBD;
+    border: #d4d4d4 2px solid;
+    border-radius: 10px;
+  }
+  #myAudio {
+    margin-top: 30px
+  }
 }
