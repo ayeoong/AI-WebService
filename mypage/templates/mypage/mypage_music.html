@@ -36,6 +36,14 @@
         imgtag.src = 'https://cdn-icons-png.flaticon.com/512/138/138406.png'
       }
     }
+    function delete_item(artid) {
+        console.log(artid);
+        del_conf = confirm("정말 삭제하시겠습니까?");
+        axios.post("/mypage/{{userid}}/delete_item/", {'del_item':artid, 'del_conf':del_conf})
+              .then(location.reload())
+              .catch(function (error) {console.log(error)} ) 
+    }
+
   </script>
   
   <div class="main">
@@ -48,15 +56,28 @@
 
         {% for mus, islike in musics %}
         <div class="btn-open-popup btn-open-popup-music justify-content-center align-items-center">
-          <div>
+          <div style="height: 150px;">
             <p><strong>{{ mus.input_text }}</strong></p>
           </div>
-          <div style="margin-bottom: 40px">
+          <div style="margin-bottom: 30px">
             <midi-player id="myAudio" src="{{ mus.fileurl }}" sound-font/>
           </div>
-          {% if user.is_authenticated %} 
+          {% if user.username == userid %}
+          <diV class="btn-delete">
+            <a type="button" onclick="delete_item('{{mus.id}}');">
+              <svg 
+              width="24" 
+              height="24"
+              viewBox="0 0 512 512"
+              xml:space="preserve" 
+              xmlns="http://www.w3.org/2000/svg" 
+              xmlns:xlink="http://www.w3.org/1999/xlink"> 
+                <path d="M436,40h-81.716c-5.304,0-10.391-2.107-14.142-5.858L311.858,5.858C308.107,2.107,303.02,0,297.716,0h-83.432  c-5.304,0-10.391,2.107-14.142,5.858l-28.284,28.284C168.107,37.893,163.02,40,157.716,40H76c-22.091,0-40,17.909-40,40  s17.909,40,40,40h0v332c0,33.137,26.863,60,60,60h240c33.137,0,60-26.863,60-60V120c22.091,0,40-17.909,40-40S458.091,40,436,40z   M216,402c0,16.569-13.431,30-30,30s-30-13.431-30-30V190c0-16.569,13.431-30,30-30s30,13.431,30,30V402z M356,402  c0,16.569-13.431,30-30,30s-30-13.431-30-30V190c0-16.569,13.431-30,30-30s30,13.431,30,30V402z"/>
+              </svg>
+            </a>
+          </diV>
           <div class="btn-download">
-            <a type='button' href="" class='download' download>
+            <a type='button' href="{{ mus.fileurl }}" class='download' download>
               <svg version="1.1" id="Capa_1" width="24" height="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 49.827 49.827" style="enable-background:new 0 0 49.827 49.827;" xml:space="preserve">
                 <path style="fill:#010002;" d="M44.939,41.327c0,4.687-3.813,8.5-8.5,8.5H13.388c-4.687,0-8.5-3.813-8.5-8.5
                 c0-1.933,1.567-3.5,3.5-3.5s3.5,1.567,3.5,3.5c0,0.827,0.673,1.5,1.5,1.5h23.051c0.827,0,1.5-0.673,1.5-1.5
@@ -70,7 +91,7 @@
           {% endif %}
           <div class="like-count-btn d-flex" style="margin-top: 0; margin-right: 0;">
             <b id="likecount" style="font-family: 'NanumSquareNeo-Variable';">{{mus.like_count}} 명이 좋아합니다</b>
-            <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{img.id}}');">
+            <button type="button" class="btn-like" onclick="event.stopPropagation(); like_count_on(this, '{{mus.id}}');">
               {% if islike %}
               <img class="btn-img" src="https://cdn-icons-png.flaticon.com/512/138/138533.png">
               {% else %}

@@ -177,11 +177,11 @@ def mypage(request, user_name, kind):
 
 def delete_item(request, user_name):
     json_data = json.loads( request.body )
-    img_id = json_data['del_item']
+    art_id = json_data['del_item']
     del_conf = json_data['del_conf']
-    if (del_conf):
+    if del_conf:
         try:
-            del_item = ArtUploadModel.objects.get(pk=img_id)
+            del_item = ArtUploadModel.objects.get(pk=art_id)
             print(del_item)
 
             # media/images 폴더 안의 이미지 삭제
@@ -192,9 +192,11 @@ def delete_item(request, user_name):
             delete_img(filename)
             delete_img(thumbnail)
 
-
+            ArtLike.objects.filter(art=del_item).delete()
             ArtKeywordModel.objects.filter(art=del_item).delete()
+
             del_item.delete()
+            print("deleted")
             data = {'result':'successful'}
         except Exception as e:
             print(e)
