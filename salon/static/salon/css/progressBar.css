@@ -1,11 +1,8 @@
 #progressBar {
     appearance: none;
+    top: -148px;
+    right: 200px;
     position: relative;
-    /* position: relative; */
-    top: -151px;
-    right: 201px;
-    /* top: 34px;
-    right: 575px; */
 }
 #progressBar::-webkit-progress-bar {
     background:#f0f0f0;
@@ -33,6 +30,9 @@
     font-family: 'NanumSquareNeo-Variable';
     font-size: 72%;
 }
+.signup-drive-text {
+    font-family: 'NanumSquareNeo-Variable';
+}
 
 @media (min-width: 1000px) {
     .gif-img {
@@ -45,7 +45,7 @@
         display: flex;
     }
     .est-time {
-        top: -208px;
+        top: -170px;
         right: 48px;
     }
 }
@@ -64,22 +64,20 @@
     }
     #title {
         size: 30px;
+        width: 250px;
         margin-top: 30%;
         font-size: x-small;
     }
     #btn_create {
         width: fit-content;
         font-size: x-small;
-        float: right;
-        margin-right: 2.5rem
     }
     #progressBar {
-        top: -11.5rem;
-        margin-left: 15rem;
+        top: -5rem;
+        right: 0;
     }
     .est-time {
-        top: -13rem;
-        margin-right: 13rem;
+        top: -5rem;
         font-size: x-small;
     }
     .signup-drive-text {

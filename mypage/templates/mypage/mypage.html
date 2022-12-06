@@ -4,50 +4,13 @@
 <head>
     <link rel="icon" href="{% static 'salon/images/logo.png' %}" type="image/x-icon" sizes="16x16">
     <link rel="stylesheet" href="{% static 'mypage/css/style.css' %}">
-    <style>
-      .sidenav {
-        height: 100%;
-        width: 10%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        background-color: skyblue;
-        overflow-x: hidden;
-        padding-top: 20px;
-      }
-
-      .sidenav a:first-child {
-        margin-top: 100px;
-      }
-      
-      .sidenav a {
-        padding: 6px 6px 6px 32px;
-        text-decoration: none;
-        font-size: 25px;
-        color: #818181;
-        display: block;
-      }
-      
-      .sidenav a:hover {
-        color: #f1f1f1;
-      }
-      
-      .main {
-        margin-left: 10%; /* Same as the width of the sidenav */
-      }
-      
-      @media screen and (max-height: 450px) {
-        .sidenav {padding-top: 15px;}
-        .sidenav a {font-size: 18px;}
-      }
-      </style>
 </head>
 
+{% include 'shared/_hp.html' %}
 <div class="sidenav">
   <a href="{% url 'mypage:mypage' userid 'image' %}" style="color:#f1f1f1;">그림 보기</a>
   <a href="{% url 'mypage:mypage' userid 'music' %}">음악 보기</a>
 </div>
-{% include 'shared/_hp.html' %}
 <body>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
@@ -82,7 +45,7 @@
       {% for img, islike in images %}
         <div class="btn-open-popup">
           <img class="tn_img" src="{{ img.thumbnailurl }}" alt="thumbnail" id="{{ img.id }}">
-          <img class="test ori-img" src="{{ img.fileurl }}" alt="filename" style="width: 500px; display: none;">
+          <img class="test ori-img" src="{{ img.fileurl }}" alt="filename" style="display: none;">
           <p class="test input-text" style="display: none;">{{img.input_text}}</p>
           <div class="like-count-btn">
             <b id="likecount">{{img.like_count}}</b>
