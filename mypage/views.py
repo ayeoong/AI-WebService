@@ -173,22 +173,32 @@ def mypage(request, user_name, kind):
     
 
 def delete_item(request, user_name):
+    print("0")
     json_data = json.loads( request.body )
-    img_id = json_data['del_item']
+    art_id = json_data['del_item']
     del_conf = json_data['del_conf']
+    print("1")
     if (del_conf):
+        print("2")
         try:
-            del_item = ArtUploadModel.objects.get(pk=img_id)
+            print("3")
+            del_item = ArtUploadModel.objects.get(pk=art_id)
             print(del_item)
 
             # media/images 폴더 안의 이미지 삭제
-            filename = "images/" + del_item.filename
-            thumbnail = "images/" + del_item.thumbnail
-            print(filename, thumbnail)
-            os.remove(os.path.join(settings.MEDIA_ROOT, filename))
-            os.remove(os.path.join(settings.MEDIA_ROOT, thumbnail))
+            # if del_item.kind == 1:
+            #     filename = "media/images/" + del_item.filename
+            #     thumbnail = "media/images/" + del_item.thumbnail
+            #     os.remove(os.path.join(settings.MEDIA_ROOT, thumbnail))
+            #     print(filename, thumbnail)
+            # else:
+            #     filename = "media/musics/" + del_item.filename
+            #     print(filename)
+            # os.remove(os.path.join(settings.MEDIA_ROOT, filename))
+            ArtLike.objects.filter(art=del_item).delete()
             ArtKeywordModel.objects.filter(art=del_item).delete()
             del_item.delete()
+            print("deleted")
             data = {'result':'successful'}
         except Exception as e:
             print(e)

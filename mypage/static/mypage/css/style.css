@@ -123,6 +123,12 @@ p {
   position: relative;
   float: right;
 }
+.btn-delete {
+  cursor: pointer;
+  position: relative;
+  margin-left: 5px;
+  float: right;
+}
 
 @media (min-width: 1000px) {
   .tn-img {
