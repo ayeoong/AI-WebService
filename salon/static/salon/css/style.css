@@ -80,7 +80,7 @@
 .mus-text {
   position: relative;
   top: 5em;
-  left: -46%;
+  left: 5em;
 }
 
 @media (min-width: 1000px) {
@@ -116,7 +116,7 @@
     transition: 0.3s;
   }
   .mus-text {
-    width: 300px;
+    width: 100px;
     padding: 10px;
     display: flex;
     flex-wrap: wrap;
@@ -195,11 +195,6 @@
   .material-symbols-outlined.md-36 { 
     font-size: 36px; 
   }
-  .mus-text {
-    position: relative;
-    top: 5em;
-    left: -46%;
-  }
   
 }
 
@@ -235,14 +230,6 @@
     opacity: 0; /* 처음엔 안보이고 */
   
     transition: 0.3s;
-  }
-  .mus-text {
-    width: 200px;
-    padding: 10px;
-    padding-right: 5rem;
-    display: flex;
-    flex-wrap: wrap;
-    white-space: normal;
   }
   
   .modal {
@@ -317,10 +304,7 @@
   .material-symbols-outlined.md-36 { 
     font-size: 36px; 
   }
-  .mus-text {
-    position: relative;
-    top: 3em;
-  }
+
 }
 
 .item:hover figcaption {
