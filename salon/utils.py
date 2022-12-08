@@ -32,7 +32,7 @@ def image_generation(text): #실제 배포용 말고는 더미 이미지 사용
     try:
         if settings.TEST_LIVE_MODE or settings.REAL_LIVE_MODE:
             openai.organization = "org-IHDNUM52y3No3XxvBFRpbIf5"
-            openai.api_key = "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"
+            openai.api_key = "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"
 
             response = openai.Image.create( prompt=text,
                                     n=1,

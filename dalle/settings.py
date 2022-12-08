@@ -88,7 +88,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 # Change this to "False" when you are ready for production
 #DEBUG = env("DEBUG")
-DEBUG = True
+DEBUG = False
 
 # [START gaestd_py_django_csrf]
 # SECURITY WARNING: It's recommended that you use this when
@@ -96,7 +96,7 @@ DEBUG = True
 # to App Engine. This code takes the URL and converts it to both these settings formats.
 APPENGINE_URL = env("APPENGINE_URL", default=None)
 if APPENGINE_URL:
-    # Ensure a scheme is present in the URL before it's processed.
+    # Ensure a scheme is present in the URL before it's processed. 
     if not urlparse(APPENGINE_URL).scheme:
         APPENGINE_URL = f"https://{APPENGINE_URL}"
 
