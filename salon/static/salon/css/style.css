@@ -110,21 +110,27 @@ body { font-family: sans-serif; }
 }
 
 .gallery-cell {
-  width: 66.59%;
+  width: 66%;
   height: 300px;
-  margin-right: 10px;
+  margin-right: 5px;
   background-color: #fff;
   background-image: url('https://i.pinimg.com/564x/ab/3c/16/ab3c1629b2a97a664cac49b803989e21.jpg');
   border-radius: 5px;
   counter-increment: gallery-cell;
 }
 
+.gallery-cell-image {
+  margin-right: 5px;
+}
+
 /* cell number */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
 .gallery-cell:before {
   display: block;
   text-align: center;
   content: 'Gallery';
   line-height: 400%;
+  font-family: 'Roboto Slab', serif;
   font-size: 70px;
   color: white;
 }
